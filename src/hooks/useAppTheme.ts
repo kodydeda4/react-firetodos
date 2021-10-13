@@ -1,7 +1,5 @@
-import { deepmerge } from "@mui/utils";
-import ArrowDropDownRounded from "@mui/icons-material/ArrowDropDownRounded";
-import { createTheme, ThemeOptions, Theme } from "@mui/material/styles";
 import { useMediaQuery } from "@mui/material";
+import { createTheme } from "@mui/material/styles";
 import React from "react";
 
 export default function useAppTheme() {
@@ -14,7 +12,7 @@ export default function useAppTheme() {
   });
 }
 
-export function useSystemMode(): "light" | "dark" {
+const useSystemMode = (): "light" | "dark" => {
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
 
   return React.useMemo(
