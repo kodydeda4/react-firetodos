@@ -1,3 +1,4 @@
+import { Logout } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
@@ -13,21 +14,28 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import { StoreProvider } from "easy-peasy";
 import React from "react";
+import { Redirect } from "react-router-dom";
 import useViewStore from "../hooks/useViewStore";
-import { AppStore, appStore } from "../store/App";
+import ROUTES from "../routes";
+import { AppStore } from "../store/App";
 
-export default function TodosListPage() {
+export default function TodosList() {
+  const viewStore = useViewStore<AppStore>();
+
+  if (!viewStore.state.user) {
+    return <Redirect to={ROUTES.login} push={true} />;
+  }
+
   return (
-    <StoreProvider store={appStore}>
-      <AppHeader />
-      <TodosList />
-    </StoreProvider>
+    <>
+      <Header />
+      <Todos />
+    </>
   );
 }
 
-const AppHeader = () => {
+const Header = () => {
   const viewStore = useViewStore<AppStore>();
 
   return (
@@ -55,6 +63,14 @@ const AppHeader = () => {
               >
                 Clear
               </Button>
+              <Button
+                onClick={() => viewStore.action.logout()}
+                color="inherit"
+                variant="outlined"
+                startIcon={<Logout />}
+              >
+                Logout
+              </Button>
             </Stack>
           </Toolbar>
         </Container>
@@ -63,7 +79,7 @@ const AppHeader = () => {
   );
 };
 
-const TodosList = () => {
+const Todos = () => {
   const viewStore = useViewStore<AppStore>();
 
   return (
