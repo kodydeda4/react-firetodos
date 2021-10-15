@@ -73,6 +73,7 @@ const model: AppStore = {
     await signInWithEmailAndPassword(auth, payload.email, payload.password)
       .then((userCredential) => {
         actions.login(userCredential.user);
+        
       })
       .catch((error) => {
         actions.setAlert({
