@@ -1,6 +1,5 @@
 import {
   addDoc,
-  collection,
   deleteDoc,
   doc,
   getDocs,
@@ -11,11 +10,9 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-import { stringify } from "querystring";
 import React, { useEffect } from "react";
 import { firestore } from "../config/firebase";
-import Color from "../types/Color";
-import color from "../types/Color";
+import { default as Color, default as color } from "../types/Color";
 
 export default function Colors() {
   const [colors, setColors] = React.useState<color[]>([]);
@@ -42,7 +39,7 @@ export default function Colors() {
           <li key={color.id}>
             <button
               onClick={() =>
-                updateColor2({ id: color.id, name: "a", value: "purple" })
+                updateColor({ id: color.id, name: "a", value: "purple" })
               }
             >
               edit
@@ -66,24 +63,23 @@ export default function Colors() {
   );
 }
 
+// -----------------------------------------------------------------------------------------------------------------
+// Actions
+// -----------------------------------------------------------------------------------------------------------------
 const addColor = async (name: string, value: string) =>
   await addDoc(firestore.colors, { name, value, timestamp: serverTimestamp() });
 
 const deleteColor = async (id: string) =>
   await deleteDoc(doc(firestore.colors, id));
 
-const updateColor2 = async (props: {
+const updateColor = async (props: {
   id: string;
   name: string;
   value: string;
 }) => {
-  const id = props.id;
-  const name = props.name;
-  const value = props.value;
-
-  updateDoc(doc(firestore.colors, id), {
-    name,
-    value,
+  updateDoc(doc(firestore.colors, props.id), {
+    name: props.name,
+    value: props.value,
     timestamp: serverTimestamp(),
   });
 };
