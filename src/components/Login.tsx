@@ -13,7 +13,7 @@ import * as React from "react";
 import { Redirect } from "react-router-dom";
 import useViewStore from "../hooks/useViewStore";
 import ROUTES from "../routes";
-import { AppStore } from "../store/App";
+import { AppStore } from "../store/AppStore";
 
 export default function Login() {
   const viewStore = useViewStore<AppStore>();

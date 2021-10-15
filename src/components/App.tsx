@@ -5,7 +5,7 @@ import React from "react";
 import { HashRouter, Route, Switch } from "react-router-dom";
 import useAppTheme from "../hooks/useAppTheme";
 import ROUTES from "../routes";
-import { appStore } from "../store/App";
+import { appStore } from "../store/AppStore";
 import Colors from "./Colors";
 // import FireTodos from "./FireTodos";
 import Login from "./Login";
