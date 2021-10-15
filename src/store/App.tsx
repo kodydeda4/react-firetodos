@@ -4,58 +4,60 @@ import {
   action,
   Computed,
   computed,
-  createStore,
-  persist,
-  Thunk,
+  createStore, Thunk,
   thunk
 } from "easy-peasy";
 import { auth } from "../config/firebase";
+import { AlertState, Severity } from "../types/AlertState";
+import Todo from "../types/Todo";
 
 interface AppState {
-  // ==========================================
+  // ======================================================================================================================
   // 🔑 auth
-  // ==========================================
+  // ======================================================================================================================
   user?: User;
-  alert?: Alert;
+  alert?: AlertState;
 
-  // ==========================================
+  // ======================================================================================================================
   // ✍🏻todoslist
-  // ==========================================
+  // ======================================================================================================================
   todos: Todo[];
   completedTodos: Computed<this, Todo[]>;
 }
 
 interface AppAction {
-  // ==========================================
+  // ======================================================================================================================
   // 🔑 auth
-  // ==========================================
+  // ======================================================================================================================
   login: Action<this, User>;
   logout: Action<this>;
-  setAlert: Action<this, Alert>;
-
-  // ==========================================
+  setAlert: Action<this, AlertState>;
+  // ======================================================================================================================
   // ✍🏻 todoslist
-  // ==========================================
+  // ======================================================================================================================
   addTodo: Action<this>;
   clearAll: Action<this>;
   toggleDone: Action<this, Todo>;
 }
 
 interface AppThunks {
-  // ==========================================
+  // ======================================================================================================================
   //🔑 auth
-  // ==========================================
+  // ======================================================================================================================
   signin: Thunk<this, { email: string; password: string }>;
   signup: Thunk<this, { email: string; password: string }>;
   signout: Thunk<this>;
+  // handleNew: Thunk<this>;
+  // handleEdit: Thunk<this, string>;
+  // handleDelete: Thunk<this, string>;
 }
 
 export interface AppStore extends AppState, AppAction, AppThunks {}
 
 const model: AppStore = {
-  // ==========================================
+  // ======================================================================================================================
   //🔑 auth
-  // ==========================================
+  // ======================================================================================================================
   user: undefined,
   alert: undefined,
   login: action((state, payload) => {
@@ -66,13 +68,10 @@ const model: AppStore = {
     state.user = undefined;
     state.alert = undefined;
   }),
+
   signin: thunk(async (actions, payload) => {
     await signInWithEmailAndPassword(auth, payload.email, payload.password)
       .then((userCredential) => {
-        // actions.setAlert({
-        //   severity: Severity.success,
-        //   message: `Successfully created user with email: ${userCredential.user.email}`,
-        // });
         actions.login(userCredential.user);
       })
       .catch((error) => {
@@ -105,9 +104,9 @@ const model: AppStore = {
     state.alert = payload;
   }),
 
-  // ==========================================
+  // ======================================================================================================================
   //✍🏻 todos
-  // ==========================================
+  // ======================================================================================================================
   todos: [],
   completedTodos: computed((state) => state.todos.filter((todo) => todo.done)),
   addTodo: action((state) => {
@@ -131,24 +130,3 @@ const model: AppStore = {
 };
 
 export const appStore = createStore<AppStore>(model);
-
-// ------------------------------------------------------------------------------------------------
-// Helpers
-// ------------------------------------------------------------------------------------------------
-
-interface Todo {
-  id: number;
-  text: string;
-  done: boolean;
-}
-interface Alert {
-  severity: Severity;
-  message: string;
-}
-
-enum Severity {
-  error = "error",
-  warning = "warning",
-  info = "info",
-  success = "success",
-}

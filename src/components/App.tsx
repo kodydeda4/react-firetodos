@@ -7,10 +7,14 @@ import useAppTheme from "../hooks/useAppTheme";
 import ROUTES from "../routes";
 import { appStore } from "../store/App";
 import Login from "./Login";
+import NewApp from "./Colors";
 import NotFound from "./NotFound";
 import Signup from "./Signup";
 import TodosList from "./TodosList";
+import FireTodos from "./FireTodos";
+import Colors from "./Colors";
 
+// [How to set up React with Firebase/Firestore v9] https://www.youtube.com/watch?v=ig91zc-ERSE
 
 export default function App() {
   return (
@@ -21,7 +25,8 @@ export default function App() {
           <Switch>
             <Route exact path={ROUTES.login} component={Login} />
             <Route exact path={ROUTES.signup} component={Signup} />
-            <Route exact path={ROUTES.home} component={TodosList} />
+            {/* <Route exact path={ROUTES.home} component={FireTodos} /> */}
+            <Route exact path={ROUTES.home} component={Colors} />
             <Route component={NotFound} />
           </Switch>
         </HashRouter>
