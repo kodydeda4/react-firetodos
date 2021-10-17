@@ -14,18 +14,16 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import {
-  clearAll as handleClearAllTodos,
-  clearDone as handleClearDoneTodos,
-  createTodo as handleCreateTodo,
-  toggleDone as handleUpdateTodoDone,
-  updateTodoText as handleUpdateTodoText,
-  useTodosSnapshot,
-} from "../helpers/todos";
+import { onSnapshot, query } from "firebase/firestore";
+import React from "react";
+import { firestore } from "../config/firebase";
+import useViewStore from "../hooks/useViewStore";
+import { TodoStore } from "../store/TodoStore";
 import Todo from "../types/Todo";
 
 export default function FireTodos() {
   const todos = useTodosSnapshot();
+  const viewStore = useViewStore<TodoStore>();
 
   return (
     <>
@@ -38,7 +36,7 @@ export default function FireTodos() {
               </Typography>
               <Stack direction="row" spacing={2}>
                 <Button
-                  onClick={() => handleCreateTodo()}
+                  onClick={() => viewStore.action.createTodo()}
                   color="inherit"
                   variant="outlined"
                   startIcon={<AddIcon />}
@@ -46,7 +44,7 @@ export default function FireTodos() {
                   Add
                 </Button>
                 <Button
-                  onClick={() => handleClearAllTodos()}
+                  onClick={() => viewStore.action.clearAll()}
                   color="inherit"
                   variant="outlined"
                   startIcon={<DeleteIcon />}
@@ -54,21 +52,21 @@ export default function FireTodos() {
                   Clear All
                 </Button>
                 <Button
-                  onClick={() => handleClearDoneTodos()}
+                  onClick={() => viewStore.action.clearDone()}
                   color="inherit"
                   variant="outlined"
                   startIcon={<DeleteIcon />}
                 >
                   Clear Done
                 </Button>
-                <Button
-                  // onClick={() => viewStore.action.logout()}
+                {/* <Button
+                  onClick={() => viewStore.action.logout()}
                   color="inherit"
                   variant="outlined"
                   startIcon={<Logout />}
                 >
                   Logout
-                </Button>
+                </Button> */}
               </Stack>
             </Toolbar>
           </Container>
@@ -82,10 +80,11 @@ export default function FireTodos() {
         }}
       >
         <Container>
+          {/* {viewStore.state.realTodos.map((todo: Todo) => ( */}
           {todos.map((todo: Todo) => (
             <ListItem>
               <Checkbox
-                onClick={() => handleUpdateTodoDone(todo)}
+                onClick={() => viewStore.action.toggleDone(todo)}
                 edge="start"
                 checked={todo.done}
               />
@@ -94,9 +93,21 @@ export default function FireTodos() {
                 autoFocus
                 variant="standard"
                 fullWidth
-                onChange={(event) => handleUpdateTodoText(todo, event.target.value)}
+                onChange={(event) =>
+                  viewStore.action.updateText({
+                    todo: todo,
+                    text: event.target.value,
+                  })
+                }
               />
-              {/* {todo.text} {todo.id} */}
+              <Button
+                onClick={() => viewStore.action.deleteTodo(todo)}
+                color="inherit"
+                variant="outlined"
+                startIcon={<AddIcon />}
+              >
+                Delete
+              </Button>
             </ListItem>
           ))}
         </Container>
@@ -104,3 +115,17 @@ export default function FireTodos() {
     </>
   );
 }
+
+export const useTodosSnapshot = (): Todo[] => {
+  const [todos, setTodos] = React.useState<Todo[]>([]);
+
+  const update = React.useEffect(() => {
+    onSnapshot(query(firestore.todos2), (snapshot) => {
+      setTodos(
+        snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() }))
+      );
+    });
+  }, []);
+
+  return todos;
+};
