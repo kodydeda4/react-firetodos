@@ -6,7 +6,6 @@ import { HashRouter, Route, Switch } from "react-router-dom";
 import useAppTheme from "../hooks/useAppTheme";
 import ROUTES from "../routes";
 import { appStore } from "../store/AppStore";
-import Colors from "./Colors";
 import FireTodos from "./FireTodos";
 import Login from "./Login";
 import NotFound from "./NotFound";
@@ -22,7 +21,6 @@ export default function App() {
             <Route exact path={ROUTES.login} component={Login} />
             <Route exact path={ROUTES.signup} component={Signup} />
             <Route exact path={ROUTES.home} component={FireTodos} />
-            {/* <Route exact path={ROUTES.home} component={Colors} /> */}
             <Route component={NotFound} />
           </Switch>
         </HashRouter>
