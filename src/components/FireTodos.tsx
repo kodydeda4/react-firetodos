@@ -18,6 +18,7 @@ import {
   addDoc,
   deleteDoc,
   doc,
+  FieldValue,
   getDocs,
   onSnapshot,
   orderBy,
@@ -125,12 +126,20 @@ export default function FireTodos() {
 // -----------------------------------------------------------------------------------------------------------------
 // Actions
 // -----------------------------------------------------------------------------------------------------------------
+
+type TodoPayload = {
+  text: string,
+  done: boolean,
+  timestamp: FieldValue 
+}
+
 const createTodo = async () => {
-  await addDoc(firestore.todos2, {
+  const todoPayload: TodoPayload = {
     text: "untitled",
     done: false,
     timestamp: serverTimestamp(),
-  });
+  }
+  await addDoc(firestore.todos2, todoPayload);
 };
 
 const deleteTodo = async (todo: Todo) => {
@@ -138,19 +147,23 @@ const deleteTodo = async (todo: Todo) => {
 };
 
 const toggleDone = async (todo: Todo) => {
-  updateDoc(doc(firestore.todos2, todo.id), {
+  const todoPayload: TodoPayload = {
     text: todo.text,
     done: !todo.done,
     timestamp: serverTimestamp(),
-  });
+  }
+
+  updateDoc(doc(firestore.todos2, todo.id), todoPayload);
 };
 
 const updateTodoText = async (todo: Todo, text: string) => {
-  updateDoc(doc(firestore.todos2, todo.id), {
+  const todoPayload: TodoPayload = {
     text: text,
     done: todo.done,
     timestamp: serverTimestamp(),
-  });
+  }
+
+  updateDoc(doc(firestore.todos2, todo.id), todoPayload);
 };
 
 const clearDone = async () => {
