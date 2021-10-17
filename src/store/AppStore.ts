@@ -112,7 +112,7 @@ const model: AppStore = {
   completedTodos: computed((state) => state.todos.filter((todo) => todo.done)),
   addTodo: action((state) => {
     state.todos.push({
-      id: state.todos.length,
+      id: state.todos.length.toString(),
       text: "untitled",
       done: false,
     });
