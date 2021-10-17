@@ -1,36 +1,22 @@
 import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  User,
-} from "@firebase/auth";
-import {
-  Action,
-  action,
-  Computed,
-  computed,
   createStore,
   Thunk,
-  thunk,
+  thunk
 } from "easy-peasy";
 import {
   addDoc,
   deleteDoc,
   doc,
-  getDocs,
-  onSnapshot,
-  query,
+  getDocs, query,
   serverTimestamp,
   updateDoc,
-  where,
+  where
 } from "firebase/firestore";
-import React from "react";
 import { firestore } from "../config/firebase";
-
 import Todo from "../types/Todo";
 
 interface TodoState {
-  todos: Todo[];
-  // realTodos: Computed<this, Todo[]>;
+  // todos: Todo[];
 }
 
 interface TodoAction {}
@@ -38,29 +24,16 @@ interface TodoAction {}
 interface TodoThunks {
   createTodo: Thunk<this>;
   deleteTodo: Thunk<this, Todo>;
-  toggleDone: Thunk<this, Todo>;
-  updateText: Thunk<this, { todo: Todo; text: string }>;
+  toggleTodoDone: Thunk<this, Todo>;
+  updateTodoText: Thunk<this, { todo: Todo; text: string }>;
   clearAll: Thunk<this>;
   clearDone: Thunk<this>;
 }
 
 export interface TodoStore extends TodoState, TodoAction, TodoThunks {}
 
-const model: TodoStore = {
-  todos: [],
-  // realTodos: computed((state) => {
-  //   const [todos, setTodos] = React.useState<Todo[]>([]);
-
-  //   const update = React.useEffect(() => {
-  //     onSnapshot(query(firestore.todos2), (snapshot) => {
-  //       setTodos(
-  //         snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() }))
-  //       );
-  //     });
-  //   }, []);
-
-  //   return todos;
-  // }),
+export const todoStore = createStore<TodoStore>({
+  // todos: [],
   createTodo: thunk(async () => {
     await addDoc(firestore.todos2, {
       text: "untitled",
@@ -71,14 +44,14 @@ const model: TodoStore = {
   deleteTodo: thunk(async (_, payload) => {
     await deleteDoc(doc(firestore.todos2, payload.id));
   }),
-  toggleDone: thunk(async (_, payload) => {
+  toggleTodoDone: thunk(async (_, payload) => {
     await updateDoc(doc(firestore.todos2, payload.id), {
       text: payload.text,
       done: !payload.done,
       timestamp: serverTimestamp(),
     });
   }),
-  updateText: thunk(async (_, payload) => {
+  updateTodoText: thunk(async (_, payload) => {
     updateDoc(doc(firestore.todos2, payload.todo.id), {
       text: payload.text,
       done: payload.todo.done,
@@ -101,6 +74,4 @@ const model: TodoStore = {
       }
     );
   }),
-};
-
-export const todoStore = createStore<TodoStore>(model);
+});

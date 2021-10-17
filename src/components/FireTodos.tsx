@@ -1,4 +1,3 @@
-import { Logout } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
@@ -7,7 +6,7 @@ import {
   List,
   ListItem,
   Stack,
-  TextField,
+  TextField
 } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -80,11 +79,11 @@ export default function FireTodos() {
         }}
       >
         <Container>
-          {/* {viewStore.state.realTodos.map((todo: Todo) => ( */}
+          {/* {viewStore.state.todos.map((todo: Todo) => ( */}
           {todos.map((todo: Todo) => (
             <ListItem>
               <Checkbox
-                onClick={() => viewStore.action.toggleDone(todo)}
+                onClick={() => viewStore.action.toggleTodoDone(todo)}
                 edge="start"
                 checked={todo.done}
               />
@@ -94,7 +93,7 @@ export default function FireTodos() {
                 variant="standard"
                 fullWidth
                 onChange={(event) =>
-                  viewStore.action.updateText({
+                  viewStore.action.updateTodoText({
                     todo: todo,
                     text: event.target.value,
                   })

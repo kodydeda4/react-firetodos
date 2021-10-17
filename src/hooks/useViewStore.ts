@@ -5,7 +5,7 @@ export default function useViewStore<StoreModel extends object>() {
 
   return {
     state: typedHooks.useStoreState((state) => state),
-    action: typedHooks.useStoreActions((action) => action)
+    action: typedHooks.useStoreActions((action) => action),
     // dispatch: typedHooks.useStoreDispatch
   }
 };
