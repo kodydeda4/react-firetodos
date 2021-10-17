@@ -15,20 +15,13 @@ import Button from "@mui/material/Button";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import {
-  addDoc,
-  deleteDoc,
-  doc,
-  FieldValue,
-  getDocs,
-  onSnapshot,
-  orderBy,
-  query,
-  serverTimestamp,
-  updateDoc,
-  where,
-} from "firebase/firestore";
-import React, { useEffect } from "react";
-import { firestore } from "../config/firebase";
+  clearAll as handleClearAllTodos,
+  clearDone as handleClearDoneTodos,
+  createTodo as handleCreateTodo,
+  toggleDone as handleUpdateTodoDone,
+  updateTodoText as handleUpdateTodoText,
+  useTodosSnapshot,
+} from "../helpers/todos";
 import Todo from "../types/Todo";
 
 export default function FireTodos() {
@@ -45,7 +38,7 @@ export default function FireTodos() {
               </Typography>
               <Stack direction="row" spacing={2}>
                 <Button
-                  onClick={() => createTodo()}
+                  onClick={() => handleCreateTodo()}
                   color="inherit"
                   variant="outlined"
                   startIcon={<AddIcon />}
@@ -53,7 +46,7 @@ export default function FireTodos() {
                   Add
                 </Button>
                 <Button
-                  onClick={() => clearAll()}
+                  onClick={() => handleClearAllTodos()}
                   color="inherit"
                   variant="outlined"
                   startIcon={<DeleteIcon />}
@@ -61,7 +54,7 @@ export default function FireTodos() {
                   Clear All
                 </Button>
                 <Button
-                  onClick={() => clearDone()}
+                  onClick={() => handleClearDoneTodos()}
                   color="inherit"
                   variant="outlined"
                   startIcon={<DeleteIcon />}
@@ -92,7 +85,7 @@ export default function FireTodos() {
           {todos.map((todo: Todo) => (
             <ListItem>
               <Checkbox
-                onClick={() => toggleDone(todo)}
+                onClick={() => handleUpdateTodoDone(todo)}
                 edge="start"
                 checked={todo.done}
               />
@@ -101,7 +94,7 @@ export default function FireTodos() {
                 autoFocus
                 variant="standard"
                 fullWidth
-                onChange={(event) => updateTodoText(todo, event.target.value)}
+                onChange={(event) => handleUpdateTodoText(todo, event.target.value)}
               />
               {/* {todo.text} {todo.id} */}
             </ListItem>
@@ -111,69 +104,3 @@ export default function FireTodos() {
     </>
   );
 }
-
-// -----------------------------------------------------------------------------------------------------------------
-// Actions
-// -----------------------------------------------------------------------------------------------------------------
-const useTodosSnapshot = (): Todo[] => {
-  const [todos, setTodos] = React.useState<Todo[]>([]);
-
-  const update = React.useEffect(() => {
-    onSnapshot(query(firestore.todos2), (snapshot) => {
-      setTodos(
-        snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() }))
-      );
-    });
-  }, []);
-
-  return todos;
-};
-
-const createTodo = async () => {
-  const todoPayload: Todo = {
-    text: "untitled",
-    done: false,
-    timestamp: serverTimestamp(),
-  };
-  await addDoc(firestore.todos2, todoPayload);
-};
-
-const deleteTodo = async (todo: Todo) => {
-  await deleteDoc(doc(firestore.todos2, todo.id));
-};
-
-const toggleDone = async (todo: Todo) => {
-  const todoPayload: Todo = {
-    text: todo.text,
-    done: !todo.done,
-    timestamp: serverTimestamp(),
-  };
-  updateDoc(doc(firestore.todos2, todo.id), todoPayload);
-};
-
-const updateTodoText = async (todo: Todo, text: string) => {
-  const todoPayload: Todo = {
-    text: text,
-    done: todo.done,
-    timestamp: serverTimestamp(),
-  };
-  updateDoc(doc(firestore.todos2, todo.id), todoPayload);
-};
-
-const clearDone = async () => {
-  await getDocs(query(firestore.todos2, where("done", "==", true))).then(
-    (snapshot) => {
-      snapshot.docs.forEach(async (document) => {
-        await deleteDoc(doc(firestore.todos2, document.id));
-      });
-    }
-  );
-};
-
-const clearAll = async () => {
-  await getDocs(firestore.todos2).then((snapshot) => {
-    snapshot.docs.forEach(async (document) => {
-      await deleteDoc(doc(firestore.todos2, document.id));
-    });
-  });
-};
