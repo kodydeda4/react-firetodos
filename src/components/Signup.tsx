@@ -10,10 +10,10 @@ import * as React from "react";
 import { Redirect } from "react-router-dom";
 import useViewStore from "../hooks/useViewStore";
 import ROUTES from "../routes";
-import { AppStore } from "../store/AppStore";
+import { AuthStore } from "../store/AuthStore";
 
 export default function Signup() {
-  const viewStore = useViewStore<AppStore>();
+  const viewStore = useViewStore<AuthStore>();
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
 
@@ -70,7 +70,7 @@ export default function Signup() {
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
             onClick={() =>
-              viewStore.action.signup({ email: email, password: password })
+              viewStore.action.signUp({ email: email, password: password })
             }
           >
             Sign Up

@@ -11,12 +11,12 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { Redirect } from "react-router-dom";
-import useViewStore from "../hooks/useViewStore";
 import ROUTES from "../routes";
-import { AppStore } from "../store/AppStore";
+import useViewStore from "../hooks/useViewStore";
+import { AuthStore } from "../store/AuthStore";
 
 export default function Login() {
-  const viewStore = useViewStore<AppStore>();
+  const viewStore = useViewStore<AuthStore>();
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
 
@@ -78,7 +78,7 @@ export default function Login() {
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
             onClick={() =>
-              viewStore.action.signin({ email: email, password: password })
+              viewStore.action.signIn({ email: email, password: password })
             }
           >
             Sign In
