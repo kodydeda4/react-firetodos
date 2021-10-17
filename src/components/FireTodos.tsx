@@ -7,7 +7,7 @@ import {
   List,
   ListItem,
   Stack,
-  TextField
+  TextField,
 } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -25,7 +25,7 @@ import {
   query,
   serverTimestamp,
   updateDoc,
-  where
+  where,
 } from "firebase/firestore";
 import React, { useEffect } from "react";
 import { firestore } from "../config/firebase";
@@ -35,13 +35,8 @@ export default function FireTodos() {
   const [todos, setTodos] = React.useState<Todo[]>([]);
 
   const updateTodos = React.useEffect(() => {
-    onSnapshot(
-      // query(firestore.todos2, orderBy("timestamp", "desc")),
-      query(firestore.todos2),
-      (snapshot) =>
-        setTodos(
-          snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() }))
-        )
+    onSnapshot(query(firestore.todos2), (snapshot) =>
+      setTodos(snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() })))
     );
   }, []);
 
@@ -126,19 +121,12 @@ export default function FireTodos() {
 // -----------------------------------------------------------------------------------------------------------------
 // Actions
 // -----------------------------------------------------------------------------------------------------------------
-
-type TodoPayload = {
-  text: string,
-  done: boolean,
-  timestamp: FieldValue 
-}
-
 const createTodo = async () => {
-  const todoPayload: TodoPayload = {
+  const todoPayload: Todo = {
     text: "untitled",
     done: false,
     timestamp: serverTimestamp(),
-  }
+  };
   await addDoc(firestore.todos2, todoPayload);
 };
 
@@ -147,22 +135,20 @@ const deleteTodo = async (todo: Todo) => {
 };
 
 const toggleDone = async (todo: Todo) => {
-  const todoPayload: TodoPayload = {
+  const todoPayload: Todo = {
     text: todo.text,
     done: !todo.done,
     timestamp: serverTimestamp(),
-  }
-
+  };
   updateDoc(doc(firestore.todos2, todo.id), todoPayload);
 };
 
 const updateTodoText = async (todo: Todo, text: string) => {
-  const todoPayload: TodoPayload = {
+  const todoPayload: Todo = {
     text: text,
     done: todo.done,
     timestamp: serverTimestamp(),
-  }
-
+  };
   updateDoc(doc(firestore.todos2, todo.id), todoPayload);
 };
 
@@ -177,9 +163,15 @@ const clearDone = async () => {
 };
 
 const clearAll = async () => {
-  const snapshot = await getDocs(firestore.todos2);
-
-  snapshot.docs
-    .map((doc) => doc.id)
-    .forEach(async (id) => await deleteDoc(doc(firestore.todos2, id)));
+  await getDocs(firestore.todos2)
+    .then((snapshot) => {
+      snapshot.docs
+        .map((doc) => doc.id)
+        .forEach(async (id) => {
+          await deleteDoc(doc(firestore.todos2, id));
+        });
+    })
+    .catch((error) => {
+      console.log(error.toString());
+    });
 };
