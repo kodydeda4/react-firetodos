@@ -55,7 +55,7 @@ export default function FireTodos() {
               </Typography>
               <Stack direction="row" spacing={2}>
                 <Button
-                  onClick={() => addTodo()}
+                  onClick={() => createTodo()}
                   color="inherit"
                   variant="outlined"
                   startIcon={<AddIcon />}
@@ -111,6 +111,7 @@ export default function FireTodos() {
                 autoFocus
                 variant="standard"
                 fullWidth
+                onChange={(event) => updateTodoText(todo, event.target.value)}
               />
               {/* {todo.text} {todo.id} */}
             </ListItem>
@@ -122,53 +123,9 @@ export default function FireTodos() {
 }
 
 // -----------------------------------------------------------------------------------------------------------------
-
-const Todos = () => {
-  const [todos, setTodos] = React.useState<Todo[]>([]);
-  const queryText = "3";
-
-  const updateTodos = useEffect(() => {
-    onSnapshot(
-      query(firestore.todos2, orderBy("timestamp", "desc")),
-      (snapshot) =>
-        setTodos(
-          snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() }))
-        )
-    );
-  }, []);
-
-  return (
-    <>
-      <button onClick={() => addTodo()}>New</button>
-      <button onClick={() => clearDone()}>Clear Done</button>
-      <button onClick={() => clearAll()}>Clear All</button>
-      <ul>
-        {todos.map((todo: Todo) => (
-          <li key={todo.id}>
-            <button onClick={() => toggleDone(todo)}>edit</button>
-            <button onClick={() => deleteTodo(todo)}>delete</button>
-            <span
-              style={{
-                height: 15,
-                width: 15,
-                margin: "0px 10px",
-                backgroundColor: todo.done ? "green" : "red",
-                borderRadius: "50%",
-                display: "inline-block",
-              }}
-            ></span>
-            {todo.text} {todo.id}
-          </li>
-        ))}
-      </ul>
-    </>
-  );
-};
-
-// -----------------------------------------------------------------------------------------------------------------
 // Actions
 // -----------------------------------------------------------------------------------------------------------------
-const addTodo = async () => {
+const createTodo = async () => {
   await addDoc(firestore.todos2, {
     text: "untitled",
     done: false,
@@ -184,6 +141,14 @@ const toggleDone = async (todo: Todo) => {
   updateDoc(doc(firestore.todos2, todo.id), {
     text: todo.text,
     done: !todo.done,
+    timestamp: serverTimestamp(),
+  });
+};
+
+const updateTodoText = async (todo: Todo, text: string) => {
+  updateDoc(doc(firestore.todos2, todo.id), {
+    text: text,
+    done: todo.done,
     timestamp: serverTimestamp(),
   });
 };
