@@ -8,17 +8,17 @@ import {
   query,
   serverTimestamp,
   updateDoc,
-  where,
+  where
 } from "firebase/firestore";
 import React, { useEffect } from "react";
 import { firestore } from "../config/firebase";
-import { default as Color, default as color } from "../types/Color";
+import { default as Color } from "../types/Color";
 
 export default function Colors() {
-  const [colors, setColors] = React.useState<color[]>([]);
+  const [colors, setColors] = React.useState<Color[]>([]);
   const queryText = "3";
 
-  useEffect(() => {
+  const updateTodos = useEffect(() => {
     onSnapshot(
       query(firestore.colors, orderBy("timestamp", "desc")),
       (snapshot) =>
@@ -30,21 +30,15 @@ export default function Colors() {
 
   return (
     <>
-      <button onClick={() => addColor(`${colors.length}`, "pink")}>New</button>
+      <button onClick={() => addColor()}>New</button>
       <button onClick={() => queryDelete(queryText)}>
         Delete all named "{queryText}"
       </button>
       <ul>
         {colors.map((color: Color) => (
           <li key={color.id}>
-            <button
-              onClick={() =>
-                updateColor({ id: color.id, name: "a", value: "purple" })
-              }
-            >
-              edit
-            </button>
-            <button onClick={() => deleteColor(color.id)}>delete</button>
+            <button onClick={() => updateColor(color)}>edit</button>
+            <button onClick={() => deleteColor(color)}>delete</button>
             <span
               style={{
                 height: 15,
@@ -66,20 +60,22 @@ export default function Colors() {
 // -----------------------------------------------------------------------------------------------------------------
 // Actions
 // -----------------------------------------------------------------------------------------------------------------
-const addColor = async (name: string, value: string) =>
-  await addDoc(firestore.colors, { name, value, timestamp: serverTimestamp() });
+const addColor = async () => {
+  await addDoc(firestore.colors, {
+    name: "untitled",
+    value: "red",
+    timestamp: serverTimestamp(),
+  });
+};
 
-const deleteColor = async (id: string) =>
-  await deleteDoc(doc(firestore.colors, id));
+const deleteColor = async (color: Color) => {
+  await deleteDoc(doc(firestore.colors, color.id));
+};
 
-const updateColor = async (props: {
-  id: string;
-  name: string;
-  value: string;
-}) => {
-  updateDoc(doc(firestore.colors, props.id), {
-    name: props.name,
-    value: props.value,
+const updateColor = async (color: Color) => {
+  updateDoc(doc(firestore.colors, color.id), {
+    name: "updated",
+    value: "green",
     timestamp: serverTimestamp(),
   });
 };

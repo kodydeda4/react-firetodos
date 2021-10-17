@@ -7,7 +7,7 @@ import useAppTheme from "../hooks/useAppTheme";
 import ROUTES from "../routes";
 import { appStore } from "../store/AppStore";
 import Colors from "./Colors";
-// import FireTodos from "./FireTodos";
+import FireTodos from "./FireTodos";
 import Login from "./Login";
 import NotFound from "./NotFound";
 import Signup from "./Signup";

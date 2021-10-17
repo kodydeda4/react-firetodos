@@ -9,12 +9,13 @@ export const app = initializeApp({
   storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.REACT_APP_FIREBASE_APP_ID,
-  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
 });
 
 export const auth = getAuth(app);
 
 export const firestore = {
-  todos: collection(getFirestore(), 'todos'),
-  colors: collection(getFirestore(), 'colors')
-}
+  todos: collection(getFirestore(), "todos"),
+  todos2: collection(getFirestore(), "todos2"),
+  colors: collection(getFirestore(), "colors"),
+};
