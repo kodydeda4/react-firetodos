@@ -32,13 +32,7 @@ import { firestore } from "../config/firebase";
 import Todo from "../types/Todo";
 
 export default function FireTodos() {
-  const [todos, setTodos] = React.useState<Todo[]>([]);
-
-  const updateTodos = React.useEffect(() => {
-    onSnapshot(query(firestore.todos2), (snapshot) =>
-      setTodos(snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() })))
-    );
-  }, []);
+  const todos = useTodosSnapshot();
 
   return (
     <>
@@ -121,6 +115,20 @@ export default function FireTodos() {
 // -----------------------------------------------------------------------------------------------------------------
 // Actions
 // -----------------------------------------------------------------------------------------------------------------
+const useTodosSnapshot = (): Todo[] => {
+  const [todos, setTodos] = React.useState<Todo[]>([]);
+
+  const update = React.useEffect(() => {
+    onSnapshot(query(firestore.todos2), (snapshot) => {
+      setTodos(
+        snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() }))
+      );
+    });
+  }, []);
+
+  return todos;
+};
+
 const createTodo = async () => {
   const todoPayload: Todo = {
     text: "untitled",
@@ -153,25 +161,19 @@ const updateTodoText = async (todo: Todo, text: string) => {
 };
 
 const clearDone = async () => {
-  const snapshot = await getDocs(
-    query(firestore.todos2, where("done", "==", true))
+  await getDocs(query(firestore.todos2, where("done", "==", true))).then(
+    (snapshot) => {
+      snapshot.docs.forEach(async (document) => {
+        await deleteDoc(doc(firestore.todos2, document.id));
+      });
+    }
   );
-
-  snapshot.docs
-    .map((doc) => doc.id)
-    .forEach(async (id) => await deleteDoc(doc(firestore.todos2, id)));
 };
 
 const clearAll = async () => {
-  await getDocs(firestore.todos2)
-    .then((snapshot) => {
-      snapshot.docs
-        .map((doc) => doc.id)
-        .forEach(async (id) => {
-          await deleteDoc(doc(firestore.todos2, id));
-        });
-    })
-    .catch((error) => {
-      console.log(error.toString());
+  await getDocs(firestore.todos2).then((snapshot) => {
+    snapshot.docs.forEach(async (document) => {
+      await deleteDoc(doc(firestore.todos2, document.id));
     });
+  });
 };
