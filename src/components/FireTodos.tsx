@@ -21,20 +21,20 @@ import { Redirect } from "react-router-dom";
 import { auth, firestore } from "../config/firebase";
 import ROUTES from "../routes";
 import { storeHooks } from "../store";
+import { useTodoModelViewStore } from "../store/TodoStore";
 import Todo from "../types/Todo";
 
 export default function FireTodos() {
-  const viewStore = {
-    state: storeHooks.useStoreState((state) => state.todoModel),
-    actions: storeHooks.useStoreActions((action) => action.todoModel),
-  };
+  const viewStore = useTodoModelViewStore();
+  const todos = useTodosSnapshot(auth.currentUser);
 
+  // ------------------------------------------------------------------------
   const user = storeHooks.useStoreState((state) => state.authModel.user);
   const signOutAction = storeHooks.useStoreActions(
     (action) => action.authModel.signOut
   );
-  const todos = useTodosSnapshot(auth.currentUser);
-
+  // ------------------------------------------------------------------------
+  
   if (!user) {
     return <Redirect to={ROUTES.login} push={true} />;
   }

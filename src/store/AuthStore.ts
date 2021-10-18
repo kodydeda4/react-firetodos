@@ -4,6 +4,7 @@ import {
   User,
 } from "@firebase/auth";
 import { Action, action, createStore, Thunk, thunk } from "easy-peasy";
+import { storeHooks } from ".";
 import { auth } from "../config/firebase";
 import { AlertState, Severity } from "../types/AlertState";
 
@@ -65,4 +66,11 @@ export const authModel: AuthModel = {
   setAlert: action((state, payload) => {
     state.alert = payload;
   }),
+};
+
+export const useAuthModelViewStore = () => {
+  return {
+    state: storeHooks.useStoreState((state) => state.authModel),
+    actions: storeHooks.useStoreActions((action) => action.authModel)
+  }
 };

@@ -14,6 +14,7 @@ import { Redirect } from "react-router-dom";
 import { auth } from "../config/firebase";
 import ROUTES from "../routes";
 import { storeHooks } from "../store";
+import { useAuthModelViewStore } from "../store/AuthStore";
 
 type ViewStore = {
   state: any
@@ -21,10 +22,7 @@ type ViewStore = {
 }
 
 export default function Login() {
-  const viewStore: ViewStore = {
-    state: storeHooks.useStoreState((state) => state.authModel),
-    actions: storeHooks.useStoreActions((action) => action.authModel)
-  }
+  const viewStore = useAuthModelViewStore()
 
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");

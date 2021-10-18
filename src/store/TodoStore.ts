@@ -10,6 +10,7 @@ import {
   updateDoc,
   where
 } from "firebase/firestore";
+import { storeHooks } from ".";
 import { firestore } from "../config/firebase";
 import Todo from "../types/Todo";
 import { auth } from "./../config/firebase";
@@ -83,3 +84,10 @@ export const todoModel: TodoModel = {
     });
   }),
 };
+
+export const useTodoModelViewStore = () => {
+  return {
+    state: storeHooks.useStoreState((state) => state.todoModel),
+    actions: storeHooks.useStoreActions((action) => action.todoModel),
+  }
+}

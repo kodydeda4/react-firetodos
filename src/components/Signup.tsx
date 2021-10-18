@@ -10,12 +10,10 @@ import * as React from "react";
 import { Redirect } from "react-router-dom";
 import ROUTES from "../routes";
 import { storeHooks } from "../store";
+import { useAuthModelViewStore } from "../store/AuthStore";
 
 export default function Signup() {
-  const viewStore = {
-    state: storeHooks.useStoreState((state) => state.authModel),
-    actions: storeHooks.useStoreActions((action) => action.authModel)
-  }
+  const viewStore = useAuthModelViewStore();
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
 
