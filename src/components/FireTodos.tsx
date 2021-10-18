@@ -8,7 +8,7 @@ import {
   List,
   ListItem,
   Stack,
-  TextField,
+  TextField
 } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -21,14 +21,16 @@ import { Redirect } from "react-router-dom";
 import { auth, firestore } from "../config/firebase";
 import ROUTES from "../routes";
 import { storeHooks } from "../store";
-import { useTodoViewStore } from "../store/models/TodoModel";
 import Todo from "../types/Todo";
 
 export default function FireTodos() {
-  const viewStore = useTodoViewStore();
-  const todos = useTodosSnapshot(auth.currentUser);
+  const viewStore = {
+    state: storeHooks.useStoreState((state) => state.todoModel),
+    actions: storeHooks.useStoreActions((action) => action.todoModel),
+  }
 
   // ------------------------------------------------------------------------
+  const todos = useTodosSnapshot(auth.currentUser);
   const user = storeHooks.useStoreState((state) => state.authModel.user);
   const signOutAction = storeHooks.useStoreActions(
     (action) => action.authModel.signOut

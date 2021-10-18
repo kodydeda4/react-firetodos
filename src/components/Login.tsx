@@ -14,15 +14,12 @@ import { Redirect } from "react-router-dom";
 import { auth } from "../config/firebase";
 import ROUTES from "../routes";
 import { storeHooks } from "../store";
-import { useAuthViewStore } from "../store/models/AuthModel";
-
-type ViewStore = {
-  state: any
-  actions: any
-}
 
 export default function Login() {
-  const viewStore = useAuthViewStore()
+  const viewStore = {
+    state: storeHooks.useStoreState((state) => state.authModel),
+    actions: storeHooks.useStoreActions((action) => action.authModel),
+  };
 
   if (auth.currentUser) {
     return <Redirect to={ROUTES.home} push={true} />;
@@ -71,7 +68,9 @@ export default function Login() {
             name="password"
             type="password"
             autoComplete="current-password"
-            onChange={(event) => viewStore.actions.setPassword(event.target.value)}
+            onChange={(event) =>
+              viewStore.actions.setPassword(event.target.value)
+            }
           />
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
@@ -81,9 +80,7 @@ export default function Login() {
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
-            onClick={() =>
-              viewStore.actions.signIn()
-            }
+            onClick={() => viewStore.actions.signIn()}
           >
             Sign In
           </Button>

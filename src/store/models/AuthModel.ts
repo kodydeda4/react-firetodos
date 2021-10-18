@@ -8,21 +8,21 @@ import { storeHooks } from "..";
 import { auth } from "../../config/firebase";
 import { AlertState, Severity } from "../../types/AlertState";
 
-export interface AuthState {
+interface AuthState {
   user?: User;
   alert?: AlertState;
   email: string;
   password: string;
 }
 
-export interface AuthAction {
+interface AuthAction {
   setUser: Action<this, User | undefined>;
   setAlert: Action<this, AlertState>;
   setEmail: Action<this, string>;
   setPassword: Action<this, string>;
 }
 
-export interface AuthThunk {
+interface AuthThunk {
   signUp: Thunk<this>;
   signIn: Thunk<this>;
   signOut: Thunk<this>;
@@ -91,11 +91,4 @@ export const authModel: AuthModel = {
   setAlert: action((state, payload) => {
     state.alert = payload;
   }),
-};
-
-export const useAuthViewStore = () => {
-  return {
-    state: storeHooks.useStoreState((state) => state.authModel),
-    actions: storeHooks.useStoreActions((action) => action.authModel),
-  };
 };

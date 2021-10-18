@@ -8,21 +8,21 @@ import {
   query,
   serverTimestamp,
   updateDoc,
-  where
+  where,
 } from "firebase/firestore";
 import { storeHooks } from "..";
 import { firestore } from "../../config/firebase";
 import Todo from "../../types/Todo";
 import { auth } from "../../config/firebase";
 
-export interface TodoState {
+interface TodoState {
   // user: User;
   // todos: Todo[];
 }
 
-export interface TodoAction {}
+interface TodoAction {}
 
-export interface TodoThunks {
+interface TodoThunks {
   createTodo: Thunk<this>;
   deleteTodo: Thunk<this, Todo>;
   toggleTodoDone: Thunk<this, Todo>;
@@ -69,7 +69,10 @@ export const todoModel: TodoModel = {
   }),
   clearAll: thunk(async () => {
     await getDocs(
-      query(firestore.todos2, where("userID", "==", auth.currentUser?.uid ?? ""))
+      query(
+        firestore.todos2,
+        where("userID", "==", auth.currentUser?.uid ?? "")
+      )
     ).then((snapshot) => {
       snapshot.docs.forEach(async (document) => {
         await deleteDoc(doc(firestore.todos2, document.id));
@@ -90,10 +93,3 @@ export const todoModel: TodoModel = {
     });
   }),
 };
-
-export const useTodoViewStore = () => {
-  return {
-    state: storeHooks.useStoreState((state) => state.todoModel),
-    actions: storeHooks.useStoreActions((action) => action.todoModel),
-  }
-}
