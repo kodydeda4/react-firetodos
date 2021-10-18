@@ -5,8 +5,7 @@ import React from "react";
 import { HashRouter, Route, Switch } from "react-router-dom";
 import useAppTheme from "../hooks/useAppTheme";
 import ROUTES from "../routes";
-import { authStore } from "../store/AuthStore";
-import { todoStore } from "../store/TodoStore";
+import { rootStore } from "../store/RootStore";
 import FireTodos from "./FireTodos";
 import Login from "./Login";
 import NotFound from "./NotFound";
@@ -17,12 +16,12 @@ export default function App() {
     <ThemeProvider theme={useAppTheme()}>
       <CssBaseline />
       {/* <StoreProvider store={todoStore}> */}
-      <StoreProvider store={authStore}>
+      <StoreProvider store={rootStore}>
         <HashRouter>
           <Switch>
             <Route exact path={ROUTES.login} component={Login} />
             <Route exact path={ROUTES.signup} component={Signup} />
-            {/* <Route exact path={ROUTES.home} component={FireTodos} /> */}
+            <Route exact path={ROUTES.home} component={FireTodos} />
             <Route component={NotFound} />
           </Switch>
         </HashRouter>

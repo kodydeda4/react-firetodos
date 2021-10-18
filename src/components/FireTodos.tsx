@@ -1,5 +1,6 @@
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
+import Logout from "@mui/icons-material/Logout";
 import {
   Checkbox,
   Container,
@@ -15,14 +16,20 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { onSnapshot, query } from "firebase/firestore";
 import React from "react";
+import { Redirect } from "react-router-dom";
 import { firestore } from "../config/firebase";
 import useViewStore from "../hooks/useViewStore";
-import { TodoStore } from "../store/TodoStore";
+import ROUTES from "../routes";
+import { RootStore } from "../store/RootStore";
 import Todo from "../types/Todo";
 
 export default function FireTodos() {
+  const viewStore = useViewStore<RootStore>();
   const todos = useTodosSnapshot();
-  const viewStore = useViewStore<TodoStore>();
+
+  if (!viewStore.state.user) {
+    return <Redirect to={ROUTES.login} push={true} />;
+  }
 
   return (
     <>
@@ -58,14 +65,14 @@ export default function FireTodos() {
                 >
                   Clear Done
                 </Button>
-                {/* <Button
-                  onClick={() => viewStore.action.logout()}
+                <Button
+                  onClick={() => viewStore.action.signOut()}
                   color="inherit"
                   variant="outlined"
                   startIcon={<Logout />}
                 >
                   Logout
-                </Button> */}
+                </Button>
               </Stack>
             </Toolbar>
           </Container>

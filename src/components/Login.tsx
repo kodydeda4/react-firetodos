@@ -14,9 +14,10 @@ import { Redirect } from "react-router-dom";
 import ROUTES from "../routes";
 import useViewStore from "../hooks/useViewStore";
 import { AuthStore } from "../store/AuthStore";
+import { RootStore } from "../store/RootStore";
 
 export default function Login() {
-  const viewStore = useViewStore<AuthStore>();
+  const viewStore = useViewStore<RootStore>();
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
 
