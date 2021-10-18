@@ -10,7 +10,7 @@ import * as React from "react";
 import { Redirect } from "react-router-dom";
 import ROUTES from "../routes";
 import { storeHooks } from "../store";
-import { useAuthViewStore } from "../store/models/AuthStore";
+import { useAuthViewStore } from "../store/models/AuthModel";
 
 export default function Signup() {
   const viewStore = useAuthViewStore();

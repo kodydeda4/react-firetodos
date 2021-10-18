@@ -34,8 +34,14 @@ export interface TodoThunks {
 export interface TodoModel extends TodoState, TodoAction, TodoThunks {}
 
 export const todoModel: TodoModel = {
+  // STATE
   // user: auth.currentUser!,
   // todos: [],
+
+  // ACTION
+  // .................................................
+
+  // THUNK
   createTodo: thunk(async () => {
     await addDoc(firestore.todos2, {
       text: "untitled",

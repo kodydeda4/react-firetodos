@@ -14,7 +14,7 @@ import { Redirect } from "react-router-dom";
 import { auth } from "../config/firebase";
 import ROUTES from "../routes";
 import { storeHooks } from "../store";
-import { useAuthViewStore } from "../store/models/AuthStore";
+import { useAuthViewStore } from "../store/models/AuthModel";
 
 type ViewStore = {
   state: any
