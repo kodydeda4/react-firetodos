@@ -18,17 +18,24 @@ import Typography from "@mui/material/Typography";
 import { onSnapshot, query, where } from "firebase/firestore";
 import React from "react";
 import { Redirect } from "react-router-dom";
-import { firestore } from "../config/firebase";
-import useViewStore from "../hooks/useViewStore";
+import { auth, firestore } from "../config/firebase";
 import ROUTES from "../routes";
-import { RootModel } from "../store/RootStore";
+import { storeHooks } from "../store";
 import Todo from "../types/Todo";
 
 export default function FireTodos() {
-  const viewStore = useViewStore<RootModel>();
-  const todos = useTodosSnapshot(viewStore.state.user);
+  const viewStore = {
+    state: storeHooks.useStoreState((state) => state.todoModel),
+    actions: storeHooks.useStoreActions((action) => action.todoModel),
+  };
 
-  if (!viewStore.state.user) {
+  const user = storeHooks.useStoreState((state) => state.authModel.user);
+  const signOutAction = storeHooks.useStoreActions(
+    (action) => action.authModel.signOut
+  );
+  const todos = useTodosSnapshot(auth.currentUser);
+
+  if (!user) {
     return <Redirect to={ROUTES.login} push={true} />;
   }
 
@@ -39,11 +46,11 @@ export default function FireTodos() {
           <Container>
             <Toolbar>
               <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                {viewStore.state.user.email}
+                {user.email}
               </Typography>
               <Stack direction="row" spacing={2}>
                 <Button
-                  onClick={() => viewStore.action.createTodo()}
+                  onClick={() => viewStore.actions.createTodo()}
                   color="inherit"
                   variant="outlined"
                   startIcon={<AddIcon />}
@@ -51,7 +58,7 @@ export default function FireTodos() {
                   Add
                 </Button>
                 <Button
-                  onClick={() => viewStore.action.clearAll()}
+                  onClick={() => viewStore.actions.clearAll()}
                   color="inherit"
                   variant="outlined"
                   startIcon={<DeleteIcon />}
@@ -59,7 +66,7 @@ export default function FireTodos() {
                   Clear All
                 </Button>
                 <Button
-                  onClick={() => viewStore.action.clearDone()}
+                  onClick={() => viewStore.actions.clearDone()}
                   color="inherit"
                   variant="outlined"
                   startIcon={<DeleteIcon />}
@@ -67,7 +74,7 @@ export default function FireTodos() {
                   Clear Done
                 </Button>
                 <Button
-                  onClick={() => viewStore.action.signOut()}
+                  onClick={() => signOutAction()}
                   color="inherit"
                   variant="outlined"
                   startIcon={<Logout />}
@@ -91,7 +98,7 @@ export default function FireTodos() {
           {todos.map((todo: Todo) => (
             <ListItem>
               <Checkbox
-                onClick={() => viewStore.action.toggleTodoDone(todo)}
+                onClick={() => viewStore.actions.toggleTodoDone(todo)}
                 edge="start"
                 checked={todo.done}
               />
@@ -101,14 +108,14 @@ export default function FireTodos() {
                 variant="standard"
                 fullWidth
                 onChange={(event) =>
-                  viewStore.action.updateTodoText({
+                  viewStore.actions.updateTodoText({
                     todo: todo,
                     text: event.target.value,
                   })
                 }
               />
               <Button
-                onClick={() => viewStore.action.deleteTodo(todo)}
+                onClick={() => viewStore.actions.deleteTodo(todo)}
                 color="inherit"
                 variant="outlined"
                 startIcon={<AddIcon />}
@@ -123,7 +130,7 @@ export default function FireTodos() {
   );
 }
 
-export const useTodosSnapshot = (user: User | undefined): Todo[] => {
+export const useTodosSnapshot = (user: User | null): Todo[] => {
   // Should actually check if user exists first but yeah...
   const [todos, setTodos] = React.useState<Todo[]>([]);
 

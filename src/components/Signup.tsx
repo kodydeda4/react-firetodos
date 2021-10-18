@@ -8,12 +8,14 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { Redirect } from "react-router-dom";
-import useViewStore from "../hooks/useViewStore";
 import ROUTES from "../routes";
-import { RootModel } from "../store/RootStore";
+import { storeHooks } from "../store";
 
 export default function Signup() {
-  const viewStore = useViewStore<RootModel>();
+  const viewStore = {
+    state: storeHooks.useStoreState((state) => state.authModel),
+    actions: storeHooks.useStoreActions((action) => action.authModel)
+  }
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
 
@@ -70,7 +72,7 @@ export default function Signup() {
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
             onClick={() =>
-              viewStore.action.signUp({ email: email, password: password })
+              viewStore.actions.signUp({ email: email, password: password })
             }
           >
             Sign Up

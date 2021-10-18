@@ -1,5 +1,4 @@
-import { auth } from "./../config/firebase";
-import { getAdditionalUserInfo, User } from "@firebase/auth";
+import { User } from "@firebase/auth";
 import { createStore, Thunk, thunk } from "easy-peasy";
 import {
   addDoc,
@@ -9,19 +8,20 @@ import {
   query,
   serverTimestamp,
   updateDoc,
-  where,
+  where
 } from "firebase/firestore";
 import { firestore } from "../config/firebase";
 import Todo from "../types/Todo";
+import { auth } from "./../config/firebase";
 
-interface TodoState {
-  user: User;
+export interface TodoState {
+  // user: User;
   // todos: Todo[];
 }
 
-interface TodoAction {}
+export interface TodoAction {}
 
-interface TodoThunks {
+export interface TodoThunks {
   createTodo: Thunk<this>;
   deleteTodo: Thunk<this, Todo>;
   toggleTodoDone: Thunk<this, Todo>;
@@ -32,48 +32,48 @@ interface TodoThunks {
 
 export interface TodoModel extends TodoState, TodoAction, TodoThunks {}
 
-const todoModel: TodoModel = {
-  user: auth.currentUser!,
+export const todoModel: TodoModel = {
+  // user: auth.currentUser!,
   // todos: [],
-  createTodo: thunk(async (actions, payload, { getState }) => {
+  createTodo: thunk(async () => {
     await addDoc(firestore.todos2, {
       text: "untitled",
       done: false,
       timestamp: serverTimestamp(),
-      userID: getState().user!.uid,
+      userID: auth.currentUser?.uid ?? "",
     });
   }),
-  deleteTodo: thunk(async (actions, payload) => {
+  deleteTodo: thunk(async (_, payload) => {
     await deleteDoc(doc(firestore.todos2, payload.id));
   }),
-  toggleTodoDone: thunk(async (actions, payload) => {
+  toggleTodoDone: thunk(async (_, payload) => {
     await updateDoc(doc(firestore.todos2, payload.id), {
       text: payload.text,
       done: !payload.done,
       timestamp: serverTimestamp(),
     });
   }),
-  updateTodoText: thunk(async (actions, payload) => {
+  updateTodoText: thunk(async (_, payload) => {
     updateDoc(doc(firestore.todos2, payload.todo.id), {
       text: payload.text,
       done: payload.todo.done,
       timestamp: serverTimestamp(),
     });
   }),
-  clearAll: thunk(async (actions, payload, { getState }) => {
+  clearAll: thunk(async () => {
     await getDocs(
-      query(firestore.todos2, where("userID", "==", getState().user.uid))
+      query(firestore.todos2, where("userID", "==", auth.currentUser?.uid ?? ""))
     ).then((snapshot) => {
       snapshot.docs.forEach(async (document) => {
         await deleteDoc(doc(firestore.todos2, document.id));
       });
     });
   }),
-  clearDone: thunk(async (actions, payload, { getState }) => {
+  clearDone: thunk(async () => {
     await getDocs(
       query(
         firestore.todos2,
-        where("userID", "==", getState().user.uid),
+        where("userID", "==", auth.currentUser?.uid ?? ""),
         where("done", "==", true)
       )
     ).then((snapshot) => {
@@ -83,5 +83,3 @@ const todoModel: TodoModel = {
     });
   }),
 };
-
-export const todoStore = createStore<TodoModel>(todoModel);

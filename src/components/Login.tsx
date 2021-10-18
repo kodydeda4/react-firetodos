@@ -11,16 +11,25 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { Redirect } from "react-router-dom";
-import useViewStore from "../hooks/useViewStore";
+import { auth } from "../config/firebase";
 import ROUTES from "../routes";
-import { RootModel } from "../store/RootStore";
+import { storeHooks } from "../store";
+
+type ViewStore = {
+  state: any
+  actions: any
+}
 
 export default function Login() {
-  const viewStore = useViewStore<RootModel>();
+  const viewStore: ViewStore = {
+    state: storeHooks.useStoreState((state) => state.authModel),
+    actions: storeHooks.useStoreActions((action) => action.authModel)
+  }
+
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
 
-  if (viewStore.state.user) {
+  if (auth.currentUser) {
     return <Redirect to={ROUTES.home} push={true} />;
   }
 
@@ -56,7 +65,7 @@ export default function Login() {
             type="email"
             autoComplete="email"
             onChange={(event) => setEmail(event.target.value)}
-            //error={viewStore.state.alert.type == LoginAlertError.email }
+            // error={viewStore.state.alert.type == LoginAlertError.email }
           />
           <TextField
             margin="normal"
@@ -78,7 +87,7 @@ export default function Login() {
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
             onClick={() =>
-              viewStore.action.signIn({ email: email, password: password })
+              viewStore.actions.signIn({ email: email, password: password })
             }
           >
             Sign In
