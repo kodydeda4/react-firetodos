@@ -94,24 +94,25 @@ export const rootStore = createStore<RootStore>(
     }),
 
     // TODO
-    createTodo: thunk(async () => {
+    createTodo: thunk(async (actions, payload, { getState }) => {
       await addDoc(firestore.todos2, {
         text: "untitled",
         done: false,
         timestamp: serverTimestamp(),
+        userID: getState().user!.uid
       });
     }),
-    deleteTodo: thunk(async (_, payload) => {
+    deleteTodo: thunk(async (actions, payload) => {
       await deleteDoc(doc(firestore.todos2, payload.id));
     }),
-    toggleTodoDone: thunk(async (_, payload) => {
+    toggleTodoDone: thunk(async (actions, payload) => {
       await updateDoc(doc(firestore.todos2, payload.id), {
         text: payload.text,
         done: !payload.done,
         timestamp: serverTimestamp(),
       });
     }),
-    updateTodoText: thunk(async (_, payload) => {
+    updateTodoText: thunk(async (actions, payload) => {
       updateDoc(doc(firestore.todos2, payload.todo.id), {
         text: payload.text,
         done: payload.todo.done,

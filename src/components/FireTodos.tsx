@@ -1,3 +1,4 @@
+import { User } from "@firebase/auth";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Logout from "@mui/icons-material/Logout";
@@ -7,14 +8,14 @@ import {
   List,
   ListItem,
   Stack,
-  TextField
+  TextField,
 } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import { onSnapshot, query } from "firebase/firestore";
+import { onSnapshot, query, where } from "firebase/firestore";
 import React from "react";
 import { Redirect } from "react-router-dom";
 import { firestore } from "../config/firebase";
@@ -25,7 +26,7 @@ import Todo from "../types/Todo";
 
 export default function FireTodos() {
   const viewStore = useViewStore<RootStore>();
-  const todos = useTodosSnapshot();
+  const todos = useTodosSnapshot(viewStore.state.user);
 
   if (!viewStore.state.user) {
     return <Redirect to={ROUTES.login} push={true} />;
@@ -122,15 +123,19 @@ export default function FireTodos() {
   );
 }
 
-export const useTodosSnapshot = (): Todo[] => {
+export const useTodosSnapshot = (user: User | undefined): Todo[] => {
+  // Should actually check if user exists first but yeah...
   const [todos, setTodos] = React.useState<Todo[]>([]);
 
   const update = React.useEffect(() => {
-    onSnapshot(query(firestore.todos2), (snapshot) => {
-      setTodos(
-        snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() }))
-      );
-    });
+    onSnapshot(
+      query(firestore.todos2, where("userID", "==", user?.uid ?? "")),
+      (snapshot) => {
+        setTodos(
+          snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() }))
+        );
+      }
+    );
   }, []);
 
   return todos;
