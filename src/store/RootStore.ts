@@ -99,7 +99,7 @@ export const rootStore = createStore<RootStore>(
         text: "untitled",
         done: false,
         timestamp: serverTimestamp(),
-        userID: getState().user!.uid
+        userID: getState().user!.uid,
       });
     }),
     deleteTodo: thunk(async (actions, payload) => {
@@ -119,21 +119,30 @@ export const rootStore = createStore<RootStore>(
         timestamp: serverTimestamp(),
       });
     }),
-    clearAll: thunk(async () => {
-      await getDocs(firestore.todos2).then((snapshot) => {
+    clearAll: thunk(async (actions, payload, { getState }) => {
+      await getDocs(
+        query(
+          firestore.todos2,
+          where("userID", "==", getState().user?.uid ?? "")
+        )
+      ).then((snapshot) => {
         snapshot.docs.forEach(async (document) => {
           await deleteDoc(doc(firestore.todos2, document.id));
         });
       });
     }),
-    clearDone: thunk(async () => {
-      await getDocs(query(firestore.todos2, where("done", "==", true))).then(
-        (snapshot) => {
-          snapshot.docs.forEach(async (document) => {
-            await deleteDoc(doc(firestore.todos2, document.id));
-          });
-        }
-      );
+    clearDone: thunk(async (actions, payload, { getState }) => {
+      await getDocs(
+        query(
+          firestore.todos2,
+          where("userID", "==", getState().user?.uid ?? ""),
+          where("done", "==", true),
+        )
+      ).then((snapshot) => {
+        snapshot.docs.forEach(async (document) => {
+          await deleteDoc(doc(firestore.todos2, document.id));
+        });
+      });
     }),
   })
 );
