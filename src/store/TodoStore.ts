@@ -30,9 +30,9 @@ interface TodoThunks {
   clearDone: Thunk<this>;
 }
 
-export interface TodoStore extends TodoState, TodoAction, TodoThunks {}
+export interface TodoModel extends TodoState, TodoAction, TodoThunks {}
 
-export const todoStore = createStore<TodoStore>({
+const todoModel: TodoModel = {
   user: auth.currentUser!,
   // todos: [],
   createTodo: thunk(async (actions, payload, { getState }) => {
@@ -82,4 +82,6 @@ export const todoStore = createStore<TodoStore>({
       });
     });
   }),
-});
+};
+
+export const todoStore = createStore<TodoModel>(todoModel);

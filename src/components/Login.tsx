@@ -11,13 +11,12 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { Redirect } from "react-router-dom";
-import ROUTES from "../routes";
 import useViewStore from "../hooks/useViewStore";
-import { AuthStore } from "../store/AuthStore";
-import { RootStore } from "../store/RootStore";
+import ROUTES from "../routes";
+import { RootModel } from "../store/RootStore";
 
 export default function Login() {
-  const viewStore = useViewStore<RootStore>();
+  const viewStore = useViewStore<RootModel>();
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
 

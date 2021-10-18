@@ -44,105 +44,98 @@ interface RootThunk {
   clearDone: Thunk<this>;
 }
 
-export interface RootStore extends RootState, RootAction, RootThunk {}
+export interface RootModel extends RootState, RootAction, RootThunk {}
 
-export const rootStore = createStore<RootStore>(
-  persist({
-    // AUTH
-    user: undefined,
-    alert: undefined,
-    setUser: action((state, payload) => {
-      state.user = payload;
-    }),
-    signUp: thunk(async (actions, payload) => {
-      await createUserWithEmailAndPassword(
-        auth,
-        payload.email,
-        payload.password
+const rootModel: RootModel = {
+  // AUTH
+  user: undefined,
+  alert: undefined,
+  setUser: action((state, payload) => {
+    state.user = payload;
+  }),
+  signUp: thunk(async (actions, payload) => {
+    await createUserWithEmailAndPassword(auth, payload.email, payload.password)
+      .then((userCredential) => {
+        actions.setAlert({
+          severity: Severity.success,
+          message: `Successfully created user with email: ${userCredential.user.email}`,
+        });
+      })
+      .catch((error) => {
+        actions.setAlert({
+          severity: Severity.error,
+          message: "Please make sure your email and password are incorrect.",
+        });
+      });
+  }),
+  signIn: thunk(async (actions, payload) => {
+    await signInWithEmailAndPassword(auth, payload.email, payload.password)
+      .then((userCredential) => {
+        actions.setUser(userCredential.user);
+      })
+      .catch((error) => {
+        actions.setAlert({
+          severity: Severity.error,
+          message: "Please make sure your email and password are incorrect.",
+        });
+      });
+  }),
+  signOut: thunk(async (actions) => {
+    auth.signOut();
+    actions.setUser(undefined);
+  }),
+  setAlert: action((state, payload) => {
+    state.alert = payload;
+  }),
+
+  // TODO
+  createTodo: thunk(async (actions, payload, { getState }) => {
+    await addDoc(firestore.todos2, {
+      text: "untitled",
+      done: false,
+      timestamp: serverTimestamp(),
+      userID: getState().user!.uid,
+    });
+  }),
+  deleteTodo: thunk(async (actions, payload) => {
+    await deleteDoc(doc(firestore.todos2, payload.id));
+  }),
+  toggleTodoDone: thunk(async (actions, payload) => {
+    await updateDoc(doc(firestore.todos2, payload.id), {
+      text: payload.text,
+      done: !payload.done,
+      timestamp: serverTimestamp(),
+    });
+  }),
+  updateTodoText: thunk(async (actions, payload) => {
+    updateDoc(doc(firestore.todos2, payload.todo.id), {
+      text: payload.text,
+      done: payload.todo.done,
+      timestamp: serverTimestamp(),
+    });
+  }),
+  clearAll: thunk(async (actions, payload, { getState }) => {
+    await getDocs(
+      query(firestore.todos2, where("userID", "==", getState().user?.uid ?? ""))
+    ).then((snapshot) => {
+      snapshot.docs.forEach(async (document) => {
+        await deleteDoc(doc(firestore.todos2, document.id));
+      });
+    });
+  }),
+  clearDone: thunk(async (actions, payload, { getState }) => {
+    await getDocs(
+      query(
+        firestore.todos2,
+        where("userID", "==", getState().user?.uid ?? ""),
+        where("done", "==", true)
       )
-        .then((userCredential) => {
-          actions.setAlert({
-            severity: Severity.success,
-            message: `Successfully created user with email: ${userCredential.user.email}`,
-          });
-        })
-        .catch((error) => {
-          actions.setAlert({
-            severity: Severity.error,
-            message: "Please make sure your email and password are incorrect.",
-          });
-        });
-    }),
-    signIn: thunk(async (actions, payload) => {
-      await signInWithEmailAndPassword(auth, payload.email, payload.password)
-        .then((userCredential) => {
-          actions.setUser(userCredential.user);
-        })
-        .catch((error) => {
-          actions.setAlert({
-            severity: Severity.error,
-            message: "Please make sure your email and password are incorrect.",
-          });
-        });
-    }),
-    signOut: thunk(async (actions) => {
-      auth.signOut();
-      actions.setUser(undefined);
-    }),
-    setAlert: action((state, payload) => {
-      state.alert = payload;
-    }),
+    ).then((snapshot) => {
+      snapshot.docs.forEach(async (document) => {
+        await deleteDoc(doc(firestore.todos2, document.id));
+      });
+    });
+  }),
+};
 
-    // TODO
-    createTodo: thunk(async (actions, payload, { getState }) => {
-      await addDoc(firestore.todos2, {
-        text: "untitled",
-        done: false,
-        timestamp: serverTimestamp(),
-        userID: getState().user!.uid,
-      });
-    }),
-    deleteTodo: thunk(async (actions, payload) => {
-      await deleteDoc(doc(firestore.todos2, payload.id));
-    }),
-    toggleTodoDone: thunk(async (actions, payload) => {
-      await updateDoc(doc(firestore.todos2, payload.id), {
-        text: payload.text,
-        done: !payload.done,
-        timestamp: serverTimestamp(),
-      });
-    }),
-    updateTodoText: thunk(async (actions, payload) => {
-      updateDoc(doc(firestore.todos2, payload.todo.id), {
-        text: payload.text,
-        done: payload.todo.done,
-        timestamp: serverTimestamp(),
-      });
-    }),
-    clearAll: thunk(async (actions, payload, { getState }) => {
-      await getDocs(
-        query(
-          firestore.todos2,
-          where("userID", "==", getState().user?.uid ?? "")
-        )
-      ).then((snapshot) => {
-        snapshot.docs.forEach(async (document) => {
-          await deleteDoc(doc(firestore.todos2, document.id));
-        });
-      });
-    }),
-    clearDone: thunk(async (actions, payload, { getState }) => {
-      await getDocs(
-        query(
-          firestore.todos2,
-          where("userID", "==", getState().user?.uid ?? ""),
-          where("done", "==", true),
-        )
-      ).then((snapshot) => {
-        snapshot.docs.forEach(async (document) => {
-          await deleteDoc(doc(firestore.todos2, document.id));
-        });
-      });
-    }),
-  })
-);
+export const rootStore = createStore<RootModel>(persist(rootModel));

@@ -1,7 +1,7 @@
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  User,
+  User
 } from "@firebase/auth";
 import { Action, action, createStore, Thunk, thunk } from "easy-peasy";
 import { auth } from "../config/firebase";
@@ -23,9 +23,9 @@ interface AuthThunk {
   signOut: Thunk<this>;
 }
 
-export interface AuthStore extends AuthState, AuthAction, AuthThunk {}
+export interface AuthModel extends AuthState, AuthAction, AuthThunk {}
 
-export const authStore = createStore<AuthStore>({
+const authModel: AuthModel = {
   user: undefined,
   alert: undefined,
   setUser: action((state, payload) => {
@@ -65,4 +65,6 @@ export const authStore = createStore<AuthStore>({
   setAlert: action((state, payload) => {
     state.alert = payload;
   }),
-});
+};
+
+export const authStore = createStore<AuthModel>(authModel);

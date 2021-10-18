@@ -21,11 +21,11 @@ import { Redirect } from "react-router-dom";
 import { firestore } from "../config/firebase";
 import useViewStore from "../hooks/useViewStore";
 import ROUTES from "../routes";
-import { RootStore } from "../store/RootStore";
+import { RootModel } from "../store/RootStore";
 import Todo from "../types/Todo";
 
 export default function FireTodos() {
-  const viewStore = useViewStore<RootStore>();
+  const viewStore = useViewStore<RootModel>();
   const todos = useTodosSnapshot(viewStore.state.user);
 
   if (!viewStore.state.user) {
