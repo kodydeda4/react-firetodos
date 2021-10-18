@@ -23,7 +23,7 @@ import ROUTES from "../routes";
 import { storeHooks } from "../store";
 import Todo from "../types/Todo";
 
-export default function FireTodos() {
+export default function Todos() {
   const viewStore = {
     state: storeHooks.useStoreState((state) => state.todoModel),
     actions: storeHooks.useStoreActions((action) => action.todoModel),
