@@ -15,7 +15,6 @@ export default function App() {
   return (
     <ThemeProvider theme={useAppTheme()}>
       <CssBaseline />
-      {/* <StoreProvider store={todoStore}> */}
       <StoreProvider store={rootStore}>
         <HashRouter>
           <Switch>

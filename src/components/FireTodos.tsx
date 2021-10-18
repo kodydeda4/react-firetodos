@@ -38,7 +38,7 @@ export default function FireTodos() {
           <Container>
             <Toolbar>
               <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                Firetodos
+                {viewStore.state.user.email}
               </Typography>
               <Stack direction="row" spacing={2}>
                 <Button
