@@ -21,11 +21,11 @@ import { Redirect } from "react-router-dom";
 import { auth, firestore } from "../config/firebase";
 import ROUTES from "../routes";
 import { storeHooks } from "../store";
-import { useTodoModelViewStore } from "../store/TodoStore";
+import { useTodoViewStore } from "../store/models/TodoStore";
 import Todo from "../types/Todo";
 
 export default function FireTodos() {
-  const viewStore = useTodoModelViewStore();
+  const viewStore = useTodoViewStore();
   const todos = useTodosSnapshot(auth.currentUser);
 
   // ------------------------------------------------------------------------

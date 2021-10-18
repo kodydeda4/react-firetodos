@@ -10,12 +10,10 @@ import * as React from "react";
 import { Redirect } from "react-router-dom";
 import ROUTES from "../routes";
 import { storeHooks } from "../store";
-import { useAuthModelViewStore } from "../store/AuthStore";
+import { useAuthViewStore } from "../store/models/AuthStore";
 
 export default function Signup() {
-  const viewStore = useAuthModelViewStore();
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
+  const viewStore = useAuthViewStore();
 
   if (viewStore.state.user) {
     return <Redirect to={ROUTES.home} push={true} />;
@@ -52,7 +50,7 @@ export default function Signup() {
             name="email"
             type="email"
             autoComplete="email"
-            onChange={(event) => setEmail(event.target.value)}
+            onChange={(event) => viewStore.actions.setEmail(event.target.value)}
           />
           <TextField
             margin="normal"
@@ -63,14 +61,14 @@ export default function Signup() {
             name="password"
             type="password"
             autoComplete="current-password"
-            onChange={(event) => setPassword(event.target.value)}
+            onChange={(event) => viewStore.actions.setPassword(event.target.value)}
           />
           <Button
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
             onClick={() =>
-              viewStore.actions.signUp({ email: email, password: password })
+              viewStore.actions.signUp()
             }
           >
             Sign Up

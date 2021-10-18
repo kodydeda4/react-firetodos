@@ -10,10 +10,10 @@ import {
   updateDoc,
   where
 } from "firebase/firestore";
-import { storeHooks } from ".";
-import { firestore } from "../config/firebase";
-import Todo from "../types/Todo";
-import { auth } from "./../config/firebase";
+import { storeHooks } from "..";
+import { firestore } from "../../config/firebase";
+import Todo from "../../types/Todo";
+import { auth } from "../../config/firebase";
 
 export interface TodoState {
   // user: User;
@@ -85,7 +85,7 @@ export const todoModel: TodoModel = {
   }),
 };
 
-export const useTodoModelViewStore = () => {
+export const useTodoViewStore = () => {
   return {
     state: storeHooks.useStoreState((state) => state.todoModel),
     actions: storeHooks.useStoreActions((action) => action.todoModel),

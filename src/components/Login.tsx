@@ -14,7 +14,7 @@ import { Redirect } from "react-router-dom";
 import { auth } from "../config/firebase";
 import ROUTES from "../routes";
 import { storeHooks } from "../store";
-import { useAuthModelViewStore } from "../store/AuthStore";
+import { useAuthViewStore } from "../store/models/AuthStore";
 
 type ViewStore = {
   state: any
@@ -22,10 +22,7 @@ type ViewStore = {
 }
 
 export default function Login() {
-  const viewStore = useAuthModelViewStore()
-
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
+  const viewStore = useAuthViewStore()
 
   if (auth.currentUser) {
     return <Redirect to={ROUTES.home} push={true} />;
@@ -62,7 +59,7 @@ export default function Login() {
             name="email"
             type="email"
             autoComplete="email"
-            onChange={(event) => setEmail(event.target.value)}
+            onChange={(event) => viewStore.actions.setEmail(event.target.value)}
             // error={viewStore.state.alert.type == LoginAlertError.email }
           />
           <TextField
@@ -74,7 +71,7 @@ export default function Login() {
             name="password"
             type="password"
             autoComplete="current-password"
-            onChange={(event) => setPassword(event.target.value)}
+            onChange={(event) => viewStore.actions.setPassword(event.target.value)}
           />
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
@@ -85,7 +82,7 @@ export default function Login() {
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
             onClick={() =>
-              viewStore.actions.signIn({ email: email, password: password })
+              viewStore.actions.signIn()
             }
           >
             Sign In

@@ -4,36 +4,57 @@ import {
   User,
 } from "@firebase/auth";
 import { Action, action, createStore, Thunk, thunk } from "easy-peasy";
-import { storeHooks } from ".";
-import { auth } from "../config/firebase";
-import { AlertState, Severity } from "../types/AlertState";
+import { storeHooks } from "..";
+import { auth } from "../../config/firebase";
+import { AlertState, Severity } from "../../types/AlertState";
 
 export interface AuthState {
   user?: User;
   alert?: AlertState;
+  email: string;
+  password: string;
 }
 
 export interface AuthAction {
   setUser: Action<this, User | undefined>;
   setAlert: Action<this, AlertState>;
+  setEmail: Action<this, string>;
+  setPassword: Action<this, string>;
 }
 
 export interface AuthThunk {
-  signUp: Thunk<this, { email: string; password: string }>;
-  signIn: Thunk<this, { email: string; password: string }>;
+  signUp: Thunk<this>;
+  signIn: Thunk<this>;
   signOut: Thunk<this>;
 }
 
 export interface AuthModel extends AuthState, AuthAction, AuthThunk {}
 
 export const authModel: AuthModel = {
+  // STATE
   user: undefined,
   alert: undefined,
+  email: "",
+  password: "",
+
+  // ACTION
   setUser: action((state, payload) => {
     state.user = payload;
   }),
-  signUp: thunk(async (actions, payload) => {
-    await createUserWithEmailAndPassword(auth, payload.email, payload.password)
+  setEmail: action((state, payload) => {
+    state.email = payload;
+  }),
+  setPassword: action((state, payload) => {
+    state.password = payload;
+  }),
+
+  // THUNK
+  signUp: thunk(async (actions, payload, { getState }) => {
+    await createUserWithEmailAndPassword(
+      auth,
+      getState().email,
+      getState().password
+    )
       .then((userCredential) => {
         actions.setAlert({
           severity: Severity.success,
@@ -47,8 +68,12 @@ export const authModel: AuthModel = {
         });
       });
   }),
-  signIn: thunk(async (actions, payload) => {
-    await signInWithEmailAndPassword(auth, payload.email, payload.password)
+  signIn: thunk(async (actions, payload, { getState }) => {
+    await signInWithEmailAndPassword(
+      auth,
+      getState().email,
+      getState().password
+    )
       .then((userCredential) => {
         actions.setUser(userCredential.user);
       })
@@ -68,9 +93,9 @@ export const authModel: AuthModel = {
   }),
 };
 
-export const useAuthModelViewStore = () => {
+export const useAuthViewStore = () => {
   return {
     state: storeHooks.useStoreState((state) => state.authModel),
-    actions: storeHooks.useStoreActions((action) => action.authModel)
-  }
+    actions: storeHooks.useStoreActions((action) => action.authModel),
+  };
 };
