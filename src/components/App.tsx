@@ -9,9 +9,9 @@ import { store } from "../store";
 import ForgotPassword from "./Authpage/ForgotPassword";
 import Login from "./Authpage/Login";
 import Signup from "./Authpage/Signup";
-import NotFound from "./NotFound";
 import Profile from "./Homepage/Profile";
 import Todos from "./Homepage/Todos";
+import NotFound from "./NotFound";
 
 export default function App() {
   return (
