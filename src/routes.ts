@@ -1,9 +1,9 @@
 const ROUTES = {
   home: "/",
-  todos: "/todos",
   login: "/login",
   signup: "/signup",
   profile: "/profile",
+  forgotPassword: "/forgotPassword"
 };
 
 export default ROUTES;

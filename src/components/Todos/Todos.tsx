@@ -1,20 +1,12 @@
 import { User } from "@firebase/auth";
 import AddIcon from "@mui/icons-material/Add";
-import DeleteIcon from "@mui/icons-material/Delete";
-import Logout from "@mui/icons-material/Logout";
 import {
   Checkbox,
   Container,
   List,
-  ListItem,
-  Stack,
-  TextField,
+  ListItem, TextField
 } from "@mui/material";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
 import { onSnapshot, query, where } from "firebase/firestore";
 import React from "react";
 import { Redirect } from "react-router-dom";

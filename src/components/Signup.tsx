@@ -7,7 +7,7 @@ import Link from "@mui/material/Link";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
-import { Redirect } from "react-router-dom";
+import { Link as RouterLink, Redirect } from "react-router-dom";
 import ROUTES from "../routes";
 import { storeHooks } from "../store";
 
@@ -75,6 +75,9 @@ export default function Signup() {
           >
             Sign Up
           </Button>
+          <Link component={RouterLink} to={ROUTES.login} variant="body2">
+            {"Already have an account? Sign In"}
+          </Link>
         </Box>
       </Box>
       <Typography

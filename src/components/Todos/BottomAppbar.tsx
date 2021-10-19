@@ -1,7 +1,6 @@
 import AddIcon from "@mui/icons-material/Add";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
-import CssBaseline from "@mui/material/CssBaseline";
 import Fab from "@mui/material/Fab";
 import { styled } from "@mui/material/styles";
 import Toolbar from "@mui/material/Toolbar";

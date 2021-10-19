@@ -44,6 +44,8 @@ export default function AppHeader() {
               {/* <Button onClick={() => {}} color="inherit">
                 Profile
               </Button> */}
+
+              
               <Link to={ROUTES.profile}>Profile</Link>
               <Link to={ROUTES.home}>Todos</Link>
 

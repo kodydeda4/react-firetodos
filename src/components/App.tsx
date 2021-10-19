@@ -6,11 +6,12 @@ import { HashRouter, Route, Switch } from "react-router-dom";
 import useAppTheme from "../hooks/useAppTheme";
 import ROUTES from "../routes";
 import { store } from "../store";
-import Todos from "./Todos/Todos";
+import ForgotPassword from "./ForgotPassword";
 import Login from "./Login";
 import NotFound from "./NotFound";
 import Signup from "./Signup";
 import Profile from "./Todos/Profile";
+import Todos from "./Todos/Todos";
 
 export default function App() {
   return (
@@ -23,6 +24,7 @@ export default function App() {
             <Route exact path={ROUTES.signup} component={Signup} />
             <Route exact path={ROUTES.home} component={Todos} />
             <Route exact path={ROUTES.profile} component={Profile} />
+            <Route exact path={ROUTES.forgotPassword} component={ForgotPassword}/>
             <Route component={NotFound} />
           </Switch>
         </HashRouter>
@@ -30,4 +32,3 @@ export default function App() {
     </StoreProvider>
   );
 }
-

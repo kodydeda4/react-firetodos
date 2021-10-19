@@ -10,8 +10,9 @@ import Link from "@mui/material/Link";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
-import { Redirect } from "react-router-dom";
-import { auth } from "../config/firebase";
+import {
+  Link as RouterLink
+} from "react-router-dom";
 import ROUTES from "../routes";
 import { storeHooks } from "../store";
 
@@ -21,9 +22,9 @@ export default function Login() {
     actions: storeHooks.useStoreActions((action) => action.authModel),
   };
 
-  if (auth.currentUser) {
-    return <Redirect to={ROUTES.home} push={true} />;
-  }
+  // if (auth.currentUser) {
+  //   return <Redirect to={ROUTES.home} push={true} />;
+  // }
 
   return (
     <Container component="main" maxWidth="xs">
@@ -86,12 +87,16 @@ export default function Login() {
           </Button>
           <Grid container>
             <Grid item xs>
-              <Link href="#" variant="body2">
-                Forgot password?
+              <Link
+                component={RouterLink}
+                to={ROUTES.forgotPassword}
+                variant="body2"
+              >
+                {"Forgot Password?"}
               </Link>
             </Grid>
             <Grid item>
-              <Link href="#" variant="body2">
+              <Link component={RouterLink} to={ROUTES.signup} variant="body2">
                 {"Don't have an account? Sign Up"}
               </Link>
             </Grid>
