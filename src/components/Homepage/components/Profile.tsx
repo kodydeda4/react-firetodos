@@ -1,5 +1,5 @@
 import { Button, Container } from "@mui/material";
-import { storeHooks } from "../../store";
+import { storeHooks } from "../../../store";
 import AppHeader from "./AppHeader";
 
 export default function Profile() {

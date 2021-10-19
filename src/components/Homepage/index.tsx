@@ -2,7 +2,7 @@ import React from "react";
 import { Redirect } from "react-router-dom";
 import ROUTES from "../../routes";
 import { storeHooks } from "../../store";
-import Todos from "./Todos";
+import Todos from "./components/Todos";
 
 export default function Homepage() {
   return !storeHooks.useStoreState((state) => state.authModel.user) 

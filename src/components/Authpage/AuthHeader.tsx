@@ -3,11 +3,9 @@ import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import React from "react";
-import { Link } from "react-router-dom";
-import { auth } from "../../config/firebase";
+import { Link as RouterLink } from "react-router-dom";
 import ROUTES from "../../routes";
 import { storeHooks } from "../../store";
-import { Link as RouterLink } from "react-router-dom";
 
 export default function AuthHeader() {
   const viewStore = {

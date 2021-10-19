@@ -1,12 +1,12 @@
-import { Button, Container, Link, Stack, Toolbar } from "@mui/material";
+import { Button, Container, Stack, Toolbar } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import React from "react";
-import { auth } from "../../config/firebase";
-import ROUTES from "../../routes";
-import { storeHooks } from "../../store";
 import { Link as RouterLink } from "react-router-dom";
+import { auth } from "../../../config/firebase";
+import ROUTES from "../../../routes";
+import { storeHooks } from "../../../store";
 
 export default function AppHeader() {
   const viewStore = {
@@ -17,7 +17,6 @@ export default function AppHeader() {
   const signOutAction = storeHooks.useStoreActions(
     (action) => action.authModel.signOut
   );
-
 
   return (
     <Box sx={{ flexGrow: 1 }}>

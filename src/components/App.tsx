@@ -9,9 +9,9 @@ import { store } from "../store";
 import ForgotPassword from "./Authpage/ForgotPassword";
 import Login from "./Authpage/Login";
 import Signup from "./Authpage/Signup";
-import Profile from "./Homepage/Profile";
+import Homepage from "./Homepage";
+import Profile from "./Homepage/components/Profile";
 import NotFound from "./NotFound";
-import Homepage from "./Homepage/Homepage";
 
 export default function App() {
   return (

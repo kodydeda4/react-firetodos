@@ -5,7 +5,7 @@ import Fab from "@mui/material/Fab";
 import { styled } from "@mui/material/styles";
 import Toolbar from "@mui/material/Toolbar";
 import * as React from "react";
-import { storeHooks } from "../../store";
+import { storeHooks } from "../../../store";
 
 const StyledFab = styled(Fab)({
   position: "absolute",
