@@ -25,12 +25,6 @@ export default function AppHeader() {
             </Typography>
             <Stack direction="row" spacing={2}>
               <Button
-                onClick={() => viewStore.actions.createTodo()}
-                color="inherit"
-              >
-                Add
-              </Button>
-              <Button
                 onClick={() => viewStore.actions.clearAll()}
                 color="inherit"
               >

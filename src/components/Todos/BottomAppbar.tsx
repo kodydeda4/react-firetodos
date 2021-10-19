@@ -6,6 +6,7 @@ import Fab from "@mui/material/Fab";
 import { styled } from "@mui/material/styles";
 import Toolbar from "@mui/material/Toolbar";
 import * as React from "react";
+import { storeHooks } from "../../store";
 
 const StyledFab = styled(Fab)({
   position: "absolute",
@@ -17,12 +18,21 @@ const StyledFab = styled(Fab)({
 });
 
 export default function BottomAppBar() {
+  const viewStore = {
+    state: storeHooks.useStoreState((state) => state.todoModel),
+    actions: storeHooks.useStoreActions((action) => action.todoModel),
+  };
+
   return (
     <React.Fragment>
       <CssBaseline />
       <AppBar position="fixed" color="primary" sx={{ top: "auto", bottom: 0 }}>
         <Toolbar>
-          <StyledFab color="secondary" aria-label="add">
+          <StyledFab
+            color="secondary"
+            aria-label="add"
+            onClick={() => viewStore.actions.createTodo()}
+          >
             <AddIcon />
           </StyledFab>
           <Box sx={{ flexGrow: 1 }} />
