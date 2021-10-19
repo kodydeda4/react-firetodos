@@ -10,7 +10,7 @@ import Button from "@mui/material/Button";
 import { onSnapshot, query, where } from "firebase/firestore";
 import React from "react";
 import { Redirect } from "react-router-dom";
-import { auth, firestore } from "../../config/firebase";
+import { firestore } from "../../config/firebase";
 import ROUTES from "../../routes";
 import { storeHooks } from "../../store";
 import Todo from "../../types/Todo";
