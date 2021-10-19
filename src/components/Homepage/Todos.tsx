@@ -24,8 +24,8 @@ export default function Todos() {
   };
 
   // ------------------------------------------------------------------------
-  const todos = useTodosSnapshot(auth.currentUser);
   const user = storeHooks.useStoreState((state) => state.authModel.user);
+  const todos = useTodosSnapshot(user!);
   // ------------------------------------------------------------------------
 
   if (!user) {
