@@ -1,5 +1,5 @@
 import { User } from "@firebase/auth";
-import { createStore, Thunk, thunk } from "easy-peasy";
+import { Action, action, createStore, Thunk, thunk } from "easy-peasy";
 import {
   addDoc,
   deleteDoc,
@@ -18,11 +18,15 @@ import { auth } from "../../config/firebase";
 interface TodoState {
   // user: User;
   // todos: Todo[];
+  isPremiumUser: boolean;
 }
 
-interface TodoAction {}
+interface TodoAction {
+  togglePremium: Action<this>;
+}
 
 interface TodoThunks {
+  
   createTodo: Thunk<this>;
   deleteTodo: Thunk<this, Todo>;
   toggleTodoDone: Thunk<this, Todo>;
@@ -35,6 +39,7 @@ export interface TodoModel extends TodoState, TodoAction, TodoThunks {}
 
 export const todoModel: TodoModel = {
   // STATE
+  isPremiumUser: false,
   // user: auth.currentUser!,
   // todos: [],
 
@@ -42,6 +47,10 @@ export const todoModel: TodoModel = {
   // .................................................
 
   // THUNK
+  togglePremium: action((state) => {
+    state.isPremiumUser = !state.isPremiumUser
+  }),
+
   createTodo: thunk(async () => {
     await addDoc(firestore.todos2, {
       text: "untitled",
