@@ -6,7 +6,7 @@ import { HashRouter, Route, Switch } from "react-router-dom";
 import useAppTheme from "../hooks/useAppTheme";
 import ROUTES from "../routes";
 import { store } from "../store";
-import Todos from "./Todos";
+import Todos from "./Todos/Todos";
 import Login from "./Login";
 import NotFound from "./NotFound";
 import Signup from "./Signup";

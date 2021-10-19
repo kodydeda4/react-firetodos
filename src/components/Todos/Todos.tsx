@@ -8,7 +8,7 @@ import {
   List,
   ListItem,
   Stack,
-  TextField
+  TextField,
 } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -18,16 +18,18 @@ import Typography from "@mui/material/Typography";
 import { onSnapshot, query, where } from "firebase/firestore";
 import React from "react";
 import { Redirect } from "react-router-dom";
-import { auth, firestore } from "../config/firebase";
-import ROUTES from "../routes";
-import { storeHooks } from "../store";
-import Todo from "../types/Todo";
+import { auth, firestore } from "../../config/firebase";
+import ROUTES from "../../routes";
+import { storeHooks } from "../../store";
+import Todo from "../../types/Todo";
+import AppHeader from "./AppHeader";
+import BottomAppBar from "./BottomAppbar";
 
 export default function Todos() {
   const viewStore = {
     state: storeHooks.useStoreState((state) => state.todoModel),
     actions: storeHooks.useStoreActions((action) => action.todoModel),
-  }
+  };
 
   // ------------------------------------------------------------------------
   const todos = useTodosSnapshot(auth.currentUser);
@@ -36,58 +38,14 @@ export default function Todos() {
     (action) => action.authModel.signOut
   );
   // ------------------------------------------------------------------------
-  
+
   if (!user) {
     return <Redirect to={ROUTES.login} push={true} />;
   }
 
   return (
     <>
-      <Box sx={{ flexGrow: 1 }}>
-        <AppBar position="static">
-          <Container>
-            <Toolbar>
-              <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                {user.email}
-              </Typography>
-              <Stack direction="row" spacing={2}>
-                <Button
-                  onClick={() => viewStore.actions.createTodo()}
-                  color="inherit"
-                  variant="outlined"
-                  startIcon={<AddIcon />}
-                >
-                  Add
-                </Button>
-                <Button
-                  onClick={() => viewStore.actions.clearAll()}
-                  color="inherit"
-                  variant="outlined"
-                  startIcon={<DeleteIcon />}
-                >
-                  Clear All
-                </Button>
-                <Button
-                  onClick={() => viewStore.actions.clearDone()}
-                  color="inherit"
-                  variant="outlined"
-                  startIcon={<DeleteIcon />}
-                >
-                  Clear Done
-                </Button>
-                <Button
-                  onClick={() => signOutAction()}
-                  color="inherit"
-                  variant="outlined"
-                  startIcon={<Logout />}
-                >
-                  Logout
-                </Button>
-              </Stack>
-            </Toolbar>
-          </Container>
-        </AppBar>
-      </Box>
+      <AppHeader />
       <List
         sx={{
           bgcolor: "background.paper",
@@ -128,6 +86,7 @@ export default function Todos() {
           ))}
         </Container>
       </List>
+      <BottomAppBar />
     </>
   );
 }
