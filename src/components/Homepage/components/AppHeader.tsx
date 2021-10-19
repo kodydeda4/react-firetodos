@@ -85,7 +85,12 @@ export default function AppHeader() {
             p: 4,
           }}
         >
-          <Typography id="modal-modal-title" variant="h6" component="h2" sx={{pb: 3}}>
+          <Typography
+            id="modal-modal-title"
+            variant="h6"
+            component="h2"
+            sx={{ pb: 3 }}
+          >
             Are you sure?
           </Typography>
           <Stack direction="row" spacing={2}>

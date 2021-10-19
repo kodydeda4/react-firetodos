@@ -17,7 +17,7 @@ interface AuthState {
 
 interface AuthAction {
   setUser: Action<this, User | undefined>;
-  setAlert: Action<this, AlertState>;
+  setAlert: Action<this, AlertState | undefined>;
   setEmail: Action<this, string>;
   setPassword: Action<this, string>;
 }
@@ -41,13 +41,15 @@ export const authModel: AuthModel = {
   setUser: action((state, payload) => {
     state.user = payload;
   }),
+  setAlert: action((state, payload) => {
+    state.alert = payload;
+  }),
   setEmail: action((state, payload) => {
     state.email = payload;
   }),
   setPassword: action((state, payload) => {
     state.password = payload;
   }),
-
   // THUNK
   signUp: thunk(async (actions, payload, { getState }) => {
     await createUserWithEmailAndPassword(
@@ -87,8 +89,8 @@ export const authModel: AuthModel = {
   signOut: thunk(async (actions) => {
     auth.signOut();
     actions.setUser(undefined);
-  }),
-  setAlert: action((state, payload) => {
-    state.alert = payload;
+    actions.setAlert(undefined);
+    actions.setEmail("");
+    actions.setPassword("");
   }),
 };
