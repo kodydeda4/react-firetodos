@@ -27,34 +27,26 @@ export default function AppHeader() {
               <Button
                 onClick={() => viewStore.actions.createTodo()}
                 color="inherit"
-                variant="outlined"
-                startIcon={<AddIcon />}
               >
                 Add
               </Button>
               <Button
                 onClick={() => viewStore.actions.clearAll()}
                 color="inherit"
-                variant="outlined"
-                startIcon={<DeleteIcon />}
               >
                 Clear All
               </Button>
               <Button
                 onClick={() => viewStore.actions.clearDone()}
                 color="inherit"
-                variant="outlined"
-                startIcon={<DeleteIcon />}
               >
                 Clear Done
               </Button>
-              <Button
-                onClick={() => auth.signOut()}
-                color="inherit"
-                variant="outlined"
-                startIcon={<LogoutIcon />}
-              >
+              <Button onClick={() => auth.signOut()} color="inherit">
                 Logout
+              </Button>
+              <Button onClick={() => {}} color="inherit">
+                Profile
               </Button>
             </Stack>
           </Toolbar>
