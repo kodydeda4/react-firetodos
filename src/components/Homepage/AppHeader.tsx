@@ -14,6 +14,11 @@ export default function AppHeader() {
     actions: storeHooks.useStoreActions((action) => action.todoModel),
   };
 
+  const signOutAction = storeHooks.useStoreActions(
+    (action) => action.authModel.signOut
+  );
+
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -35,7 +40,7 @@ export default function AppHeader() {
               >
                 Clear Done
               </Button>
-              <Button onClick={() => auth.signOut()} color="error">
+              <Button onClick={() => signOutAction()} color="error">
                 Logout
               </Button>
               <Button component={RouterLink} to={ROUTES.home}>

@@ -10,7 +10,7 @@ import Link from "@mui/material/Link";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, Redirect } from "react-router-dom";
 import ROUTES from "../../routes";
 import { storeHooks } from "../../store";
 import AuthHeader from "./AuthHeader";
@@ -21,9 +21,9 @@ export default function Login() {
     actions: storeHooks.useStoreActions((action) => action.authModel),
   };
 
-  // if (auth.currentUser) {
-  //   return <Redirect to={ROUTES.home} push={true} />;
-  // }
+  if (viewStore.state.user) {
+    return <Redirect to={ROUTES.home} push={true} />;
+  }
 
   return (
     <>

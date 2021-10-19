@@ -26,9 +26,6 @@ export default function Todos() {
   // ------------------------------------------------------------------------
   const todos = useTodosSnapshot(auth.currentUser);
   const user = storeHooks.useStoreState((state) => state.authModel.user);
-  const signOutAction = storeHooks.useStoreActions(
-    (action) => action.authModel.signOut
-  );
   // ------------------------------------------------------------------------
 
   if (!user) {
