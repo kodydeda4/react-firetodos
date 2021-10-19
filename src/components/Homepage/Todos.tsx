@@ -82,7 +82,6 @@ export default function Todos() {
 }
 
 export const useTodosSnapshot = (user: User | null): Todo[] => {
-  // Should actually check if user exists first but yeah...
   const [todos, setTodos] = React.useState<Todo[]>([]);
 
   const update = React.useEffect(() => {
