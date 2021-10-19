@@ -1,12 +1,12 @@
-import { Button, Container, Stack, Toolbar } from "@mui/material";
+import { Button, Container, Link, Stack, Toolbar } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import React from "react";
-import { Link } from "react-router-dom";
 import { auth } from "../../config/firebase";
 import ROUTES from "../../routes";
 import { storeHooks } from "../../store";
+import { Link as RouterLink } from "react-router-dom";
 
 export default function AppHeader() {
   const viewStore = {
@@ -35,11 +35,15 @@ export default function AppHeader() {
               >
                 Clear Done
               </Button>
-              <Button onClick={() => auth.signOut()} color="inherit">
+              <Button onClick={() => auth.signOut()} color="error">
                 Logout
               </Button>
-              <Link to={ROUTES.profile}>Profile</Link>
-              <Link to={ROUTES.home}>Todos</Link>
+              <Button component={RouterLink} to={ROUTES.home}>
+                Todos
+              </Button>
+              <Button component={RouterLink} to={ROUTES.profile}>
+                Profile
+              </Button>
             </Stack>
           </Toolbar>
         </Container>

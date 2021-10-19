@@ -34,8 +34,6 @@ export default function AuthHeader() {
               >
                 Sign up
               </Button>
-              {/* <Link to={ROUTES.login}>Login</Link>
-              <Link to={ROUTES.signup}>Sign up</Link> */}
             </Stack>
           </Toolbar>
         </Container>
