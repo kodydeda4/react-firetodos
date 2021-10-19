@@ -63,15 +63,15 @@ export default function Signup() {
             name="password"
             type="password"
             autoComplete="current-password"
-            onChange={(event) => viewStore.actions.setPassword(event.target.value)}
+            onChange={(event) =>
+              viewStore.actions.setPassword(event.target.value)
+            }
           />
           <Button
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
-            onClick={() =>
-              viewStore.actions.signUp()
-            }
+            onClick={() => viewStore.actions.signUp()}
           >
             Sign Up
           </Button>

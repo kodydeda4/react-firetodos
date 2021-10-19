@@ -8,6 +8,8 @@ import { auth } from "../../config/firebase";
 import { storeHooks } from "../../store";
 import DeleteIcon from "@mui/icons-material/Delete";
 import LogoutIcon from "@mui/icons-material/Logout";
+import ROUTES from "../../routes";
+import { Link } from "react-router-dom";
 
 export default function AppHeader() {
   const viewStore = {
@@ -39,9 +41,12 @@ export default function AppHeader() {
               <Button onClick={() => auth.signOut()} color="inherit">
                 Logout
               </Button>
-              <Button onClick={() => {}} color="inherit">
+              {/* <Button onClick={() => {}} color="inherit">
                 Profile
-              </Button>
+              </Button> */}
+              <Link to={ROUTES.profile}>Profile</Link>
+              <Link to={ROUTES.home}>Todos</Link>
+
             </Stack>
           </Toolbar>
         </Container>
@@ -49,3 +54,4 @@ export default function AppHeader() {
     </Box>
   );
 }
+

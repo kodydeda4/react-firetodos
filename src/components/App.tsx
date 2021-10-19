@@ -10,6 +10,7 @@ import Todos from "./Todos/Todos";
 import Login from "./Login";
 import NotFound from "./NotFound";
 import Signup from "./Signup";
+import Profile from "./Todos/Profile";
 
 export default function App() {
   return (
@@ -21,6 +22,7 @@ export default function App() {
             <Route exact path={ROUTES.login} component={Login} />
             <Route exact path={ROUTES.signup} component={Signup} />
             <Route exact path={ROUTES.home} component={Todos} />
+            <Route exact path={ROUTES.profile} component={Profile} />
             <Route component={NotFound} />
           </Switch>
         </HashRouter>
@@ -28,3 +30,4 @@ export default function App() {
     </StoreProvider>
   );
 }
+
