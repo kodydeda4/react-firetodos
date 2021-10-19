@@ -6,12 +6,12 @@ import { HashRouter, Route, Switch } from "react-router-dom";
 import useAppTheme from "../hooks/useAppTheme";
 import ROUTES from "../routes";
 import { store } from "../store";
-import ForgotPassword from "./ForgotPassword";
-import Login from "./Login";
+import ForgotPassword from "./Authpage/ForgotPassword";
+import Login from "./Authpage/Login";
+import Signup from "./Authpage/Signup";
 import NotFound from "./NotFound";
-import Signup from "./Signup";
-import Profile from "./Todos/Profile";
-import Todos from "./Todos/Todos";
+import Profile from "./Homepage/Profile";
+import Todos from "./Homepage/Todos";
 
 export default function App() {
   return (

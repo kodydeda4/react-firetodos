@@ -9,3 +9,4 @@ const LinkBehavior = React.forwardRef<any, Omit<RouterLinkProps, "to">>(
     <RouterLink ref={ref} to="/getting-started/installation/" {...props} />
   )
 );
+
