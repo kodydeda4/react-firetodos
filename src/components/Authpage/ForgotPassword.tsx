@@ -5,7 +5,6 @@ export default function ForgotPassword() {
   return (
     <>
       <AuthHeader />
-
       <Container>Forgot Password</Container>
     </>
   );

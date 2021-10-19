@@ -16,7 +16,7 @@ const StyledFab = styled(Fab)({
   margin: "0 auto",
 });
 
-export default function BottomAppBar() {
+export default function AppFooter() {
   const viewStore = {
     state: storeHooks.useStoreState((state) => state.todoModel),
     actions: storeHooks.useStoreActions((action) => action.todoModel),
