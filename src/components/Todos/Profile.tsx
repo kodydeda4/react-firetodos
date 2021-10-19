@@ -1,10 +1,13 @@
+import { Container } from "@mui/material";
 import AppHeader from "./AppHeader";
 
 export default function Profile() {
   return (
     <>
       <AppHeader />
-      <p>hello</p>
+      <Container>
+        <p>hello</p>
+      </Container>
     </>
   );
 }

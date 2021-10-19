@@ -24,8 +24,7 @@ export default function BottomAppBar() {
   };
 
   return (
-    <React.Fragment>
-      <CssBaseline />
+    <>
       <AppBar position="fixed" color="primary" sx={{ top: "auto", bottom: 0 }}>
         <Toolbar>
           <StyledFab
@@ -38,6 +37,6 @@ export default function BottomAppBar() {
           <Box sx={{ flexGrow: 1 }} />
         </Toolbar>
       </AppBar>
-    </React.Fragment>
+    </>
   );
 }
