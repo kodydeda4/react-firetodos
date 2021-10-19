@@ -10,8 +10,8 @@ import ForgotPassword from "./Authpage/ForgotPassword";
 import Login from "./Authpage/Login";
 import Signup from "./Authpage/Signup";
 import Profile from "./Homepage/Profile";
-import Todos from "./Homepage/Todos";
 import NotFound from "./NotFound";
+import Homepage from "./Homepage/Homepage";
 
 export default function App() {
   return (
@@ -22,7 +22,7 @@ export default function App() {
           <Switch>
             <Route exact path={ROUTES.login} component={Login} />
             <Route exact path={ROUTES.signup} component={Signup} />
-            <Route exact path={ROUTES.home} component={Todos} />
+            <Route exact path={ROUTES.home} component={Homepage} />
             <Route exact path={ROUTES.profile} component={Profile} />
             <Route exact path={ROUTES.forgotPassword} component={ForgotPassword}/>
             <Route component={NotFound} />

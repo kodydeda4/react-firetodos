@@ -17,7 +17,7 @@ import Todo from "../../types/Todo";
 import AppHeader from "./AppHeader";
 import BottomAppBar from "./BottomAppbar";
 
-export default function Todos() {
+export default function Homepage() {
   const viewStore = {
     state: storeHooks.useStoreState((state) => state.todoModel),
     actions: storeHooks.useStoreActions((action) => action.todoModel),
@@ -27,10 +27,6 @@ export default function Todos() {
   const user = storeHooks.useStoreState((state) => state.authModel.user);
   const todos = useTodosSnapshot(user!);
   // ------------------------------------------------------------------------
-
-  if (!user) {
-    return <Redirect to={ROUTES.login} push={true} />;
-  }
 
   return (
     <>
