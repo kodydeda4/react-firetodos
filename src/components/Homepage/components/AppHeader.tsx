@@ -1,12 +1,10 @@
 import AccountCircle from "@mui/icons-material/AccountCircle";
-import MailIcon from "@mui/icons-material/Mail";
+import AddIcon from "@mui/icons-material/Add";
+import DeleteIcon from "@mui/icons-material/Delete";
 import MenuIcon from "@mui/icons-material/Menu";
-import MoreIcon from "@mui/icons-material/MoreVert";
-import NotificationsIcon from "@mui/icons-material/Notifications";
 import SearchIcon from "@mui/icons-material/Search";
-import { Button, Container, Stack, Toolbar } from "@mui/material";
+import { Button, Stack, Toolbar } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
-import Badge from "@mui/material/Badge";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import InputBase from "@mui/material/InputBase";
@@ -20,59 +18,15 @@ import { Link as RouterLink } from "react-router-dom";
 import { auth } from "../../../config/firebase";
 import ROUTES from "../../../routes";
 import { storeHooks } from "../../../store";
-import DeleteIcon from "@mui/icons-material/Delete";
-import AddIcon from "@mui/icons-material/Add";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-
-const Search = styled("div")(({ theme }) => ({
-  position: "relative",
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
-  "&:hover": {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
-  },
-  marginRight: theme.spacing(2),
-  marginLeft: 0,
-  width: "100%",
-  [theme.breakpoints.up("sm")]: {
-    marginLeft: theme.spacing(3),
-    width: "auto",
-  },
-}));
-
-const SearchIconWrapper = styled("div")(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: "100%",
-  position: "absolute",
-  pointerEvents: "none",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: "inherit",
-  "& .MuiInputBase-input": {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create("width"),
-    width: "100%",
-    [theme.breakpoints.up("md")]: {
-      width: "20ch",
-    },
-  },
-}));
 
 export default function AppHeader() {
   const viewStore = {
     state: storeHooks.useStoreState((state) => state.todoModel),
     actions: storeHooks.useStoreActions((action) => action.todoModel),
   };
-  const signOutAction = storeHooks.useStoreActions(
-    (action) => action.authModel.signOut
-  );
+
+  const user = storeHooks.useStoreState((state) => state.authModel.user);
+  const signOut = storeHooks.useStoreActions((action) => action.authModel.signOut);
 
   const [modal, setModal] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -89,15 +43,9 @@ export default function AppHeader() {
             component="div"
             sx={{ display: { xs: "none", sm: "block" } }}
           >
-            {auth.currentUser?.email}
+            {user.email}
           </Typography>
-
-          <Search sx={{ flexGrow: 1 }}>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase placeholder="Search…" />
-          </Search>
+          <SearchView />
           <IconButton
             onClick={() => viewStore.actions.createTodo()}
             size="large"
@@ -129,10 +77,10 @@ export default function AppHeader() {
         onLogoutButtonTapped={() => setModal(true)}
       />
       <ModalView
-        open={modal}
-        onClose={() => setModal(false)}
+        isPresented={modal}
+        onDismiss={() => setModal(false)}
         cancelAction={() => setModal(false)}
-        confirmAction={() => signOutAction()}
+        confirmAction={() => signOut()}
       />
     </>
   );
@@ -186,13 +134,13 @@ function MenuView(props: {
 }
 
 const ModalView = (props: {
-  open: boolean;
-  onClose: () => void;
+  isPresented: boolean;
+  onDismiss: () => void;
   cancelAction: () => void;
   confirmAction: () => void;
 }) => {
   return (
-    <Modal open={props.open} onClose={props.onClose}>
+    <Modal open={props.isPresented} onClose={props.onDismiss}>
       <Box
         sx={{
           position: "absolute" as "absolute",
@@ -215,7 +163,7 @@ const ModalView = (props: {
           Are you sure?
         </Typography>
         <Stack direction="row" spacing={2}>
-          <Button onClick={() => props.onClose()} variant="contained">
+          <Button onClick={() => props.onDismiss()} variant="contained">
             Cancel
           </Button>
           <Button onClick={() => props.confirmAction()} variant="contained">
@@ -224,5 +172,55 @@ const ModalView = (props: {
         </Stack>
       </Box>
     </Modal>
+  );
+};
+
+const SearchView = () => {
+  const Search = styled("div")(({ theme }) => ({
+    position: "relative",
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: alpha(theme.palette.common.white, 0.15),
+    "&:hover": {
+      backgroundColor: alpha(theme.palette.common.white, 0.25),
+    },
+    marginRight: theme.spacing(2),
+    marginLeft: 0,
+    width: "100%",
+    [theme.breakpoints.up("sm")]: {
+      marginLeft: theme.spacing(3),
+      width: "auto",
+    },
+  }));
+
+  const SearchIconWrapper = styled("div")(({ theme }) => ({
+    padding: theme.spacing(0, 2),
+    height: "100%",
+    position: "absolute",
+    pointerEvents: "none",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  }));
+
+  const StyledInputBase = styled(InputBase)(({ theme }) => ({
+    color: "inherit",
+    "& .MuiInputBase-input": {
+      padding: theme.spacing(1, 1, 1, 0),
+      paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+      transition: theme.transitions.create("width"),
+      width: "100%",
+      [theme.breakpoints.up("md")]: {
+        width: "20ch",
+      },
+    },
+  }));
+
+  return (
+    <Search sx={{ flexGrow: 1 }}>
+      <SearchIconWrapper>
+        <SearchIcon />
+      </SearchIconWrapper>
+      <StyledInputBase placeholder="Search…" />
+    </Search>
   );
 };
