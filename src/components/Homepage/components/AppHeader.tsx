@@ -177,7 +177,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function PrimarySearchAppBar() {
-
   const [desktopMenuAnchorEl, setDesktopMenuAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMenuAnchorEl, setMobileMenuAnchorEl] = React.useState<null | HTMLElement>(null);
 
@@ -185,11 +184,11 @@ export default function PrimarySearchAppBar() {
   const mobileMenuPresented = Boolean(mobileMenuAnchorEl);
 
   const handleDesktopMenuOpen = (event: React.MouseEvent<HTMLElement>) => { setDesktopMenuAnchorEl(event.currentTarget); };
-  const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => { setMobileMenuAnchorEl(event.currentTarget); };  
-  
+  const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => { setMobileMenuAnchorEl(event.currentTarget); };
+
   const closeDesktopMenu = () => { setDesktopMenuAnchorEl(null); };
   const closeMobileMenu = () => { setMobileMenuAnchorEl(null); };
-  
+
   const desktopMenuId = "primary-search-account-menu";
   const mobileMenuId = "primary-search-account-menu-mobile";
 
@@ -230,18 +229,14 @@ export default function PrimarySearchAppBar() {
               aria-label="show 4 new mails"
               color="inherit"
             >
-              <Badge badgeContent={4} color="error">
-                <MailIcon />
-              </Badge>
+              <MailIcon />
             </IconButton>
             <IconButton
               size="large"
               aria-label="show 17 new notifications"
               color="inherit"
             >
-              <Badge badgeContent={17} color="error">
-                <NotificationsIcon />
-              </Badge>
+              <NotificationsIcon />
             </IconButton>
             <IconButton
               size="large"
@@ -313,9 +308,7 @@ function MobileMenu(props: MobileMenuProps) {
     >
       <MenuItem>
         <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-          <Badge badgeContent={4} color="error">
-            <MailIcon />
-          </Badge>
+          <MailIcon />
         </IconButton>
         <p>Messages</p>
       </MenuItem>
@@ -325,9 +318,7 @@ function MobileMenu(props: MobileMenuProps) {
           aria-label="show 17 new notifications"
           color="inherit"
         >
-          <Badge badgeContent={17} color="error">
-            <NotificationsIcon />
-          </Badge>
+          <NotificationsIcon />
         </IconButton>
         <p>Notifications</p>
       </MenuItem>
