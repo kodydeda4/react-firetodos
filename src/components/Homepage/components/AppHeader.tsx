@@ -3,21 +3,19 @@ import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
-import { Button, Stack, Toolbar } from "@mui/material";
+import { Toolbar } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import InputBase from "@mui/material/InputBase";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import Modal from "@mui/material/Modal";
 import { alpha, styled } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { Link as RouterLink } from "react-router-dom";
-import { auth } from "../../../config/firebase";
 import ROUTES from "../../../routes";
 import { storeHooks } from "../../../store";
+import { ModalView } from "../../_helpers/ModalView";
 
 export default function AppHeader() {
   const viewStore = {
@@ -25,17 +23,29 @@ export default function AppHeader() {
     actions: storeHooks.useStoreActions((action) => action.todoModel),
   };
 
-  const user = storeHooks.useStoreState((state) => state.authModel.user);
-  const signOut = storeHooks.useStoreActions((action) => action.authModel.signOut);
+  const signOut = storeHooks.useStoreActions(
+    (action) => action.authModel.signOut
+  );
 
-  const [modal, setModal] = React.useState(false);
+  const [logoutModal, setLogoutModal] = React.useState(false);
+  const [clearAllModal, setClearAllModal] = React.useState(false);
+
+  
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const menuOpen = Boolean(anchorEl)
 
   return (
     <>
       <AppBar position="static">
         <Toolbar>
-          <IconButton size="large" edge="start" color="inherit" sx={{ mr: 2 }}>
+          <IconButton
+            component={RouterLink}
+            to={ROUTES.home}
+            size="large"
+            edge="start"
+            color="inherit"
+            sx={{ mr: 1 }}
+          >
             <MenuIcon />
           </IconButton>
           <Typography
@@ -44,7 +54,7 @@ export default function AppHeader() {
             component="div"
             sx={{ display: { xs: "none", sm: "block" } }}
           >
-            {user!.email}
+            FireTodos
           </Typography>
           <SearchView />
           <IconButton
@@ -55,7 +65,7 @@ export default function AppHeader() {
             <AddIcon />
           </IconButton>
           <IconButton
-            onClick={() => viewStore.actions.clearAll()}
+            onClick={() => setClearAllModal(true)}
             size="large"
             color="inherit"
           >
@@ -72,25 +82,51 @@ export default function AppHeader() {
         </Toolbar>
       </AppBar>
       <MenuView
-        isPresented={Boolean(anchorEl)}
+        isPresented={menuOpen}
         onDismiss={() => setAnchorEl(null)}
         anchorEl={anchorEl}
-        onLogoutButtonTapped={() => setModal(true)}
+        onLogoutButtonTapped={() => setLogoutModal(true)}
       />
       <ModalView
-        isPresented={modal}
-        onDismiss={() => setModal(false)}
-        cancelAction={() => setModal(false)}
-        confirmAction={() => signOut()}
+        isPresented={logoutModal}
+        onDismiss={() => setLogoutModal(false)}
+        modalState={{
+          title: "Log out?",
+          cancel: {
+            text: "Cancel",
+            action: () => setLogoutModal(false),
+          },
+          confirm: {
+            text: "Logout",
+            action: () => signOut(),
+          },
+        }}
+      />
+      <ModalView
+        isPresented={clearAllModal}
+        onDismiss={() => setClearAllModal(false)}
+        modalState={{
+          title: "Clear All?",
+          cancel: {
+            text: "Cancel",
+            action: () => setClearAllModal(false),
+          },
+          confirm: {
+            text: "Yes",
+            action: () => viewStore.actions.clearAll(),
+          },
+        }}
       />
     </>
   );
 }
 
+// Menu ____________________________________________________________________________________________
+
 function MenuView(props: {
   isPresented: boolean;
   onDismiss: () => void;
-  anchorEl: any;
+  anchorEl: Element | ((element: Element) => Element) | null | undefined;
   onLogoutButtonTapped: () => void;
 }) {
   return (
@@ -110,13 +146,6 @@ function MenuView(props: {
     >
       <MenuItem
         component={RouterLink}
-        to={ROUTES.home}
-        onClick={props.onDismiss}
-      >
-        Todos
-      </MenuItem>
-      <MenuItem
-        component={RouterLink}
         to={ROUTES.profile}
         onClick={props.onDismiss}
       >
@@ -127,6 +156,9 @@ function MenuView(props: {
           props.onDismiss();
           props.onLogoutButtonTapped();
         }}
+        sx={{
+          color: 'red'
+        }}
       >
         Logout
       </MenuItem>
@@ -134,47 +166,7 @@ function MenuView(props: {
   );
 }
 
-const ModalView = (props: {
-  isPresented: boolean;
-  onDismiss: () => void;
-  cancelAction: () => void;
-  confirmAction: () => void;
-}) => {
-  return (
-    <Modal open={props.isPresented} onClose={props.onDismiss}>
-      <Box
-        sx={{
-          position: "absolute" as "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          width: 400,
-          bgcolor: "background.paper",
-          border: "2px solid #000",
-          boxShadow: 24,
-          p: 4,
-        }}
-      >
-        <Typography
-          id="modal-modal-title"
-          variant="h6"
-          component="h2"
-          sx={{ pb: 3 }}
-        >
-          Are you sure?
-        </Typography>
-        <Stack direction="row" spacing={2}>
-          <Button onClick={() => props.onDismiss()} variant="contained">
-            Cancel
-          </Button>
-          <Button onClick={() => props.confirmAction()} variant="contained">
-            Log Out
-          </Button>
-        </Stack>
-      </Box>
-    </Modal>
-  );
-};
+// Search ____________________________________________________________________________________________
 
 const SearchView = () => {
   const Search = styled("div")(({ theme }) => ({

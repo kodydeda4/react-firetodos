@@ -50,6 +50,7 @@ export const authModel: AuthModel = {
   setPassword: action((state, payload) => {
     state.password = payload;
   }),
+  
   // THUNK
   signUp: thunk(async (actions, payload, { getState }) => {
     await createUserWithEmailAndPassword(
