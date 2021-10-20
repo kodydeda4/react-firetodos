@@ -36,7 +36,7 @@ export default function Homepage() {
           height: "500",
         }}
       >
-        <Container>
+        {/* <Container> */}
           {/* {viewStore.state.todos.map((todo: Todo) => ( */}
           {todos.map((todo: Todo) => (
             <ListItem>
@@ -67,7 +67,7 @@ export default function Homepage() {
               </Button>
             </ListItem>
           ))}
-        </Container>
+        {/* </Container> */}
       </List>
     </>
   );
