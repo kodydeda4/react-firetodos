@@ -23,14 +23,11 @@ export default function AppHeader() {
     actions: storeHooks.useStoreActions((action) => action.todoModel),
   };
 
-  const signOut = storeHooks.useStoreActions(
-    (action) => action.authModel.signOut
-  );
+  const signOutAction = storeHooks.useStoreActions((action) => action.authModel.signOut);
 
+  // @State
   const [logoutModal, setLogoutModal] = React.useState(false);
   const [clearAllModal, setClearAllModal] = React.useState(false);
-
-  
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const menuOpen = Boolean(anchorEl)
 
@@ -98,7 +95,7 @@ export default function AppHeader() {
           },
           confirm: {
             text: "Logout",
-            action: () => signOut(),
+            action: () => signOutAction(),
           },
         }}
       />
