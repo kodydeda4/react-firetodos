@@ -177,32 +177,20 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function PrimarySearchAppBar() {
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
-    React.useState<null | HTMLElement>(null);
 
-  const isMenuOpen = Boolean(anchorEl);
-  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+  const [desktopMenuAnchorEl, setDesktopMenuAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [mobileMenuAnchorEl, setMobileMenuAnchorEl] = React.useState<null | HTMLElement>(null);
 
-  const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
+  const desktopMenuPresented = Boolean(desktopMenuAnchorEl);
+  const mobileMenuPresented = Boolean(mobileMenuAnchorEl);
 
-  const handleMobileMenuClose = () => {
-    setMobileMoreAnchorEl(null);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-    handleMobileMenuClose();
-  };
-
-  const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setMobileMoreAnchorEl(event.currentTarget);
-  };
-
-  const menuId = "primary-search-account-menu";
-
+  const handleDesktopMenuOpen = (event: React.MouseEvent<HTMLElement>) => { setDesktopMenuAnchorEl(event.currentTarget); };
+  const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => { setMobileMenuAnchorEl(event.currentTarget); };  
+  
+  const closeDesktopMenu = () => { setDesktopMenuAnchorEl(null); };
+  const closeMobileMenu = () => { setMobileMenuAnchorEl(null); };
+  
+  const desktopMenuId = "primary-search-account-menu";
   const mobileMenuId = "primary-search-account-menu-mobile";
 
   return (
@@ -259,9 +247,9 @@ export default function PrimarySearchAppBar() {
               size="large"
               edge="end"
               aria-label="account of current user"
-              aria-controls={menuId}
+              aria-controls={desktopMenuId}
               aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
+              onClick={handleDesktopMenuOpen}
               color="inherit"
             >
               <AccountCircle />
@@ -281,80 +269,110 @@ export default function PrimarySearchAppBar() {
           </Box>
         </Toolbar>
       </AppBar>
-      
-      {/* RenderMobileMenu */}
-      <Menu
-        anchorEl={mobileMoreAnchorEl}
-        anchorOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
+      <MobileMenu
+        isPresented={mobileMenuPresented}
+        onDismiss={closeMobileMenu}
+        onOpen={handleDesktopMenuOpen}
+        anchorEl={mobileMenuAnchorEl}
         id={mobileMenuId}
-        keepMounted
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
-        open={isMobileMenuOpen}
-        onClose={handleMobileMenuClose}
-      >
-        <MenuItem>
-          <IconButton
-            size="large"
-            aria-label="show 4 new mails"
-            color="inherit"
-          >
-            <Badge badgeContent={4} color="error">
-              <MailIcon />
-            </Badge>
-          </IconButton>
-          <p>Messages</p>
-        </MenuItem>
-        <MenuItem>
-          <IconButton
-            size="large"
-            aria-label="show 17 new notifications"
-            color="inherit"
-          >
-            <Badge badgeContent={17} color="error">
-              <NotificationsIcon />
-            </Badge>
-          </IconButton>
-          <p>Notifications</p>
-        </MenuItem>
-        <MenuItem onClick={handleProfileMenuOpen}>
-          <IconButton
-            size="large"
-            aria-label="account of current user"
-            aria-controls="primary-search-account-menu"
-            aria-haspopup="true"
-            color="inherit"
-          >
-            <AccountCircle />
-          </IconButton>
-          <p>Profile</p>
-        </MenuItem>
-      </Menu>
-
-      {/* RenderMenu */}
-      <Menu
-        anchorEl={anchorEl}
-        anchorOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
-        id={menuId}
-        keepMounted
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
-        open={isMenuOpen}
-        onClose={handleMenuClose}
-      >
-        <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-        <MenuItem onClick={handleMenuClose}>Logout</MenuItem>
-      </Menu>
+      />
+      <DesktopMenu
+        isPresented={desktopMenuPresented}
+        onDismiss={closeDesktopMenu}
+        anchorEl={desktopMenuAnchorEl}
+        id={desktopMenuId}
+      />
     </Box>
+  );
+}
+
+type MobileMenuProps = {
+  isPresented: boolean;
+  onOpen: (event: React.MouseEvent<HTMLElement>) => void;
+  onDismiss: () => void;
+  id: any;
+  anchorEl: any;
+};
+
+function MobileMenu(props: MobileMenuProps) {
+  return (
+    <Menu
+      anchorEl={props.anchorEl}
+      anchorOrigin={{
+        vertical: "top",
+        horizontal: "right",
+      }}
+      id={props.id}
+      keepMounted
+      transformOrigin={{
+        vertical: "top",
+        horizontal: "right",
+      }}
+      open={props.isPresented}
+      onClose={props.onDismiss}
+    >
+      <MenuItem>
+        <IconButton size="large" aria-label="show 4 new mails" color="inherit">
+          <Badge badgeContent={4} color="error">
+            <MailIcon />
+          </Badge>
+        </IconButton>
+        <p>Messages</p>
+      </MenuItem>
+      <MenuItem>
+        <IconButton
+          size="large"
+          aria-label="show 17 new notifications"
+          color="inherit"
+        >
+          <Badge badgeContent={17} color="error">
+            <NotificationsIcon />
+          </Badge>
+        </IconButton>
+        <p>Notifications</p>
+      </MenuItem>
+      <MenuItem onClick={props.onOpen}>
+        <IconButton
+          size="large"
+          aria-label="account of current user"
+          aria-controls="primary-search-account-menu"
+          aria-haspopup="true"
+          color="inherit"
+        >
+          <AccountCircle />
+        </IconButton>
+        <p>Profile</p>
+      </MenuItem>
+    </Menu>
+  );
+}
+
+type DesktopMenuProps = {
+  isPresented: boolean;
+  onDismiss: () => void;
+  id: any;
+  anchorEl: any;
+};
+
+function DesktopMenu(props: DesktopMenuProps) {
+  return (
+    <Menu
+      anchorEl={props.anchorEl}
+      anchorOrigin={{
+        vertical: "top",
+        horizontal: "right",
+      }}
+      id={props.id}
+      keepMounted
+      transformOrigin={{
+        vertical: "top",
+        horizontal: "right",
+      }}
+      open={props.isPresented}
+      onClose={props.onDismiss}
+    >
+      <MenuItem onClick={props.onDismiss}>Profile</MenuItem>
+      <MenuItem onClick={props.onDismiss}>Logout</MenuItem>
+    </Menu>
   );
 }
