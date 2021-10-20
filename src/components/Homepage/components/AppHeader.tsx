@@ -28,8 +28,7 @@ export default function AppHeader() {
   // @State
   const [logoutModal, setLogoutModal] = React.useState(false);
   const [clearAllModal, setClearAllModal] = React.useState(false);
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const menuOpen = Boolean(anchorEl)
+  const [profileMenu, setProfileMenu] = React.useState<null | HTMLElement>(null);
 
   return (
     <>
@@ -71,7 +70,7 @@ export default function AppHeader() {
           <IconButton
             size="large"
             edge="end"
-            onClick={(event) => setAnchorEl(event.currentTarget)}
+            onClick={(event) => setProfileMenu(event.currentTarget)}
             color="inherit"
           >
             <AccountCircle />
@@ -79,9 +78,8 @@ export default function AppHeader() {
         </Toolbar>
       </AppBar>
       <MenuView
-        isPresented={menuOpen}
-        onDismiss={() => setAnchorEl(null)}
-        anchorEl={anchorEl}
+        isPresented={profileMenu}
+        onDismiss={() => setProfileMenu(null)}
         onLogoutButtonTapped={() => setLogoutModal(true)}
       />
       <ModalView
@@ -121,14 +119,13 @@ export default function AppHeader() {
 // Menu ____________________________________________________________________________________________
 
 function MenuView(props: {
-  isPresented: boolean;
+  isPresented: Element | ((element: Element) => Element) | null | undefined;
   onDismiss: () => void;
-  anchorEl: Element | ((element: Element) => Element) | null | undefined;
   onLogoutButtonTapped: () => void;
 }) {
   return (
     <Menu
-      anchorEl={props.anchorEl}
+      anchorEl={props.isPresented}
       anchorOrigin={{
         vertical: "top",
         horizontal: "right",
@@ -138,7 +135,7 @@ function MenuView(props: {
         vertical: "top",
         horizontal: "right",
       }}
-      open={props.isPresented}
+      open={Boolean(props.isPresented)}
       onClose={props.onDismiss}
     >
       <MenuItem
