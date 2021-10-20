@@ -20,6 +20,10 @@ import { Link as RouterLink } from "react-router-dom";
 import { auth } from "../../../config/firebase";
 import ROUTES from "../../../routes";
 import { storeHooks } from "../../../store";
+import DeleteIcon from "@mui/icons-material/Delete";
+import AddIcon from "@mui/icons-material/Add";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 function AppHeader() {
   const viewStore = {
@@ -27,7 +31,7 @@ function AppHeader() {
     actions: storeHooks.useStoreActions((action) => action.todoModel),
   };
 
-  const [open, setOpen] = React.useState(false);
+  const [modal, setModal] = React.useState(false);
 
   const signOutAction = storeHooks.useStoreActions(
     (action) => action.authModel.signOut
@@ -58,7 +62,7 @@ function AppHeader() {
                 <Button
                   onClick={
                     // () => signOutAction()
-                    () => setOpen(true)
+                    () => setModal(true)
                   }
                   color="error"
                 >
@@ -76,30 +80,23 @@ function AppHeader() {
         </AppBar>
       </Box>
       <ModalView
-        open={open}
-        onClose={() => setOpen(false)}
-        cancel={() => setOpen(false)}
+        open={modal}
+        onClose={() => setModal(false)}
+        cancel={() => setModal(false)}
         confirm={() => signOutAction()}
       />
     </>
   );
 }
 
-type ModalViewProps = {
+const ModalView = (props: {
   open: boolean;
   onClose: () => void;
   cancel: () => void;
   confirm: () => void;
-};
-
-const ModalView = (props: ModalViewProps) => {
+}) => {
   return (
-    <Modal
-      open={props.open}
-      onClose={props.onClose}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description"
-    >
+    <Modal open={props.open} onClose={props.onClose}>
       <Box
         sx={{
           position: "absolute" as "absolute",
@@ -177,32 +174,21 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function PrimarySearchAppBar() {
-  const [desktopMenuAnchorEl, setDesktopMenuAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [mobileMenuAnchorEl, setMobileMenuAnchorEl] = React.useState<null | HTMLElement>(null);
+  const viewStore = {
+    state: storeHooks.useStoreState((state) => state.todoModel),
+    actions: storeHooks.useStoreActions((action) => action.todoModel),
+  };
+  const signOutAction = storeHooks.useStoreActions(
+    (action) => action.authModel.signOut
+  );
 
-  const desktopMenuPresented = Boolean(desktopMenuAnchorEl);
-  const mobileMenuPresented = Boolean(mobileMenuAnchorEl);
-
-  const handleDesktopMenuOpen = (event: React.MouseEvent<HTMLElement>) => { setDesktopMenuAnchorEl(event.currentTarget); };
-  const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => { setMobileMenuAnchorEl(event.currentTarget); };
-
-  const closeDesktopMenu = () => { setDesktopMenuAnchorEl(null); };
-  const closeMobileMenu = () => { setMobileMenuAnchorEl(null); };
-
-  const desktopMenuId = "primary-search-account-menu";
-  const mobileMenuId = "primary-search-account-menu-mobile";
-
+  const [modal, setModal] = React.useState(false);
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <>
       <AppBar position="static">
         <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-            sx={{ mr: 2 }}
-          >
+          <IconButton size="large" edge="start" color="inherit" sx={{ mr: 2 }}>
             <MenuIcon />
           </IconButton>
           <Typography
@@ -213,83 +199,52 @@ export default function PrimarySearchAppBar() {
           >
             MUI
           </Typography>
-          <Search>
+
+          {/* <Box sx={{ flexGrow: 0 }}/> */}
+          <Search sx={{ flexGrow: 1, display: "block" }}>
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
-            <StyledInputBase
-              placeholder="Search…"
-              inputProps={{ "aria-label": "search" }}
-            />
+            <StyledInputBase placeholder="Search…" />
           </Search>
-          <Box sx={{ flexGrow: 1 }} />
-          <Box sx={{ display: { xs: "none", md: "flex" } }}>
-            <IconButton
-              size="large"
-              aria-label="show 4 new mails"
-              color="inherit"
-            >
-              <MailIcon />
-            </IconButton>
-            <IconButton
-              size="large"
-              aria-label="show 17 new notifications"
-              color="inherit"
-            >
-              <NotificationsIcon />
-            </IconButton>
-            <IconButton
-              size="large"
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={desktopMenuId}
-              aria-haspopup="true"
-              onClick={handleDesktopMenuOpen}
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
-          </Box>
-          <Box sx={{ display: { xs: "flex", md: "none" } }}>
-            <IconButton
-              size="large"
-              aria-label="show more"
-              aria-controls={mobileMenuId}
-              aria-haspopup="true"
-              onClick={handleMobileMenuOpen}
-              color="inherit"
-            >
-              <MoreIcon />
-            </IconButton>
-          </Box>
+          <IconButton size="large" color="inherit">
+            <AddIcon />
+          </IconButton>
+          <IconButton size="large" color="inherit">
+            <DeleteIcon />
+          </IconButton>
+          <IconButton
+            size="large"
+            edge="end"
+            onClick={(event) => setAnchorEl(event.currentTarget)}
+            color="inherit"
+          >
+            <AccountCircle />
+          </IconButton>
         </Toolbar>
       </AppBar>
-      <MobileMenu
-        isPresented={mobileMenuPresented}
-        onDismiss={closeMobileMenu}
-        onOpen={handleDesktopMenuOpen}
-        anchorEl={mobileMenuAnchorEl}
-        id={mobileMenuId}
+      <MyMenu
+        isPresented={Boolean(anchorEl)}
+        onDismiss={() => setAnchorEl(null)}
+        anchorEl={anchorEl}
+        onLogoutButtonTapped={() => setModal(true)}
       />
-      <DesktopMenu
-        isPresented={desktopMenuPresented}
-        onDismiss={closeDesktopMenu}
-        anchorEl={desktopMenuAnchorEl}
-        id={desktopMenuId}
+      <ModalView
+        open={modal}
+        onClose={() => setModal(false)}
+        cancel={() => setModal(false)}
+        confirm={() => signOutAction()}
       />
-    </Box>
+    </>
   );
 }
 
-type MobileMenuProps = {
+function MyMenu(props: {
   isPresented: boolean;
-  onOpen: (event: React.MouseEvent<HTMLElement>) => void;
   onDismiss: () => void;
-  id: any;
   anchorEl: any;
-};
-
-function MobileMenu(props: MobileMenuProps) {
+  onLogoutButtonTapped: () => void;
+}) {
   return (
     <Menu
       anchorEl={props.anchorEl}
@@ -297,63 +252,6 @@ function MobileMenu(props: MobileMenuProps) {
         vertical: "top",
         horizontal: "right",
       }}
-      id={props.id}
-      keepMounted
-      transformOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      open={props.isPresented}
-      onClose={props.onDismiss}
-    >
-      <MenuItem>
-        <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-          <MailIcon />
-        </IconButton>
-        <p>Messages</p>
-      </MenuItem>
-      <MenuItem>
-        <IconButton
-          size="large"
-          aria-label="show 17 new notifications"
-          color="inherit"
-        >
-          <NotificationsIcon />
-        </IconButton>
-        <p>Notifications</p>
-      </MenuItem>
-      <MenuItem onClick={props.onOpen}>
-        <IconButton
-          size="large"
-          aria-label="account of current user"
-          aria-controls="primary-search-account-menu"
-          aria-haspopup="true"
-          color="inherit"
-        >
-          <AccountCircle />
-        </IconButton>
-        <p>Profile</p>
-      </MenuItem>
-    </Menu>
-  );
-}
-
-type DesktopMenuProps = {
-  isPresented: boolean;
-  onDismiss: () => void;
-  id: any;
-  anchorEl: any;
-};
-
-function DesktopMenu(props: DesktopMenuProps) {
-  return (
-    <Menu
-      anchorEl={props.anchorEl}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      id={props.id}
       keepMounted
       transformOrigin={{
         vertical: "top",
@@ -363,7 +261,14 @@ function DesktopMenu(props: DesktopMenuProps) {
       onClose={props.onDismiss}
     >
       <MenuItem onClick={props.onDismiss}>Profile</MenuItem>
-      <MenuItem onClick={props.onDismiss}>Logout</MenuItem>
+      <MenuItem
+        onClick={() => {
+          props.onDismiss();
+          props.onLogoutButtonTapped();
+        }}
+      >
+        Logout
+      </MenuItem>
     </Menu>
   );
 }
