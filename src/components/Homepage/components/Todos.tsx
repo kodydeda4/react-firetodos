@@ -12,7 +12,7 @@ import React from "react";
 import { firestore } from "../../../config/firebase";
 import { storeHooks } from "../../../store";
 import Todo from "../../../types/Todo";
-import AppHeader from "./AppHeader";
+import TodosAppHeader from "./TodosAppHeader";
 
 export default function Homepage() {
   const viewStore = {
@@ -27,7 +27,7 @@ export default function Homepage() {
 
   return (
     <>
-      <AppHeader />
+      <TodosAppHeader />
       <List
         sx={{
           bgcolor: "background.paper",

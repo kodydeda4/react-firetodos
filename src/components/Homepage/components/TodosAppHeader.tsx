@@ -17,7 +17,7 @@ import ROUTES from "../../../routes";
 import { storeHooks } from "../../../store";
 import { ModalView } from "../../_helpers/ModalView";
 
-export default function AppHeader() {
+export default function TodosAppHeader() {
   const viewStore = {
     state: storeHooks.useStoreState((state) => state.todoModel),
     actions: storeHooks.useStoreActions((action) => action.todoModel),

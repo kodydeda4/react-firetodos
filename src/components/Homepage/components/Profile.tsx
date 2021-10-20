@@ -1,6 +1,6 @@
 import { Button, Container } from "@mui/material";
 import { storeHooks } from "../../../store";
-import AppHeader from "./AppHeader";
+import TodosAppHeader from "./TodosAppHeader";
 
 export default function Profile() {
   const viewStore = {
@@ -10,7 +10,7 @@ export default function Profile() {
 
   return (
     <>
-      <AppHeader />
+      <TodosAppHeader />
       <Container>
         <Button
           variant="contained"
