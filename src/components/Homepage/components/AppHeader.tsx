@@ -30,6 +30,7 @@ export default function AppHeader() {
 
   const [modal, setModal] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+
   return (
     <>
       <AppBar position="static">
@@ -43,7 +44,7 @@ export default function AppHeader() {
             component="div"
             sx={{ display: { xs: "none", sm: "block" } }}
           >
-            {user.email}
+            {user!.email}
           </Typography>
           <SearchView />
           <IconButton
