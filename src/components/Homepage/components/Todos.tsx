@@ -13,7 +13,6 @@ import { firestore } from "../../../config/firebase";
 import { storeHooks } from "../../../store";
 import Todo from "../../../types/Todo";
 import AppHeader from "./AppHeader";
-import BottomAppBar from "./AppFooter";
 
 export default function Homepage() {
   const viewStore = {
@@ -70,7 +69,6 @@ export default function Homepage() {
           ))}
         </Container>
       </List>
-      <BottomAppBar />
     </>
   );
 }
