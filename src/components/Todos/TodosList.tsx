@@ -1,9 +1,8 @@
-import { User } from "@firebase/auth";
 import AddIcon from "@mui/icons-material/Add";
 import { Checkbox, List, ListItem, TextField } from "@mui/material";
 import Button from "@mui/material/Button";
 import { onSnapshot, query, where } from "firebase/firestore";
-import React from "react";
+import { useEffect } from "react";
 import { firestore } from "../../config/firebase";
 import { storeHooks } from "../../store";
 import Todo from "../../types/Todo";
@@ -15,7 +14,18 @@ export default function TodosList() {
   };
 
   const user = storeHooks.useStoreState((state) => state.authModel.user);
-  const todos = useTodosSnapshot(user!);
+
+  useEffect(() => {
+    onSnapshot(
+      query(firestore.todos2, where("userID", "==", user?.uid ?? "")),
+      (snapshot) => {
+        viewStore.actions.setTodos(
+          snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() }))
+        );
+      }
+    );
+  }, [user?.uid, viewStore.actions]);
+
 
   return (
     <List
@@ -25,7 +35,7 @@ export default function TodosList() {
         height: "500",
       }}
     >
-      {todos.map((todo: Todo) => (
+      {viewStore.state.todosSearchResults.map((todo: Todo) => (
         <ListItem>
           <Checkbox
             onClick={() => viewStore.actions.toggleTodoDone(todo)}
@@ -57,20 +67,3 @@ export default function TodosList() {
     </List>
   );
 }
-
-export const useTodosSnapshot = (user: User | null): Todo[] => {
-  const [todos, setTodos] = React.useState<Todo[]>([]);
-
-  React.useEffect(() => {
-    onSnapshot(
-      query(firestore.todos2, where("userID", "==", user?.uid ?? "")),
-      (snapshot) => {
-        setTodos(
-          snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() }))
-        );
-      }
-    );
-  }, [user?.uid]);
-
-  return todos;
-};

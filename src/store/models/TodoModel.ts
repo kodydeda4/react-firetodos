@@ -1,4 +1,4 @@
-import { Thunk, thunk } from "easy-peasy";
+import { action, Action, computed, Computed, Thunk, thunk } from "easy-peasy";
 import {
   addDoc,
   deleteDoc,
@@ -7,16 +7,21 @@ import {
   query,
   serverTimestamp,
   updateDoc,
-  where
+  where,
 } from "firebase/firestore";
 import { auth, firestore } from "../../config/firebase";
 import Todo from "../../types/Todo";
 
 interface TodoState {
-  // todos: Todo[];
+  todos: Todo[];
+  search: string;
+  todosSearchResults: Computed<this, Todo[]>;
 }
 
-interface TodoAction {}
+interface TodoAction {
+  setTodos: Action<this, Todo[]>; 
+  setSearch: Action<this, string>;
+}
 
 interface TodoThunks {
   createTodo: Thunk<this>;
@@ -31,10 +36,17 @@ export interface TodoModel extends TodoState, TodoAction, TodoThunks {}
 
 export const todoModel: TodoModel = {
   // STATE
-  // .................................................
+  todos: [],
+  search: "",
+  todosSearchResults: computed((state) => state.todos.filter((todo) => todo.text.includes(state.search))),
 
   // ACTION
-  // .................................................
+  setTodos: action((state, payload) => {
+    state.todos = payload;
+  }),
+  setSearch: action((state, payload) => {
+    state.search = payload;
+  }),
 
   // THUNKS
   createTodo: thunk(async () => {

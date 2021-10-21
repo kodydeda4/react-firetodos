@@ -27,7 +27,7 @@ export default function TodosHeader() {
   const signOutAction = storeHooks.useStoreActions((action) => action.authModel.signOut);
   
   // @State
-  const [searchText, setSearchText] = useState("");
+  // const [searchText, setSearchText] = useState("");
   const [logoutModal, setLogoutModal] = useState(false);
   const [clearAllModal, setClearAllModal] = useState(false);
   const [profileMenu, setProfileMenu] = useState<null | HTMLElement>(null);
@@ -59,7 +59,7 @@ export default function TodosHeader() {
               <SearchIcon />
             </SearchIconWrapper>
             <StyledInputBase
-              onChange={(event) => setSearchText(event.target.value)}
+              onChange={(event) => viewStore.actions.setSearch(event.target.value)}
               placeholder="Search…"
             />
           </Search>
@@ -87,7 +87,7 @@ export default function TodosHeader() {
             <AccountCircle />
           </IconButton>
         </Toolbar>
-        {searchText}
+        {viewStore.state.search}
       </AppBar>
       <MenuView
         isPresented={profileMenu}
