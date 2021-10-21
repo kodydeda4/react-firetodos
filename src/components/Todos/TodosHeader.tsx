@@ -3,7 +3,7 @@ import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
-import { Toolbar } from "@mui/material";
+import { Box, Toolbar } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import IconButton from "@mui/material/IconButton";
 import InputBase from "@mui/material/InputBase";
@@ -13,22 +13,27 @@ import { alpha, styled } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { Link as RouterLink } from "react-router-dom";
-import ROUTES from "../../../routes";
-import { storeHooks } from "../../../store";
-import { ModalView } from "../../_helpers/ModalView";
+import ROUTES from "../../routes";
+import { storeHooks } from "../../store";
+import { ModalView } from "../_helpers/ModalView";
 
-export default function TodosAppHeader() {
+export default function TodosHeader() {
   const viewStore = {
     state: storeHooks.useStoreState((state) => state.todoModel),
     actions: storeHooks.useStoreActions((action) => action.todoModel),
   };
 
-  const signOutAction = storeHooks.useStoreActions((action) => action.authModel.signOut);
+  const signOutAction = storeHooks.useStoreActions(
+    (action) => action.authModel.signOut
+  );
+  const [searchText, setSearchText] = React.useState("");
 
   // @State
   const [logoutModal, setLogoutModal] = React.useState(false);
   const [clearAllModal, setClearAllModal] = React.useState(false);
-  const [profileMenu, setProfileMenu] = React.useState<null | HTMLElement>(null);
+  const [profileMenu, setProfileMenu] = React.useState<null | HTMLElement>(
+    null
+  );
 
   return (
     <>
@@ -52,7 +57,16 @@ export default function TodosAppHeader() {
           >
             FireTodos
           </Typography>
-          <SearchView />
+          <Search sx={{ flexGrow: 1 }}>
+            <SearchIconWrapper>
+              <SearchIcon />
+            </SearchIconWrapper>
+            <StyledInputBase
+              onChange={(event) => setSearchText(event.target.value)}
+              placeholder="Search…"
+            />
+          </Search>
+          {/* <Box sx={{ flexGrow: 1 }}/> */}
           <IconButton
             onClick={() => viewStore.actions.createTodo()}
             size="large"
@@ -76,6 +90,7 @@ export default function TodosAppHeader() {
             <AccountCircle />
           </IconButton>
         </Toolbar>
+        {searchText}
       </AppBar>
       <MenuView
         isPresented={profileMenu}
@@ -151,7 +166,7 @@ function MenuView(props: {
           props.onLogoutButtonTapped();
         }}
         sx={{
-          color: 'red'
+          color: "red",
         }}
       >
         Logout
@@ -162,52 +177,41 @@ function MenuView(props: {
 
 // Search ____________________________________________________________________________________________
 
-const SearchView = () => {
-  const Search = styled("div")(({ theme }) => ({
-    position: "relative",
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: alpha(theme.palette.common.white, 0.15),
-    "&:hover": {
-      backgroundColor: alpha(theme.palette.common.white, 0.25),
-    },
-    marginRight: theme.spacing(2),
-    marginLeft: 0,
+const Search = styled("div")(({ theme }) => ({
+  position: "relative",
+  borderRadius: theme.shape.borderRadius,
+  backgroundColor: alpha(theme.palette.common.white, 0.15),
+  "&:hover": {
+    backgroundColor: alpha(theme.palette.common.white, 0.25),
+  },
+  marginRight: theme.spacing(2),
+  marginLeft: 0,
+  width: "100%",
+  [theme.breakpoints.up("sm")]: {
+    marginLeft: theme.spacing(3),
+    width: "auto",
+  },
+}));
+
+const SearchIconWrapper = styled("div")(({ theme }) => ({
+  padding: theme.spacing(0, 2),
+  height: "100%",
+  position: "absolute",
+  pointerEvents: "none",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+}));
+
+const StyledInputBase = styled(InputBase)(({ theme }) => ({
+  color: "inherit",
+  "& .MuiInputBase-input": {
+    padding: theme.spacing(1, 1, 1, 0),
+    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+    transition: theme.transitions.create("width"),
     width: "100%",
-    [theme.breakpoints.up("sm")]: {
-      marginLeft: theme.spacing(3),
-      width: "auto",
+    [theme.breakpoints.up("md")]: {
+      width: "20ch",
     },
-  }));
-
-  const SearchIconWrapper = styled("div")(({ theme }) => ({
-    padding: theme.spacing(0, 2),
-    height: "100%",
-    position: "absolute",
-    pointerEvents: "none",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  }));
-
-  const StyledInputBase = styled(InputBase)(({ theme }) => ({
-    color: "inherit",
-    "& .MuiInputBase-input": {
-      padding: theme.spacing(1, 1, 1, 0),
-      paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-      transition: theme.transitions.create("width"),
-      width: "100%",
-      [theme.breakpoints.up("md")]: {
-        width: "20ch",
-      },
-    },
-  }));
-
-  return (
-    <Search sx={{ flexGrow: 1 }}>
-      <SearchIconWrapper>
-        <SearchIcon />
-      </SearchIconWrapper>
-      <StyledInputBase placeholder="Search…" />
-    </Search>
-  );
-};
+  },
+}));

@@ -11,10 +11,10 @@ import { store } from "../store";
 import ForgotPassword from "./Authpage/ForgotPassword";
 import Login from "./Authpage/Login";
 import Signup from "./Authpage/Signup";
-import Profile from "./Homepage/components/Profile";
-import Homepage from "./Homepage/components/Todos";
+import Profile from "./Profile";
 import NotFound from "./NotFound";
 import PrivateRoute from "./_helpers/PrivateRoute";
+import Homepage from "./Todos";
 
 export default function App() {
   return (
