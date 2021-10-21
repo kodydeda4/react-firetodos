@@ -12,6 +12,7 @@ import MenuItem from "@mui/material/MenuItem";
 import { alpha, styled } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
+import { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import ROUTES from "../../routes";
 import { storeHooks } from "../../store";
@@ -23,17 +24,13 @@ export default function TodosHeader() {
     actions: storeHooks.useStoreActions((action) => action.todoModel),
   };
 
-  const signOutAction = storeHooks.useStoreActions(
-    (action) => action.authModel.signOut
-  );
-  const [searchText, setSearchText] = React.useState("");
-
+  const signOutAction = storeHooks.useStoreActions((action) => action.authModel.signOut);
+  
   // @State
-  const [logoutModal, setLogoutModal] = React.useState(false);
-  const [clearAllModal, setClearAllModal] = React.useState(false);
-  const [profileMenu, setProfileMenu] = React.useState<null | HTMLElement>(
-    null
-  );
+  const [searchText, setSearchText] = useState("");
+  const [logoutModal, setLogoutModal] = useState(false);
+  const [clearAllModal, setClearAllModal] = useState(false);
+  const [profileMenu, setProfileMenu] = useState<null | HTMLElement>(null);
 
   return (
     <>

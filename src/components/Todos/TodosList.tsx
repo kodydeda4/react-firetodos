@@ -22,7 +22,6 @@ export default function TodosList() {
       sx={{
         bgcolor: "background.paper",
         overflow: "auto",
-        // height: "100vh",
         height: "500",
       }}
     >
