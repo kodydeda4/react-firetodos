@@ -27,7 +27,6 @@ export default function TodosHeader() {
   const signOutAction = storeHooks.useStoreActions((action) => action.authModel.signOut);
   
   // @State
-  // const [searchText, setSearchText] = useState("");
   const [logoutModal, setLogoutModal] = useState(false);
   const [clearAllModal, setClearAllModal] = useState(false);
   const [profileMenu, setProfileMenu] = useState<null | HTMLElement>(null);
@@ -63,7 +62,6 @@ export default function TodosHeader() {
               placeholder="Search…"
             />
           </Search>
-          {/* <Box sx={{ flexGrow: 1 }}/> */}
           <IconButton
             onClick={() => viewStore.actions.createTodo()}
             size="large"
@@ -87,7 +85,6 @@ export default function TodosHeader() {
             <AccountCircle />
           </IconButton>
         </Toolbar>
-        {viewStore.state.search}
       </AppBar>
       <MenuView
         isPresented={profileMenu}

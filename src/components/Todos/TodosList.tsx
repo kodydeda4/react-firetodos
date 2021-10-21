@@ -1,5 +1,14 @@
 import AddIcon from "@mui/icons-material/Add";
-import { Checkbox, List, ListItem, TextField } from "@mui/material";
+import {
+  Box,
+  Checkbox,
+  Container,
+  CssBaseline,
+  List,
+  ListItem,
+  TextField,
+  Typography
+} from "@mui/material";
 import Button from "@mui/material/Button";
 import { onSnapshot, query, where } from "firebase/firestore";
 import { useEffect } from "react";
@@ -26,6 +35,9 @@ export default function TodosList() {
     );
   }, [user?.uid, viewStore.actions]);
 
+  if (viewStore.state.todosSearchResults.length === 0) {
+    return <PlaceholderView/>
+  }
 
   return (
     <List
@@ -67,3 +79,23 @@ export default function TodosList() {
     </List>
   );
 }
+
+const PlaceholderView = () => {
+  return (
+    <Container component="main" maxWidth="xs">
+      <CssBaseline />
+      <Box
+        sx={{
+          marginTop: 8,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <Typography color={"gray"} variant="h6">
+          No Results...
+        </Typography>
+      </Box>
+    </Container>
+  );
+};
