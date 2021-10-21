@@ -6,15 +6,12 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { storeHooks } from "../../store";
-import ProfileAppHeader from "./ProfileAppHeader";
 
 export default function ProfileView() {
   const viewStore = {
-    state: storeHooks.useStoreState((state) => state.todoModel),
-    actions: storeHooks.useStoreActions((action) => action.todoModel),
+    state: storeHooks.useStoreState((state) => state.authModel),
+    actions: storeHooks.useStoreActions((action) => action.authModel),
   };
-
-  const user = storeHooks.useStoreState((state) => state.authModel.user);
 
   return (
     <Container component="main" maxWidth="xs">
@@ -31,7 +28,7 @@ export default function ProfileView() {
           <AccountCircleIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          {user?.email}
+          {viewStore.state.user?.email}
         </Typography>
         <Button
           onClick={() => viewStore.actions.togglePremium()}

@@ -13,6 +13,7 @@ interface AuthState {
   alert?: AlertState;
   email: string;
   password: string;
+  isPremiumUser: boolean;
 }
 
 interface AuthAction {
@@ -20,6 +21,7 @@ interface AuthAction {
   setAlert: Action<this, AlertState | undefined>;
   setEmail: Action<this, string>;
   setPassword: Action<this, string>;
+  togglePremium: Action<this>;
 }
 
 interface AuthThunk {
@@ -36,6 +38,7 @@ export const authModel: AuthModel = {
   alert: undefined,
   email: "",
   password: "",
+  isPremiumUser: false,
 
   // ACTION
   setUser: action((state, payload) => {
@@ -50,6 +53,9 @@ export const authModel: AuthModel = {
   setPassword: action((state, payload) => {
     state.password = payload;
   }),
+  togglePremium: action((state) => {
+    state.isPremiumUser = !state.isPremiumUser
+  }),  
   
   // THUNK
   signUp: thunk(async (actions, payload, { getState }) => {
