@@ -1,5 +1,4 @@
-import { User } from "@firebase/auth";
-import { Action, action, createStore, Thunk, thunk } from "easy-peasy";
+import { Thunk, thunk } from "easy-peasy";
 import {
   addDoc,
   deleteDoc,
@@ -8,12 +7,10 @@ import {
   query,
   serverTimestamp,
   updateDoc,
-  where,
+  where
 } from "firebase/firestore";
-import { storeHooks } from "..";
-import { firestore } from "../../config/firebase";
+import { auth, firestore } from "../../config/firebase";
 import Todo from "../../types/Todo";
-import { auth } from "../../config/firebase";
 
 interface TodoState {
   // todos: Todo[];

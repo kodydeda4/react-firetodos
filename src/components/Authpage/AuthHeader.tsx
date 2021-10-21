@@ -5,14 +5,8 @@ import Typography from "@mui/material/Typography";
 import React from "react";
 import { Link as RouterLink } from "react-router-dom";
 import ROUTES from "../../routes";
-import { storeHooks } from "../../store";
 
 export default function AuthHeader() {
-  const viewStore = {
-    state: storeHooks.useStoreState((state) => state.authModel),
-    actions: storeHooks.useStoreActions((action) => action.authModel),
-  };
-
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">

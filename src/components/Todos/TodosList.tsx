@@ -1,13 +1,12 @@
 import { User } from "@firebase/auth";
 import AddIcon from "@mui/icons-material/Add";
-import { Checkbox, Container, List, ListItem, TextField } from "@mui/material";
+import { Checkbox, List, ListItem, TextField } from "@mui/material";
 import Button from "@mui/material/Button";
 import { onSnapshot, query, where } from "firebase/firestore";
 import React from "react";
 import { firestore } from "../../config/firebase";
 import { storeHooks } from "../../store";
 import Todo from "../../types/Todo";
-import TodosHeader from "./TodosHeader";
 
 export default function TodosList() {
   const viewStore = {
@@ -63,7 +62,7 @@ export default function TodosList() {
 export const useTodosSnapshot = (user: User | null): Todo[] => {
   const [todos, setTodos] = React.useState<Todo[]>([]);
 
-  const update = React.useEffect(() => {
+  React.useEffect(() => {
     onSnapshot(
       query(firestore.todos2, where("userID", "==", user?.uid ?? "")),
       (snapshot) => {
@@ -72,7 +71,7 @@ export const useTodosSnapshot = (user: User | null): Todo[] => {
         );
       }
     );
-  }, []);
+  }, [user?.uid]);
 
   return todos;
 };

@@ -1,10 +1,9 @@
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  User,
+  User
 } from "@firebase/auth";
-import { Action, action, createStore, Thunk, thunk } from "easy-peasy";
-import { storeHooks } from "..";
+import { Action, action, Thunk, thunk } from "easy-peasy";
 import { auth } from "../../config/firebase";
 import { AlertState, Severity } from "../../types/AlertState";
 
