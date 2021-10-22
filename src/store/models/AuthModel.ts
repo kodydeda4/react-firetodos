@@ -72,7 +72,7 @@ export const authModel: AuthModel = {
       .catch((error) => {
         actions.setAlert({
           severity: Severity.error,
-          message: "Please make sure your email and password are incorrect.",
+          message: "A user with that email already exists.",
         });
       });
   }),
