@@ -20,7 +20,7 @@ export default function AuthHeader() {
                 Login
               </Button>
               <Button
-                // color="inherit"
+                color="primary"
                 component={RouterLink}
                 to={ROUTES.signup}
                 variant="contained"
