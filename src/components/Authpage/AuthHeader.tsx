@@ -16,10 +16,11 @@ export default function AuthHeader() {
               FireTodos
             </Typography>
             <Stack direction="row" spacing={2}>
-              <Button component={RouterLink} to={ROUTES.login}>
+              <Button color="inherit" component={RouterLink} to={ROUTES.login}>
                 Login
               </Button>
               <Button
+                // color="inherit"
                 component={RouterLink}
                 to={ROUTES.signup}
                 variant="contained"
