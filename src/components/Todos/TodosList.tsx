@@ -80,7 +80,7 @@ export default function TodosList() {
   );
 }
 
-const PlaceholderView = () => {
+function PlaceholderView () {
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
