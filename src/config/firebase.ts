@@ -15,6 +15,7 @@ export const app = initializeApp({
 export const auth = getAuth(app);
 
 export const firestore = {
+  users: collection(getFirestore(), "users"),
   todos: collection(getFirestore(), "todos"),
   todos2: collection(getFirestore(), "todos2"),
   colors: collection(getFirestore(), "colors"),

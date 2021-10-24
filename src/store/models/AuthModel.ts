@@ -1,3 +1,5 @@
+import { collection, getDocs, onSnapshot } from 'firebase/firestore';
+import { firestore } from './../../config/firebase';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -6,6 +8,8 @@ import {
 import { Action, action, Thunk, thunk } from "easy-peasy";
 import { auth } from "../../config/firebase";
 import { AlertState, Severity } from "../../types/AlertState";
+import { addDoc, doc, getFirestore } from '@firebase/firestore';
+import { loadStripe } from '@stripe/stripe-js';
 
 interface AuthState {
   user?: User;
@@ -63,6 +67,15 @@ export const authModel: AuthModel = {
       getState().email,
       getState().password
     )
+    // .then(async (userCredential) => {
+    //   // const u = userCredential.user.uid
+    //   // const c = collection(firestore.users, u, "checkout_sessions")
+    //   // const d = await addDoc(c, {
+    //   //   price: process.env.REACT_APP_STRIPE_PRODUCT_PRICE,
+    //   //   success_url: window.location.origin,
+    //   //   cancel_url: window.location.origin,
+    //   // });
+    // })
       .then((userCredential) => {
         actions.setAlert({
           severity: Severity.success,
