@@ -6,6 +6,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { storeHooks } from "../../store";
+import { Link as RouterLink } from "react-router-dom";
 
 export default function ProfileView() {
   const viewStore = {
@@ -31,7 +32,11 @@ export default function ProfileView() {
           {viewStore.state.user?.email}
         </Typography>
         <Button
-          onClick={() => viewStore.actions.togglePremium()}
+          component={RouterLink}
+          to={"https://buy.stripe.com/test_9AQdSHenHa7N3qo9AA"}
+          // onClick={props.onDismiss}
+
+          // onClick={() => viewStore.actions.togglePremium()}
           type="submit"
           fullWidth
           variant={viewStore.state.isPremiumUser ? "outlined" : "contained"}
@@ -41,6 +46,7 @@ export default function ProfileView() {
             ? "cancel subscription"
             : "buy premium"}
         </Button>
+        <a target="_blank" href="https://buy.stripe.com/test_9AQdSHenHa7N3qo9AA">purchase premium</a>
       </Box>
     </Container>
   );
