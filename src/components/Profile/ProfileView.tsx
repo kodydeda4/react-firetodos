@@ -7,6 +7,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Typography from "@mui/material/Typography";
 import { collection } from "firebase/firestore";
 import * as React from "react";
+import { auth } from "../../config/firebase";
 import { storeHooks } from "../../store";
 
 export default function ProfileView() {
@@ -15,8 +16,15 @@ export default function ProfileView() {
     actions: storeHooks.useStoreActions((action) => action.authModel),
   };
 
+  async function getCustomClaimRole() {
+    await auth.currentUser!.getIdToken(true);
+    const decodedToken = await auth.currentUser!.getIdTokenResult();
+    const stripeRoleR = decodedToken.claims.stripeRole;
+    console.log(`${stripeRoleR}`);
+  }
+
   const handleSubmit = async () => {
-    const d = await addDoc(
+    await addDoc(
       collection(
         getFirestore(),
         "users",
@@ -29,16 +37,16 @@ export default function ProfileView() {
         success_url: window.location.origin,
         cancel_url: window.location.origin,
       }
-    );
+    ).then((doc) => {
+      onSnapshot(doc, (snapshot) => {
+        const url = snapshot.data()?.url;
 
-    onSnapshot(d, (snap) => {
-      const url = snap.data()?.url;
-
-      if (url) {
-        window.location.assign(url);
-      } else {
-        console.log("error");
-      }
+        if (url) {
+          window.location.assign(url);
+        } else {
+          console.log("error");
+        }
+      });
     });
   };
 
@@ -67,6 +75,15 @@ export default function ProfileView() {
           sx={{ mt: 3 }}
         >
           Buy premium
+        </Button>
+        <Button
+          onClick={getCustomClaimRole}
+          type="submit"
+          fullWidth
+          variant={viewStore.state.isPremiumUser ? "outlined" : "contained"}
+          sx={{ mt: 3 }}
+        >
+          getCustomClaimRole
         </Button>
       </Box>
     </Container>
