@@ -5,10 +5,11 @@ import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
 import Typography from "@mui/material/Typography";
-import { collection } from "firebase/firestore";
+import { collection, doc, getDocs, query, where } from "firebase/firestore";
 import * as React from "react";
 import { auth } from "../../config/firebase";
 import { storeHooks } from "../../store";
+import { firestore } from "../../config/firebase";
 
 export default function ProfileView() {
   const viewStore = {
@@ -20,10 +21,25 @@ export default function ProfileView() {
     await auth.currentUser!.getIdToken(true);
     const decodedToken = await auth.currentUser!.getIdTokenResult();
     const stripeRoleR = decodedToken.claims.stripeRole;
+    console.log(`${decodedToken}`);
     console.log(`${stripeRoleR}`);
   }
 
-  const handleSubmit = async () => {
+  async function getHasPremium() {
+    await getDocs(
+      query(
+        collection(
+          getFirestore(),
+          "users",
+          viewStore.state.user!.uid,
+          "payments"
+        ),
+        where("status", "==", "succeeded")
+      )
+    ).then((snapshot) => snapshot.docs.length > 0);
+  }
+
+  const purchasePremium = async () => {
     await addDoc(
       collection(
         getFirestore(),
@@ -68,7 +84,7 @@ export default function ProfileView() {
           {viewStore.state.user?.email}
         </Typography>
         <Button
-          onClick={handleSubmit}
+          onClick={purchasePremium}
           type="submit"
           fullWidth
           variant={viewStore.state.isPremiumUser ? "outlined" : "contained"}
@@ -77,7 +93,7 @@ export default function ProfileView() {
           Buy premium
         </Button>
         <Button
-          onClick={getCustomClaimRole}
+          onClick={getHasPremium}
           type="submit"
           fullWidth
           variant={viewStore.state.isPremiumUser ? "outlined" : "contained"}
