@@ -25,21 +25,6 @@ export default function ProfileView() {
     console.log(`${stripeRoleR}`);
   }
 
-  async function getHasPremium() {
-    await getDocs(
-      query(
-        collection(
-          getFirestore(),
-          "users",
-          viewStore.state.user!.uid,
-          "payments"
-        ),
-        where("status", "==", "succeeded")
-      )
-    ).then((snapshot) => snapshot.docs.length > 0);
-  }
-
-
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -58,23 +43,34 @@ export default function ProfileView() {
           {viewStore.state.user?.email}
         </Typography>
         <Button
+          disabled={viewStore.state.hasPremium}
           onClick={() => viewStore.actions.purchasePremium()}
           type="submit"
           fullWidth
-          variant={viewStore.state.isPremiumUser ? "outlined" : "contained"}
+          variant={viewStore.state.hasPremium ? "outlined" : "contained"}
           sx={{ mt: 3 }}
         >
           Buy premium
         </Button>
         <Button
-          onClick={getHasPremium}
+          onClick={getCustomClaimRole}
           type="submit"
           fullWidth
-          variant={viewStore.state.isPremiumUser ? "outlined" : "contained"}
+          variant={viewStore.state.hasPremium ? "outlined" : "contained"}
           sx={{ mt: 3 }}
         >
           getCustomClaimRole
         </Button>
+        <Button
+          onClick={() => viewStore.actions.getHasPremium()}
+          type="submit"
+          fullWidth
+          variant={viewStore.state.hasPremium ? "outlined" : "contained"}
+          sx={{ mt: 3 }}
+        >
+          getHasPremium
+        </Button>
+
       </Box>
     </Container>
   );

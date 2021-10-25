@@ -8,7 +8,7 @@ import {
 import { Action, action, Thunk, thunk } from "easy-peasy";
 import { auth } from "../../config/firebase";
 import { AlertState, Severity } from "../../types/AlertState";
-import { addDoc, doc, getFirestore } from "@firebase/firestore";
+import { addDoc, doc, getFirestore, query, where } from "@firebase/firestore";
 import { loadStripe } from "@stripe/stripe-js";
 
 interface AuthState {
@@ -16,7 +16,7 @@ interface AuthState {
   alert?: AlertState;
   email: string;
   password: string;
-  isPremiumUser: boolean;
+  hasPremium: boolean;
 }
 
 interface AuthAction {
@@ -24,7 +24,7 @@ interface AuthAction {
   setAlert: Action<this, AlertState | undefined>;
   setEmail: Action<this, string>;
   setPassword: Action<this, string>;
-  togglePremium: Action<this>;
+  setHasPremium: Action<this, boolean>;
 }
 
 interface AuthThunk {
@@ -32,6 +32,7 @@ interface AuthThunk {
   signIn: Thunk<this>;
   signOut: Thunk<this>;
   purchasePremium: Thunk<this>;
+  getHasPremium: Thunk<this>;
 }
 
 export interface AuthModel extends AuthState, AuthAction, AuthThunk {}
@@ -42,7 +43,7 @@ export const authModel: AuthModel = {
   alert: undefined,
   email: "",
   password: "",
-  isPremiumUser: false,
+  hasPremium: false,
 
   // ACTION
   setUser: action((state, payload) => {
@@ -57,16 +58,16 @@ export const authModel: AuthModel = {
   setPassword: action((state, payload) => {
     state.password = payload;
   }),
-  togglePremium: action((state) => {
-    state.isPremiumUser = !state.isPremiumUser;
+  setHasPremium: action((state, payload) => {
+    state.hasPremium = payload;
   }),
 
   // THUNK
-  signUp: thunk(async (actions, payload, { getState }) => {
+  signUp: thunk(async (actions, _, helpers) => {
     await createUserWithEmailAndPassword(
       auth,
-      getState().email,
-      getState().password
+      helpers.getState().email,
+      helpers.getState().password
     )
       .then((userCredential) => {
         actions.setAlert({
@@ -81,11 +82,11 @@ export const authModel: AuthModel = {
         });
       });
   }),
-  signIn: thunk(async (actions, payload, { getState }) => {
+  signIn: thunk(async (actions, _, helpers) => {
     await signInWithEmailAndPassword(
       auth,
-      getState().email,
-      getState().password
+      helpers.getState().email,
+      helpers.getState().password
     )
       .then((userCredential) => {
         actions.setUser(userCredential.user);
@@ -105,11 +106,11 @@ export const authModel: AuthModel = {
     actions.setPassword("");
   }),
   purchasePremium: thunk(async (actions, payload, helpers) => {
-    // const purchasePremium = async () => {
     await addDoc(
       collection(
         getFirestore(),
         "users",
+        
         helpers.getState().user!.uid,
         "checkout_sessions"
       ),
@@ -129,6 +130,21 @@ export const authModel: AuthModel = {
           console.log("error");
         }
       });
+    });
+  }),
+  getHasPremium: thunk(async (actions, _, helpers) => {
+    await getDocs(
+      query(
+        collection(
+          getFirestore(),
+          "users",
+          helpers.getState().user!.uid,
+          "payments"
+        ),
+        where("status", "==", "succeeded")
+      )
+    ).then((snapshot) => {
+      actions.setHasPremium(snapshot.docs.length > 0);
     });
   }),
 };
