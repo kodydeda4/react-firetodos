@@ -1,15 +1,15 @@
-import { collection, getDocs, onSnapshot } from 'firebase/firestore';
-import { firestore } from './../../config/firebase';
+import { collection, getDocs, onSnapshot } from "firebase/firestore";
+import { firestore } from "./../../config/firebase";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  User
+  User,
 } from "@firebase/auth";
 import { Action, action, Thunk, thunk } from "easy-peasy";
 import { auth } from "../../config/firebase";
 import { AlertState, Severity } from "../../types/AlertState";
-import { addDoc, doc, getFirestore } from '@firebase/firestore';
-import { loadStripe } from '@stripe/stripe-js';
+import { addDoc, doc, getFirestore } from "@firebase/firestore";
+import { loadStripe } from "@stripe/stripe-js";
 
 interface AuthState {
   user?: User;
@@ -31,6 +31,7 @@ interface AuthThunk {
   signUp: Thunk<this>;
   signIn: Thunk<this>;
   signOut: Thunk<this>;
+  purchasePremium: Thunk<this>;
 }
 
 export interface AuthModel extends AuthState, AuthAction, AuthThunk {}
@@ -57,9 +58,9 @@ export const authModel: AuthModel = {
     state.password = payload;
   }),
   togglePremium: action((state) => {
-    state.isPremiumUser = !state.isPremiumUser
-  }),  
-  
+    state.isPremiumUser = !state.isPremiumUser;
+  }),
+
   // THUNK
   signUp: thunk(async (actions, payload, { getState }) => {
     await createUserWithEmailAndPassword(
@@ -67,15 +68,6 @@ export const authModel: AuthModel = {
       getState().email,
       getState().password
     )
-    // .then(async (userCredential) => {
-    //   // const u = userCredential.user.uid
-    //   // const c = collection(firestore.users, u, "checkout_sessions")
-    //   // const d = await addDoc(c, {
-    //   //   price: process.env.REACT_APP_STRIPE_PRODUCT_PRICE,
-    //   //   success_url: window.location.origin,
-    //   //   cancel_url: window.location.origin,
-    //   // });
-    // })
       .then((userCredential) => {
         actions.setAlert({
           severity: Severity.success,
@@ -111,5 +103,32 @@ export const authModel: AuthModel = {
     actions.setAlert(undefined);
     actions.setEmail("");
     actions.setPassword("");
+  }),
+  purchasePremium: thunk(async (actions, payload, helpers) => {
+    // const purchasePremium = async () => {
+    await addDoc(
+      collection(
+        getFirestore(),
+        "users",
+        helpers.getState().user!.uid,
+        "checkout_sessions"
+      ),
+      {
+        mode: "payment",
+        price: "price_1Jo8SSJFfPBKehtVRw32DOjA",
+        success_url: window.location.origin,
+        cancel_url: window.location.origin,
+      }
+    ).then((doc) => {
+      onSnapshot(doc, (snapshot) => {
+        const url = snapshot.data()?.url;
+
+        if (url) {
+          window.location.assign(url);
+        } else {
+          console.log("error");
+        }
+      });
+    });
   }),
 };

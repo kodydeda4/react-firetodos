@@ -39,32 +39,6 @@ export default function ProfileView() {
     ).then((snapshot) => snapshot.docs.length > 0);
   }
 
-  const purchasePremium = async () => {
-    await addDoc(
-      collection(
-        getFirestore(),
-        "users",
-        viewStore.state.user?.uid!,
-        "checkout_sessions"
-      ),
-      {
-        mode: "payment",
-        price: "price_1Jo8SSJFfPBKehtVRw32DOjA",
-        success_url: window.location.origin,
-        cancel_url: window.location.origin,
-      }
-    ).then((doc) => {
-      onSnapshot(doc, (snapshot) => {
-        const url = snapshot.data()?.url;
-
-        if (url) {
-          window.location.assign(url);
-        } else {
-          console.log("error");
-        }
-      });
-    });
-  };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -84,7 +58,7 @@ export default function ProfileView() {
           {viewStore.state.user?.email}
         </Typography>
         <Button
-          onClick={purchasePremium}
+          onClick={() => viewStore.actions.purchasePremium()}
           type="submit"
           fullWidth
           variant={viewStore.state.isPremiumUser ? "outlined" : "contained"}
