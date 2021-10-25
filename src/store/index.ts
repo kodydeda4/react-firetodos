@@ -1,6 +1,6 @@
-import { createStore, createTypedHooks, persist } from "easy-peasy";
+import { createStore, createTypedHooks } from "easy-peasy";
 import { AuthModel, authModel } from "./models/AuthModel";
-import { TodoModel, todoModel } from "./models/TodoModel";
+import { TodoModel, todoModel } from "./models/UserModel";
 
 interface Model {
   authModel: AuthModel;

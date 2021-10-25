@@ -4,7 +4,7 @@ import { StoreProvider } from "easy-peasy";
 import { collection, getFirestore, onSnapshot, query, where } from "firebase/firestore";
 import React, { useEffect } from "react";
 import { HashRouter, Route, Switch } from "react-router-dom";
-import { firestore } from "../config/firebase";
+import { auth, firestore } from "../config/firebase";
 import { stripeConfig } from "../config/stripe";
 
 import useAppTheme from "../hooks/useAppTheme";
@@ -50,6 +50,30 @@ const Routez = () => {
   }, [user?.uid, viewStore.actions]);
 
 
+  // set has premium
+  useEffect(() => {
+    onSnapshot(
+      query(
+        collection(
+          getFirestore(),
+          "users",
+          auth.currentUser?.uid ?? "\(#8f)",
+          "payments"
+        )
+      ),
+      (snapshot) =>
+        viewStore.actions.setHasPremium(
+          snapshot.docs
+            .flatMap((doc) =>
+              doc
+                .data()
+                .items.map((item: any) => item.price)
+                .map((price: any) => price.id)
+            )
+            .includes(stripeConfig.prices.premium)
+        )
+    );
+  }, []);
 
   return (
     <HashRouter>

@@ -1,18 +1,24 @@
 import { action, Action, computed, Computed, Thunk, thunk } from "easy-peasy";
+import { User } from "firebase/auth";
 import {
   addDoc,
+  collection,
   deleteDoc,
   doc,
   getDocs,
+  getFirestore,
+  onSnapshot,
   query,
   serverTimestamp,
   updateDoc,
-  where,
+  where
 } from "firebase/firestore";
 import { auth, firestore } from "../../config/firebase";
 import Todo from "../../types/Todo";
 
 interface TodoState {
+  user?: User;
+  hasPremium: boolean;
   todos: Todo[];
   search: string;
   todosSearchResults: Computed<this, Todo[]>;
@@ -21,9 +27,11 @@ interface TodoState {
 interface TodoAction {
   setTodos: Action<this, Todo[]>; 
   setSearch: Action<this, string>;
+  setHasPremium: Action<this, boolean>;
 }
 
 interface TodoThunks {
+  purchasePremium: Thunk<this>;
   createTodo: Thunk<this>;
   deleteTodo: Thunk<this, Todo>;
   toggleTodoDone: Thunk<this, Todo>;
@@ -36,6 +44,8 @@ export interface TodoModel extends TodoState, TodoAction, TodoThunks {}
 
 export const todoModel: TodoModel = {
   // STATE
+  user: undefined,
+  hasPremium: false,
   todos: [],
   search: "",
   todosSearchResults: computed((state) => state.todos.filter((todo) => todo.text.includes(state.search))),
@@ -47,8 +57,39 @@ export const todoModel: TodoModel = {
   setSearch: action((state, payload) => {
     state.search = payload;
   }),
+  setHasPremium: action((state, payload) => {
+    state.hasPremium = payload;
+  }),
+
 
   // THUNKS
+  purchasePremium: thunk(async (actions, payload, helpers) => {
+    await addDoc(
+      collection(
+        getFirestore(),
+        "users",
+        
+        helpers.getState().user!.uid,
+        "checkout_sessions"
+      ),
+      {
+        mode: "payment",
+        price: "price_1Jo8SSJFfPBKehtVRw32DOjA",
+        success_url: window.location.origin,
+        cancel_url: window.location.origin,
+      }
+    ).then((doc) => {
+      onSnapshot(doc, (snapshot) => {
+        const url = snapshot.data()?.url;
+
+        if (url) {
+          window.location.assign(url);
+        } else {
+          console.log("error");
+        }
+      });
+    });
+  }),
   createTodo: thunk(async () => {
     await addDoc(firestore.todos2, {
       text: "untitled",
