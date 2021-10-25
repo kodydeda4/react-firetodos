@@ -1,7 +1,8 @@
 import {
   collection,
-  getFirestore, onSnapshot,
-  query
+  getFirestore,
+  onSnapshot,
+  query,
 } from "firebase/firestore";
 import { useEffect } from "react";
 import { stripeConfig } from "../../config/stripe";
@@ -26,17 +27,17 @@ export default function Profile() {
           "payments"
         )
       ),
-      (snapshot) => {
-        const priceIDs = snapshot.docs.flatMap((doc) => {
-          const items = doc.data().items;
-          const prices = items.map((item: any) => item.price);
-          const ids = prices.map((price: any) => price.id);
-          return ids;
-        });
+      (snapshot) =>
         viewStore.actions.setHasPremium(
-          priceIDs.includes(stripeConfig.prices.premium)
-        );
-      }
+          snapshot.docs
+            .flatMap((doc) =>
+              doc
+                .data()
+                .items.map((item: any) => item.price)
+                .map((price: any) => price.id)
+            )
+            .includes(stripeConfig.prices.premium)
+        )
     );
   }, []);
 
