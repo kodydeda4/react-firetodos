@@ -1,17 +1,12 @@
-import { addDoc, getFirestore, onSnapshot } from "@firebase/firestore";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { Button, Container } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
 import Typography from "@mui/material/Typography";
-import { collection, doc, getDocs, query, where } from "firebase/firestore";
 import * as React from "react";
 import { auth } from "../../config/firebase";
 import { storeHooks } from "../../store";
-import { firestore } from "../../config/firebase";
-import { loadStripe } from "@stripe/stripe-js";
-import { stripeConfig } from "../../config/stripe";
 
 export default function ProfileView() {
   const viewStore = {
@@ -62,15 +57,6 @@ export default function ProfileView() {
           sx={{ mt: 3 }}
         >
           Custom Claim Role
-        </Button>
-        <Button
-          onClick={() => viewStore.actions.getHasPremium()}
-          type="submit"
-          fullWidth
-          variant={viewStore.state.hasPremium ? "outlined" : "contained"}
-          sx={{ mt: 3 }}
-        >
-          Check Premium
         </Button>
       </Box>
     </Container>

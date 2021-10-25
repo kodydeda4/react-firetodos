@@ -1,16 +1,13 @@
-import { collection, getDocs, onSnapshot } from "firebase/firestore";
-import { firestore } from "./../../config/firebase";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  User,
+  User
 } from "@firebase/auth";
+import { addDoc, getFirestore } from "@firebase/firestore";
 import { Action, action, Thunk, thunk } from "easy-peasy";
+import { collection, onSnapshot } from "firebase/firestore";
 import { auth } from "../../config/firebase";
 import { AlertState, Severity } from "../../types/AlertState";
-import { addDoc, doc, getFirestore, query, where } from "@firebase/firestore";
-import { loadStripe } from "@stripe/stripe-js";
-import { stripeConfig } from "../../config/stripe";
 
 interface AuthState {
   user?: User;
@@ -33,7 +30,6 @@ interface AuthThunk {
   signIn: Thunk<this>;
   signOut: Thunk<this>;
   purchasePremium: Thunk<this>;
-  getHasPremium: Thunk<this>;
 }
 
 export interface AuthModel extends AuthState, AuthAction, AuthThunk {}
@@ -130,26 +126,6 @@ export const authModel: AuthModel = {
         } else {
           console.log("error");
         }
-      });
-    });
-  }),
-  getHasPremium: thunk(async (actions, _, helpers) => {
-    await getDocs(
-      query(
-        collection(
-          getFirestore(),
-          "users",
-          helpers.getState().user!.uid,
-          "payments"
-        )
-      )
-    ).then((snapshot) => {
-      snapshot.docs.forEach((doc) => {
-        const items = doc.data().items;
-        const prices = items.map((item: any) => item.price);
-        const ids = prices.map((price: any) => price.id);
-        const rv = ids.includes(stripeConfig.prices.premium)
-        actions.setHasPremium(rv)
       });
     });
   }),
