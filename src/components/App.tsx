@@ -69,3 +69,10 @@ const Routez = () => {
     </HashRouter>
   );
 };
+
+// TODO:
+// Maybe the way to do it is...
+//  Create a provider,
+//    containing `onSnapshot` listeners,
+//    which will update the store.
+// :/
