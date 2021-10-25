@@ -12,5 +12,6 @@ const model: Model = {
   todoModel: todoModel,
 };
 
-export const store = createStore(persist(model));
+// export const store = createStore(persist(model));
+export const store = createStore(model);
 export const storeHooks = createTypedHooks<Model>();

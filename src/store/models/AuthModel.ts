@@ -10,6 +10,7 @@ import { auth } from "../../config/firebase";
 import { AlertState, Severity } from "../../types/AlertState";
 import { addDoc, doc, getFirestore, query, where } from "@firebase/firestore";
 import { loadStripe } from "@stripe/stripe-js";
+import { stripeConfig } from "../../config/stripe";
 
 interface AuthState {
   user?: User;
@@ -140,11 +141,16 @@ export const authModel: AuthModel = {
           "users",
           helpers.getState().user!.uid,
           "payments"
-        ),
-        where("status", "==", "succeeded")
+        )
       )
     ).then((snapshot) => {
-      actions.setHasPremium(snapshot.docs.length > 0);
+      snapshot.docs.forEach((doc) => {
+        const items = doc.data().items;
+        const prices = items.map((item: any) => item.price);
+        const ids = prices.map((price: any) => price.id);
+        const rv = ids.includes(stripeConfig.prices.premium)
+        actions.setHasPremium(rv)
+      });
     });
   }),
 };

@@ -10,6 +10,8 @@ import * as React from "react";
 import { auth } from "../../config/firebase";
 import { storeHooks } from "../../store";
 import { firestore } from "../../config/firebase";
+import { loadStripe } from "@stripe/stripe-js";
+import { stripeConfig } from "../../config/stripe";
 
 export default function ProfileView() {
   const viewStore = {
@@ -56,10 +58,10 @@ export default function ProfileView() {
           onClick={getCustomClaimRole}
           type="submit"
           fullWidth
-          variant={viewStore.state.hasPremium ? "outlined" : "contained"}
+          variant="contained"
           sx={{ mt: 3 }}
         >
-          getCustomClaimRole
+          Custom Claim Role
         </Button>
         <Button
           onClick={() => viewStore.actions.getHasPremium()}
@@ -68,9 +70,8 @@ export default function ProfileView() {
           variant={viewStore.state.hasPremium ? "outlined" : "contained"}
           sx={{ mt: 3 }}
         >
-          getHasPremium
+          Check Premium
         </Button>
-
       </Box>
     </Container>
   );
