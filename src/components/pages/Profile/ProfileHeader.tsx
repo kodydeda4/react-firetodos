@@ -7,6 +7,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
+import { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import ROUTES from "../../../routes";
 import { storeHooks } from "../../../store";
@@ -19,11 +20,9 @@ export default function ProfileHeader() {
   };
 
   // @State
-  const [logoutModal, setLogoutModal] = React.useState(false);
-  const [clearAllModal, setClearAllModal] = React.useState(false);
-  const [profileMenu, setProfileMenu] = React.useState<null | HTMLElement>(
-    null
-  );
+  const [logoutModal, setLogoutModal] = useState(false);
+  const [clearAllModal, setClearAllModal] = useState(false);
+  const [profileMenu, setProfileMenu] = useState<null | HTMLElement>(null);
 
   return (
     <>
@@ -67,7 +66,7 @@ export default function ProfileHeader() {
       <ModalView
         isPresented={logoutModal}
         onDismiss={() => setLogoutModal(false)}
-        modalState={{
+        modal={{
           title: "Log out?",
           cancel: {
             text: "Cancel",
@@ -82,7 +81,7 @@ export default function ProfileHeader() {
       <ModalView
         isPresented={clearAllModal}
         onDismiss={() => setClearAllModal(false)}
-        modalState={{
+        modal={{
           title: "Clear All?",
           cancel: {
             text: "Cancel",

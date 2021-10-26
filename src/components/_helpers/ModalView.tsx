@@ -14,7 +14,7 @@ export type ModalState = {
 export const ModalView = (props: {
   isPresented: boolean;
   onDismiss: () => void;
-  modalState: ModalState;
+  modal: ModalState;
 }) => {
   return (
     <Modal open={props.isPresented} onClose={props.onDismiss}>
@@ -32,29 +32,30 @@ export const ModalView = (props: {
         }}
       >
         <Typography variant="h6" component="h2" sx={{ pb: 3 }}>
-          {props.modalState.title}
+          {props.modal.title}
         </Typography>
         <Stack direction="row" spacing={2}>
           <Button
             variant="contained"
             onClick={() => {
               props.onDismiss();
-              props.modalState.cancel.action();
+              props.modal.cancel.action();
             }}
           >
-            {props.modalState.cancel.text}
+            {props.modal.cancel.text}
           </Button>
           <Button
             variant="contained"
             onClick={() => {
               props.onDismiss();
-              props.modalState.confirm.action();
+              props.modal.confirm.action();
             }}
           >
-            {props.modalState.confirm.text}
+            {props.modal.confirm.text}
           </Button>
         </Stack>
       </Box>
     </Modal>
   );
 };
+

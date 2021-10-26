@@ -92,7 +92,7 @@ export default function TodosHeader() {
       <ModalView
         isPresented={logoutModal}
         onDismiss={() => setLogoutModal(false)}
-        modalState={{
+        modal={{
           title: "Log out?",
           cancel: {
             text: "Cancel",
@@ -107,7 +107,7 @@ export default function TodosHeader() {
       <ModalView
         isPresented={clearAllModal}
         onDismiss={() => setClearAllModal(false)}
-        modalState={{
+        modal={{
           title: "Clear All?",
           cancel: {
             text: "Cancel",
