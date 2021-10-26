@@ -10,9 +10,6 @@ import {
   Typography
 } from "@mui/material";
 import Button from "@mui/material/Button";
-import { onSnapshot, query, where } from "firebase/firestore";
-import { useEffect } from "react";
-import { firestore } from "../../config/firebase";
 import { storeHooks } from "../../store";
 import Todo from "../../types/Todo";
 
@@ -21,19 +18,6 @@ export default function TodosList() {
     state: storeHooks.useStoreState((state) => state.userModel),
     actions: storeHooks.useStoreActions((action) => action.userModel),
   };
-
-  const user = storeHooks.useStoreState((state) => state.authModel.user);
-
-  useEffect(() => {
-    onSnapshot(
-      query(firestore.todos2, where("userID", "==", user?.uid ?? "")),
-      (snapshot) => {
-        viewStore.actions.setTodos(
-          snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() }))
-        );
-      }
-    );
-  }, [user?.uid, viewStore.actions]);
 
   if (viewStore.state.todosSearchResults.length === 0) {
     return <PlaceholderView/>
