@@ -20,8 +20,8 @@ import { ModalView } from "../_helpers/ModalView";
 
 export default function TodosHeader() {
   const viewStore = {
-    state: storeHooks.useStoreState((state) => state.todoModel),
-    actions: storeHooks.useStoreActions((action) => action.todoModel),
+    state: storeHooks.useStoreState((state) => state.userModel),
+    actions: storeHooks.useStoreActions((action) => action.userModel),
   };
 
   const signOutAction = storeHooks.useStoreActions((action) => action.authModel.signOut);

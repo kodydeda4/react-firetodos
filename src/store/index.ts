@@ -1,15 +1,15 @@
 import { createStore, createTypedHooks } from "easy-peasy";
 import { AuthModel, authModel } from "./models/AuthModel";
-import { TodoModel, todoModel } from "./models/UserModel";
+import { UserModel, userModel } from "./models/UserModel";
 
 interface Model {
   authModel: AuthModel;
-  todoModel: TodoModel;
+  userModel: UserModel;
 }
 
 const model: Model = {
   authModel: authModel,
-  todoModel: todoModel,
+  userModel: userModel,
 };
 
 // export const store = createStore(persist(model));

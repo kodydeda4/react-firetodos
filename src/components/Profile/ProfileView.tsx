@@ -11,8 +11,8 @@ import { storeHooks } from "../../store";
 
 export default function ProfileView() {
   const viewStore = {
-    state: storeHooks.useStoreState((state) => state.todoModel),
-    actions: storeHooks.useStoreActions((action) => action.todoModel),
+    state: storeHooks.useStoreState((state) => state.userModel),
+    actions: storeHooks.useStoreActions((action) => action.userModel),
   };
 
   async function getCustomClaimRole() {

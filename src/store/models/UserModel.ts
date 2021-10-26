@@ -16,21 +16,21 @@ import {
 import { auth, firestore } from "../../config/firebase";
 import Todo from "../../types/Todo";
 
-interface TodoState {
-  user?: User;
+interface UserState {
+  // user?: User;
   hasPremium: boolean;
   todos: Todo[];
   search: string;
   todosSearchResults: Computed<this, Todo[]>;
 }
 
-interface TodoAction {
+interface UserAction {
   setTodos: Action<this, Todo[]>;
   setSearch: Action<this, string>;
   setHasPremium: Action<this, boolean>;
 }
 
-interface TodoThunks {
+interface UserThunks {
   purchasePremium: Thunk<this>;
   createTodo: Thunk<this>;
   deleteTodo: Thunk<this, Todo>;
@@ -40,11 +40,11 @@ interface TodoThunks {
   clearDone: Thunk<this>;
 }
 
-export interface TodoModel extends TodoState, TodoAction, TodoThunks {}
+export interface UserModel extends UserState, UserAction, UserThunks {}
 
-export const todoModel: TodoModel = {
+export const userModel: UserModel = {
   // STATE
-  user: undefined,
+  // user: undefined,
   hasPremium: false,
   todos: [],
   search: "",

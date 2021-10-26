@@ -18,8 +18,8 @@ import Todo from "../../types/Todo";
 
 export default function TodosList() {
   const viewStore = {
-    state: storeHooks.useStoreState((state) => state.todoModel),
-    actions: storeHooks.useStoreActions((action) => action.todoModel),
+    state: storeHooks.useStoreState((state) => state.userModel),
+    actions: storeHooks.useStoreActions((action) => action.userModel),
   };
 
   const user = storeHooks.useStoreState((state) => state.authModel.user);
