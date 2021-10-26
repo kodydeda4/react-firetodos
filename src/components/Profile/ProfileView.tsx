@@ -4,6 +4,7 @@ import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
 import Typography from "@mui/material/Typography";
+import { getAuth } from "firebase/auth";
 import * as React from "react";
 import { auth } from "../../config/firebase";
 import { storeHooks } from "../../store";
@@ -37,7 +38,8 @@ export default function ProfileView() {
           <AccountCircleIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          {viewStore.state.user?.email}
+          {/* {viewStore.state.user?.email} */}
+          {getAuth().currentUser?.email}
         </Typography>
         <Button
           disabled={viewStore.state.hasPremium}

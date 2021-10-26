@@ -1,7 +1,14 @@
 import { CssBaseline } from "@mui/material";
 import { ThemeProvider } from "@mui/system";
 import { StoreProvider } from "easy-peasy";
-import { collection, getFirestore, onSnapshot, query, where } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+import {
+  collection,
+  getFirestore,
+  onSnapshot,
+  query,
+  where,
+} from "firebase/firestore";
 import React, { useEffect } from "react";
 import { HashRouter, Route, Switch } from "react-router-dom";
 import { auth, firestore } from "../config/firebase";
@@ -20,12 +27,12 @@ import PrivateRoute from "./_helpers/PrivateRoute";
 
 export default function App() {
   return (
-    <StoreProvider store={store}>
-      <ThemeProvider theme={useAppTheme()}>
-        <CssBaseline />
+    <ThemeProvider theme={useAppTheme()}>
+      <CssBaseline />
+      <StoreProvider store={store}>
         <Routez />
-      </ThemeProvider>
-    </StoreProvider>
+      </StoreProvider>
+    </ThemeProvider>
   );
 }
 
@@ -44,11 +51,10 @@ const Routez = () => {
         viewStore.actions.setTodos(
           snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() }))
         );
-        console.log(snapshot)
+        console.log(snapshot);
       }
     );
   }, [user?.uid, viewStore.actions]);
-
 
   // set has premium
   useEffect(() => {
@@ -57,23 +63,26 @@ const Routez = () => {
         collection(
           getFirestore(),
           "users",
-          auth.currentUser?.uid ?? "\(#8f)",
+          getAuth().currentUser?.uid ?? ">>>",
           "payments"
         )
       ),
       (snapshot) =>
         viewStore.actions.setHasPremium(
           snapshot.docs
-            .flatMap((doc) =>
-              doc
-                .data()
-                .items.map((item: any) => item.price)
-                .map((price: any) => price.id)
-            )
+            .flatMap((doc) => {
+              if (doc.data().items) {
+                return doc
+                  .data()
+                  .items.map((item: any) => item.price)
+                  .map((price: any) => price.id);
+              }
+              return [];
+            })
             .includes(stripeConfig.prices.premium)
         )
     );
-  }, []);
+  }, [getAuth().currentUser]);
 
   return (
     <HashRouter>
