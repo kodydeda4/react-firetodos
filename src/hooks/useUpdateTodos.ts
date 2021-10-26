@@ -17,7 +17,7 @@ export const useUpdateTodos = (props: {
     () =>
       onSnapshot(
         query(
-          collection(getFirestore(), "todos2"),
+          collection(getFirestore(), "todos"),
           where("userID", "==", props.user?.uid ?? "...")
         ),
         (snapshot) => {

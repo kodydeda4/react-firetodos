@@ -150,7 +150,7 @@ export const model: Model = {
     });
   }),
   createTodo: thunk(async () => {
-    await addDoc(collection(getFirestore(), "todos2"), {
+    await addDoc(collection(getFirestore(), "todos"), {
       text: "untitled",
       done: false,
       timestamp: serverTimestamp(),
@@ -158,17 +158,17 @@ export const model: Model = {
     });
   }),
   deleteTodo: thunk(async (_, payload) => {
-    await deleteDoc(doc(collection(getFirestore(), "todos2"), payload.id));
+    await deleteDoc(doc(collection(getFirestore(), "todos"), payload.id));
   }),
   toggleTodoDone: thunk(async (_, payload) => {
-    await updateDoc(doc(collection(getFirestore(), "todos2"), payload.id), {
+    await updateDoc(doc(collection(getFirestore(), "todos"), payload.id), {
       text: payload.text,
       done: !payload.done,
       timestamp: serverTimestamp(),
     });
   }),
   updateTodoText: thunk(async (_, payload) => {
-    updateDoc(doc(collection(getFirestore(), "todos2"), payload.todo.id), {
+    updateDoc(doc(collection(getFirestore(), "todos"), payload.todo.id), {
       text: payload.text,
       done: payload.todo.done,
       timestamp: serverTimestamp(),
@@ -177,25 +177,25 @@ export const model: Model = {
   clearAllTodos: thunk(async () => {
     await getDocs(
       query(
-        collection(getFirestore(), "todos2"),
+        collection(getFirestore(), "todos"),
         where("userID", "==", getAuth(app).currentUser?.uid ?? "")
       )
     ).then((snapshot) => {
       snapshot.docs.forEach(async (document) => {
-        await deleteDoc(doc(collection(getFirestore(), "todos2"), document.id));
+        await deleteDoc(doc(collection(getFirestore(), "todos"), document.id));
       });
     });
   }),
   clearDoneTodos: thunk(async () => {
     await getDocs(
       query(
-        collection(getFirestore(), "todos2"),
+        collection(getFirestore(), "todos"),
         where("userID", "==", getAuth(app).currentUser?.uid ?? ""),
         where("done", "==", true)
       )
     ).then((snapshot) => {
       snapshot.docs.forEach(async (document) => {
-        await deleteDoc(doc(collection(getFirestore(), "todos2"), document.id));
+        await deleteDoc(doc(collection(getFirestore(), "todos"), document.id));
       });
     });
   }),
