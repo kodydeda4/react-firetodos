@@ -1,17 +1,223 @@
-import { createStore, createTypedHooks, persist } from "easy-peasy";
-import { AuthModel, authModel } from "./models/AuthModel";
-import { UserModel, userModel } from "./models/UserModel";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword
+} from "@firebase/auth";
+import { action, Action, computed, Computed, createStore, createTypedHooks, persist, Thunk, thunk } from "easy-peasy";
+import { getAuth, User } from "firebase/auth";
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  getFirestore,
+  onSnapshot,
+  query,
+  serverTimestamp,
+  updateDoc,
+  where
+} from "firebase/firestore";
+import { auth, firestore } from "../config/firebase";
+import { AlertState, Severity } from "../types/AlertState";
+import Todo from "../types/Todo";
 
-interface Model {
-  authModel: AuthModel;
-  userModel: UserModel;
+interface RootState {
+  user?: User;
+  alert?: AlertState;
+  email: string;
+  password: string;
+  hasPremium: boolean;
+  todos: Todo[];
+  search: string;
+  todosSearchResults: Computed<this, Todo[]>;
 }
 
-const model: Model = {
-  authModel: authModel,
-  userModel: userModel,
+interface RootAction {
+  setUser: Action<this, User | undefined>;
+  setAlert: Action<this, AlertState | undefined>;
+  setEmail: Action<this, string>;
+  setPassword: Action<this, string>;
+  setTodos: Action<this, Todo[]>;
+  setSearch: Action<this, string>;
+  setHasPremium: Action<this, boolean>;
+}
+
+interface RootThunks {
+  signUp: Thunk<this>;
+  signIn: Thunk<this>;
+  signOut: Thunk<this>;
+  purchasePremium: Thunk<this>;
+  createTodo: Thunk<this>;
+  deleteTodo: Thunk<this, Todo>;
+  toggleTodoDone: Thunk<this, Todo>;
+  updateTodoText: Thunk<this, { todo: Todo; text: string }>;
+  clearAll: Thunk<this>;
+  clearDone: Thunk<this>;
+}
+
+export interface RootModel extends RootState, RootAction, RootThunks {}
+
+export const rootModel: RootModel = {
+  // STATE
+  user: undefined,
+  alert: undefined,
+  email: "",
+  password: "",
+
+  hasPremium: false,
+  todos: [],
+  search: "",
+  todosSearchResults: computed((state) =>
+    state.todos.filter((todo) => todo.text.includes(state.search))
+  ),
+
+  // ACTION
+  setUser: action((state, payload) => {
+    state.user = payload;
+  }),
+  setAlert: action((state, payload) => {
+    state.alert = payload;
+  }),
+  setEmail: action((state, payload) => {
+    state.email = payload;
+  }),
+  setPassword: action((state, payload) => {
+    state.password = payload;
+  }),
+
+  setTodos: action((state, payload) => {
+    state.todos = payload;
+  }),
+  setSearch: action((state, payload) => {
+    state.search = payload;
+  }),
+  setHasPremium: action((state, payload) => {
+    state.hasPremium = payload;
+  }),
+
+  // THUNKS
+  signUp: thunk(async (actions, _, helpers) => {
+    await createUserWithEmailAndPassword(
+      auth,
+      helpers.getState().email,
+      helpers.getState().password
+    )
+      .then((userCredential) => {
+        actions.setAlert({
+          severity: Severity.success,
+          message: `Successfully created user with email: ${userCredential.user.email}`,
+        });
+      })
+      .catch((error) => {
+        actions.setAlert({
+          severity: Severity.error,
+          message: "A user with that email already exists.",
+        });
+      });
+  }),
+  signIn: thunk(async (actions, _, helpers) => {
+    await signInWithEmailAndPassword(
+      auth,
+      helpers.getState().email,
+      helpers.getState().password
+    )
+      .then((userCredential) => {
+        actions.setUser(userCredential.user);
+      })
+      .catch((error) => {
+        actions.setAlert({
+          severity: Severity.error,
+          message: "Please make sure your email and password are incorrect.",
+        });
+      });
+  }),
+  signOut: thunk(async (actions) => {
+    auth.signOut();
+    actions.setUser(undefined);
+    actions.setAlert(undefined);
+    actions.setEmail("");
+    actions.setPassword("");
+  }),
+
+  purchasePremium: thunk(async (actions, payload, helpers) => {
+    await addDoc(
+      collection(
+        getFirestore(),
+        "users",
+        getAuth().currentUser!.uid,
+        "checkout_sessions"
+      ),
+      {
+        mode: "payment",
+        price: "price_1Jo8SSJFfPBKehtVRw32DOjA",
+        success_url: window.location.origin,
+        cancel_url: window.location.origin,
+      }
+    ).then((doc) => {
+      onSnapshot(doc, (snapshot) => {
+        const url = snapshot.data()?.url;
+
+        if (url) {
+          window.location.assign(url);
+        } else {
+          console.log("error");
+        }
+      });
+    });
+  }),
+  createTodo: thunk(async () => {
+    await addDoc(firestore.todos2, {
+      text: "untitled",
+      done: false,
+      timestamp: serverTimestamp(),
+      userID: auth.currentUser?.uid ?? "",
+    });
+  }),
+  deleteTodo: thunk(async (_, payload) => {
+    await deleteDoc(doc(firestore.todos2, payload.id));
+  }),
+  toggleTodoDone: thunk(async (_, payload) => {
+    await updateDoc(doc(firestore.todos2, payload.id), {
+      text: payload.text,
+      done: !payload.done,
+      timestamp: serverTimestamp(),
+    });
+  }),
+  updateTodoText: thunk(async (_, payload) => {
+    updateDoc(doc(firestore.todos2, payload.todo.id), {
+      text: payload.text,
+      done: payload.todo.done,
+      timestamp: serverTimestamp(),
+    });
+  }),
+  clearAll: thunk(async () => {
+    await getDocs(
+      query(
+        firestore.todos2,
+        where("userID", "==", auth.currentUser?.uid ?? "")
+      )
+    ).then((snapshot) => {
+      snapshot.docs.forEach(async (document) => {
+        await deleteDoc(doc(firestore.todos2, document.id));
+      });
+    });
+  }),
+  clearDone: thunk(async () => {
+    await getDocs(
+      query(
+        firestore.todos2,
+        where("userID", "==", auth.currentUser?.uid ?? ""),
+        where("done", "==", true)
+      )
+    ).then((snapshot) => {
+      snapshot.docs.forEach(async (document) => {
+        await deleteDoc(doc(firestore.todos2, document.id));
+      });
+    });
+  }),
 };
 
-export const store = createStore(persist(model));
+
+export const store = createStore(persist(rootModel));
 // export const store = createStore(model);
-export const storeHooks = createTypedHooks<Model>();
+export const storeHooks = createTypedHooks<RootModel>();

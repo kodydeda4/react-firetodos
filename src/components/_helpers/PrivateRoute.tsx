@@ -9,7 +9,7 @@ interface PrivateRouteProps extends RouteProps {
 
 export default function PrivateRoute(props: PrivateRouteProps) {
   const { component: Component, children, ...rest } = props;
-  const user = storeHooks.useStoreState((state) => state.authModel.user);
+  const user = storeHooks.useStoreState((state) => state.user);
 
   return (
     <Route

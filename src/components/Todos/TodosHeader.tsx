@@ -20,11 +20,9 @@ import { ModalView } from "../_helpers/ModalView";
 
 export default function TodosHeader() {
   const viewStore = {
-    state: storeHooks.useStoreState((state) => state.userModel),
-    actions: storeHooks.useStoreActions((action) => action.userModel),
+    state: storeHooks.useStoreState((state) => state),
+    actions: storeHooks.useStoreActions((action) => action),
   };
-
-  const signOutAction = storeHooks.useStoreActions((action) => action.authModel.signOut);
   
   // @State
   const [logoutModal, setLogoutModal] = useState(false);
@@ -102,7 +100,7 @@ export default function TodosHeader() {
           },
           confirm: {
             text: "Logout",
-            action: () => signOutAction(),
+            action: () => viewStore.actions.signOut(),
           },
         }}
       />

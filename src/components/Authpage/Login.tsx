@@ -17,8 +17,8 @@ import AuthHeader from "./AuthHeader";
 
 export default function Login() {
   const viewStore = {
-    state: storeHooks.useStoreState((state) => state.authModel),
-    actions: storeHooks.useStoreActions((action) => action.authModel),
+    state: storeHooks.useStoreState((state) => state),
+    actions: storeHooks.useStoreActions((action) => action),
   };
 
   if (viewStore.state.user) {

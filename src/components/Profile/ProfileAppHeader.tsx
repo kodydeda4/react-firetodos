@@ -14,13 +14,9 @@ import { ModalView } from "../_helpers/ModalView";
 
 export default function ProfileAppHeader() {
   const viewStore = {
-    state: storeHooks.useStoreState((state) => state.userModel),
-    actions: storeHooks.useStoreActions((action) => action.userModel),
+    state: storeHooks.useStoreState((state) => state),
+    actions: storeHooks.useStoreActions((action) => action),
   };
-
-  const signOutAction = storeHooks.useStoreActions(
-    (action) => action.authModel.signOut
-  );
 
   // @State
   const [logoutModal, setLogoutModal] = React.useState(false);
@@ -79,7 +75,7 @@ export default function ProfileAppHeader() {
           },
           confirm: {
             text: "Logout",
-            action: () => signOutAction(),
+            action: () => viewStore.actions.signOut(),
           },
         }}
       />

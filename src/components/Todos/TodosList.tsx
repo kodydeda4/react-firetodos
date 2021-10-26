@@ -15,8 +15,8 @@ import Todo from "../../types/Todo";
 
 export default function TodosList() {
   const viewStore = {
-    state: storeHooks.useStoreState((state) => state.userModel),
-    actions: storeHooks.useStoreActions((action) => action.userModel),
+    state: storeHooks.useStoreState((state) => state),
+    actions: storeHooks.useStoreActions((action) => action),
   };
 
   if (viewStore.state.todosSearchResults.length === 0) {

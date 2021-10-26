@@ -1,16 +1,12 @@
 import { User } from "firebase/auth";
 import {
-  collection,
-  getFirestore,
   onSnapshot,
   query,
   where
 } from "firebase/firestore";
 import { useEffect } from "react";
 import { firestore } from "../config/firebase";
-import { stripeConfig } from "../config/stripe";
 import Todo from "../types/Todo";
-
 
 export const useUpdateTodos = (props: {
   user: User | null;

@@ -32,8 +32,8 @@ export default function App() {
 
 const Routez = () => {
   const viewStore = {
-    state: storeHooks.useStoreState((state) => state.userModel),
-    actions: storeHooks.useStoreActions((action) => action.userModel),
+    state: storeHooks.useStoreState((state) => state),
+    actions: storeHooks.useStoreActions((action) => action),
   };
 
   useUpdateTodos({
