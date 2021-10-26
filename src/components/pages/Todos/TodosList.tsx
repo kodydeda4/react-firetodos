@@ -19,7 +19,7 @@ export default function TodosList() {
     actions: storeHooks.useStoreActions((action) => action),
   };
 
-  if (viewStore.state.todosSearchResults.length == 0) {
+  if (viewStore.state.todosSearchResults.length === 0) {
     return <Placeholder />;
   }
 
