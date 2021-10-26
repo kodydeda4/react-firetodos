@@ -1,11 +1,12 @@
 import { User } from "firebase/auth";
 import {
+  collection,
+  getFirestore,
   onSnapshot,
   query,
   where
 } from "firebase/firestore";
 import { useEffect } from "react";
-import { firestore } from "../config/firebase";
 import Todo from "../types/Todo";
 
 export const useUpdateTodos = (props: {
@@ -16,7 +17,7 @@ export const useUpdateTodos = (props: {
     () =>
       onSnapshot(
         query(
-          firestore.todos2,
+          collection(getFirestore(), "todos2"),
           where("userID", "==", props.user?.uid ?? "...")
         ),
         (snapshot) => {

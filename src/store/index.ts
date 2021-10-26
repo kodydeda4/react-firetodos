@@ -1,6 +1,6 @@
 import {
   createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
+  signInWithEmailAndPassword
 } from "@firebase/auth";
 import {
   action,
@@ -11,7 +11,7 @@ import {
   createTypedHooks,
   persist,
   Thunk,
-  thunk,
+  thunk
 } from "easy-peasy";
 import { getAuth, User } from "firebase/auth";
 import {
@@ -25,9 +25,9 @@ import {
   query,
   serverTimestamp,
   updateDoc,
-  where,
+  where
 } from "firebase/firestore";
-import { auth, firestore } from "../config/firebase";
+import { app } from "../config/firebase";
 import { AlertState, Severity } from "../types/AlertState";
 import Todo from "../types/Todo";
 
@@ -106,7 +106,7 @@ export const rootModel: RootModel = {
   // THUNKS
   signUp: thunk(async (actions, _, helpers) => {
     await createUserWithEmailAndPassword(
-      auth,
+      getAuth(app),
       helpers.getState().email,
       helpers.getState().password
     )
@@ -125,7 +125,7 @@ export const rootModel: RootModel = {
   }),
   signIn: thunk(async (actions, _, helpers) => {
     await signInWithEmailAndPassword(
-      auth,
+      getAuth(app),
       helpers.getState().email,
       helpers.getState().password
     )
@@ -140,7 +140,7 @@ export const rootModel: RootModel = {
       });
   }),
   signOut: thunk(async (actions) => {
-    auth.signOut();
+    getAuth(app).signOut();
     actions.setUser(undefined);
     actions.setAlert(undefined);
     actions.setEmail("");
@@ -152,7 +152,7 @@ export const rootModel: RootModel = {
       collection(
         getFirestore(),
         "users",
-        getAuth().currentUser!.uid,
+        getAuth(app).currentUser!.uid,
         "checkout_sessions"
       ),
       {
@@ -164,7 +164,6 @@ export const rootModel: RootModel = {
     ).then((doc) => {
       onSnapshot(doc, (snapshot) => {
         const url = snapshot.data()?.url;
-
         if (url) {
           window.location.assign(url);
         } else {
@@ -174,25 +173,25 @@ export const rootModel: RootModel = {
     });
   }),
   createTodo: thunk(async () => {
-    await addDoc(firestore.todos2, {
+    await addDoc(collection(getFirestore(), "todos2"), {
       text: "untitled",
       done: false,
       timestamp: serverTimestamp(),
-      userID: auth.currentUser?.uid ?? "",
+      userID: getAuth(app).currentUser?.uid ?? "",
     });
   }),
   deleteTodo: thunk(async (_, payload) => {
-    await deleteDoc(doc(firestore.todos2, payload.id));
+    await deleteDoc(doc(collection(getFirestore(), "todos2"), payload.id));
   }),
   toggleTodoDone: thunk(async (_, payload) => {
-    await updateDoc(doc(firestore.todos2, payload.id), {
+    await updateDoc(doc(collection(getFirestore(), "todos2"), payload.id), {
       text: payload.text,
       done: !payload.done,
       timestamp: serverTimestamp(),
     });
   }),
   updateTodoText: thunk(async (_, payload) => {
-    updateDoc(doc(firestore.todos2, payload.todo.id), {
+    updateDoc(doc(collection(getFirestore(), "todos2"), payload.todo.id), {
       text: payload.text,
       done: payload.todo.done,
       timestamp: serverTimestamp(),
@@ -201,25 +200,25 @@ export const rootModel: RootModel = {
   clearAll: thunk(async () => {
     await getDocs(
       query(
-        firestore.todos2,
-        where("userID", "==", auth.currentUser?.uid ?? "")
+        collection(getFirestore(), "todos2"),
+        where("userID", "==", getAuth(app).currentUser?.uid ?? "")
       )
     ).then((snapshot) => {
       snapshot.docs.forEach(async (document) => {
-        await deleteDoc(doc(firestore.todos2, document.id));
+        await deleteDoc(doc(collection(getFirestore(), "todos2"), document.id));
       });
     });
   }),
   clearDone: thunk(async () => {
     await getDocs(
       query(
-        firestore.todos2,
-        where("userID", "==", auth.currentUser?.uid ?? ""),
+        collection(getFirestore(), "todos2"),
+        where("userID", "==", getAuth(app).currentUser?.uid ?? ""),
         where("done", "==", true)
       )
     ).then((snapshot) => {
       snapshot.docs.forEach(async (document) => {
-        await deleteDoc(doc(firestore.todos2, document.id));
+        await deleteDoc(doc(collection(getFirestore(), "todos2"), document.id));
       });
     });
   }),

@@ -1,6 +1,5 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { collection, getFirestore } from "firebase/firestore";
 
 export const app = initializeApp({
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -11,12 +10,3 @@ export const app = initializeApp({
   appId: process.env.REACT_APP_FIREBASE_APP_ID,
   measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
 });
-
-export const auth = getAuth(app);
-
-export const firestore = {
-  users: collection(getFirestore(), "users"),
-  todos: collection(getFirestore(), "todos"),
-  todos2: collection(getFirestore(), "todos2"),
-  colors: collection(getFirestore(), "colors"),
-};

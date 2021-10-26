@@ -6,7 +6,6 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Typography from "@mui/material/Typography";
 import { getAuth } from "firebase/auth";
 import * as React from "react";
-import { auth } from "../../config/firebase";
 import { storeHooks } from "../../store";
 
 export default function ProfileView() {
@@ -16,8 +15,8 @@ export default function ProfileView() {
   };
 
   async function getCustomClaimRole() {
-    await auth.currentUser!.getIdToken(true);
-    const decodedToken = await auth.currentUser!.getIdTokenResult();
+    await getAuth().currentUser!.getIdToken(true);
+    const decodedToken = await getAuth().currentUser!.getIdTokenResult();
     const stripeRoleR = decodedToken.claims.stripeRole;
     console.log(`${decodedToken}`);
     console.log(`${stripeRoleR}`);
