@@ -31,7 +31,7 @@ import { app } from "../config/firebase";
 import { AlertState, Severity } from "../types/AlertState";
 import Todo from "../types/Todo";
 
-interface RootState {
+interface ModelState {
   user?: User;
   alert?: AlertState;
   email: string;
@@ -42,7 +42,7 @@ interface RootState {
   todosSearchResults: Computed<this, Todo[]>;
 }
 
-interface RootAction {
+interface ModelAction {
   setUser: Action<this, User | undefined>;
   setAlert: Action<this, AlertState | undefined>;
   setEmail: Action<this, string>;
@@ -52,7 +52,7 @@ interface RootAction {
   setHasPremium: Action<this, boolean>;
 }
 
-interface RootThunks {
+interface ModelThunks {
   signUp: Thunk<this>;
   signIn: Thunk<this>;
   signOut: Thunk<this>;
@@ -65,9 +65,9 @@ interface RootThunks {
   clearDoneTodos: Thunk<this>;
 }
 
-export interface RootModel extends RootState, RootAction, RootThunks {}
+export interface Model extends ModelState, ModelAction, ModelThunks {}
 
-export const rootModel: RootModel = {
+export const model: Model = {
   // STATE
   user: undefined,
   alert: undefined,
@@ -225,5 +225,5 @@ export const rootModel: RootModel = {
 };
 
 // export const store = createStore(model);
-export const store = createStore(persist(rootModel));
-export const storeHooks = createTypedHooks<RootModel>();
+export const store = createStore(persist(model));
+export const storeHooks = createTypedHooks<Model>();
