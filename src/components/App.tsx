@@ -1,7 +1,7 @@
 import { CssBaseline } from "@mui/material";
 import { ThemeProvider } from "@mui/system";
 import { StoreProvider } from "easy-peasy";
-import { getAuth } from "firebase/auth";
+import { getAuth, User } from "firebase/auth";
 import {
   collection,
   getFirestore,
@@ -16,6 +16,7 @@ import { stripeConfig } from "../config/stripe";
 import useAppTheme from "../hooks/useAppTheme";
 import ROUTES from "../routes";
 import { store, storeHooks } from "../store";
+import Todo from "../types/Todo";
 import ForgotPassword from "./Authpage/ForgotPassword";
 import Login from "./Authpage/Login";
 import Signup from "./Authpage/Signup";
@@ -40,50 +41,16 @@ const Routez = () => {
     state: storeHooks.useStoreState((state) => state.userModel),
     actions: storeHooks.useStoreActions((action) => action.userModel),
   };
-  const user = storeHooks.useStoreState((state) => state.authModel.user);
 
-  const updateTodolist = useEffect(
-    () =>
-      onSnapshot(
-        query(firestore.todos2, where("userID", "==", user?.uid ?? "")),
-        (snapshot) => {
-          viewStore.actions.setTodos(
-            snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() }))
-          );
-          console.log(snapshot);
-        }
-      ),
-    [user?.uid, viewStore.actions]
-  );
+  useUpdateTodos({
+    user: getAuth().currentUser,
+    setter: viewStore.actions.setTodos,
+  });
 
-  const updatePremium = useEffect(
-    () =>
-      onSnapshot(
-        query(
-          collection(
-            getFirestore(),
-            "users",
-            getAuth().currentUser?.uid ?? ">>>",
-            "payments"
-          )
-        ),
-        (snapshot) =>
-          viewStore.actions.setHasPremium(
-            snapshot.docs
-              .flatMap((doc) => {
-                if (doc.data().items) {
-                  return doc
-                    .data()
-                    .items.map((item: any) => item.price)
-                    .map((price: any) => price.id);
-                }
-                return [];
-              })
-              .includes(stripeConfig.prices.premium)
-          )
-      ),
-    [getAuth().currentUser]
-  );
+  useUpdatePremium({
+    user: getAuth().currentUser,
+    setter: viewStore.actions.setHasPremium,
+  });
 
   return (
     <HashRouter>
@@ -101,6 +68,62 @@ const Routez = () => {
         <Route component={NotFound} />
       </Switch>
     </HashRouter>
+  );
+};
+
+export const useUpdateTodos = (props: {
+  user: User | null;
+  setter: (todos: Todo[]) => void;
+}) => {
+  useEffect(
+    () =>
+      onSnapshot(
+        query(
+          firestore.todos2,
+          where("userID", "==", props.user?.uid ?? "...")
+        ),
+        (snapshot) => {
+          props.setter(
+            snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() }))
+          );
+          console.log(snapshot);
+        }
+      ),
+    [props.user]
+  );
+};
+
+export const useUpdatePremium = (props: {
+  user: User | null;
+  setter: (hasPremium: boolean) => void;
+}) => {
+  useEffect(
+    () =>
+      onSnapshot(
+        query(
+          collection(
+            getFirestore(),
+            "users",
+            props.user?.uid ?? "...",
+            "payments"
+          )
+        ),
+        (snapshot) =>
+          props.setter(
+            snapshot.docs
+              .flatMap((doc) => {
+                if (doc.data().items) {
+                  return doc
+                    .data()
+                    .items.map((item: any) => item.price)
+                    .map((price: any) => price.id);
+                }
+                return [];
+              })
+              .includes(stripeConfig.prices.premium)
+          )
+      ),
+    [props.user]
   );
 };
 
