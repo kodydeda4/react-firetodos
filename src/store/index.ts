@@ -1,4 +1,4 @@
-import { createStore, createTypedHooks } from "easy-peasy";
+import { createStore, createTypedHooks, persist } from "easy-peasy";
 import { AuthModel, authModel } from "./models/AuthModel";
 import { UserModel, userModel } from "./models/UserModel";
 
@@ -12,6 +12,6 @@ const model: Model = {
   userModel: userModel,
 };
 
-// export const store = createStore(persist(model));
-export const store = createStore(model);
+export const store = createStore(persist(model));
+// export const store = createStore(model);
 export const storeHooks = createTypedHooks<Model>();
