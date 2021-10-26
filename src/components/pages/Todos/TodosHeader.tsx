@@ -115,7 +115,7 @@ export default function TodosHeader() {
           },
           confirm: {
             text: "Yes",
-            action: () => viewStore.actions.clearAll(),
+            action: () => viewStore.actions.clearAllTodos(),
           },
         }}
       />

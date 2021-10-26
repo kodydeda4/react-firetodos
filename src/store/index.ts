@@ -61,8 +61,8 @@ interface RootThunks {
   deleteTodo: Thunk<this, Todo>;
   toggleTodoDone: Thunk<this, Todo>;
   updateTodoText: Thunk<this, { todo: Todo; text: string }>;
-  clearAll: Thunk<this>;
-  clearDone: Thunk<this>;
+  clearAllTodos: Thunk<this>;
+  clearDoneTodos: Thunk<this>;
 }
 
 export interface RootModel extends RootState, RootAction, RootThunks {}
@@ -197,7 +197,7 @@ export const rootModel: RootModel = {
       timestamp: serverTimestamp(),
     });
   }),
-  clearAll: thunk(async () => {
+  clearAllTodos: thunk(async () => {
     await getDocs(
       query(
         collection(getFirestore(), "todos2"),
@@ -209,7 +209,7 @@ export const rootModel: RootModel = {
       });
     });
   }),
-  clearDone: thunk(async () => {
+  clearDoneTodos: thunk(async () => {
     await getDocs(
       query(
         collection(getFirestore(), "todos2"),

@@ -90,7 +90,7 @@ export default function ProfileHeader() {
           },
           confirm: {
             text: "Yes",
-            action: () => viewStore.actions.clearAll(),
+            action: () => viewStore.actions.clearAllTodos(),
           },
         }}
       />
