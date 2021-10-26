@@ -1,81 +1,56 @@
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword
-} from "@firebase/auth";
-import {
-  action,
-  Action,
-  computed,
-  Computed,
-  createStore,
-  createTypedHooks,
-  persist,
-  Thunk,
-  thunk
-} from "easy-peasy";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "@firebase/auth";
+import { action, Action, computed, Computed, createStore, createTypedHooks, persist, Thunk, thunk } from "easy-peasy";
 import { getAuth, User } from "firebase/auth";
-import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  getDocs,
-  getFirestore,
-  onSnapshot,
-  query,
-  serverTimestamp,
-  updateDoc,
-  where
-} from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getDocs, getFirestore, onSnapshot, query, serverTimestamp, updateDoc, where } from "firebase/firestore";
 import { app } from "../config/firebase";
 import { AlertState, Severity } from "../types/AlertState";
 import Todo from "../types/Todo";
 
 interface ModelState {
-  user?: User;
-  alert?: AlertState;
-  email: string;
-  password: string;
-  hasPremium: boolean;
-  todos: Todo[];
-  search: string;
-  todosSearchResults: Computed<this, Todo[]>;
+  user:               User       | null;
+  email:              string;
+  password:           string;
+  alert:              AlertState | null;
+  premium:            boolean;
+  todos:              Todo[];
+  search:             string;
+  todosSearchResults: Computed<this, Todo[]>;  
 }
 
 interface ModelAction {
-  setUser: Action<this, User | undefined>;
-  setAlert: Action<this, AlertState | undefined>;
-  setEmail: Action<this, string>;
-  setPassword: Action<this, string>;
-  setTodos: Action<this, Todo[]>;
-  setSearch: Action<this, string>;
-  setHasPremium: Action<this, boolean>;
+  setUser:            Action<this, User       | null>;
+  setAlert:           Action<this, AlertState | null>;
+  setEmail:           Action<this, string>;
+  setPassword:        Action<this, string>;
+  setTodos:           Action<this, Todo[]>;
+  setSearch:          Action<this, string>;
+  setHasPremium:      Action<this, boolean>;
 }
 
 interface ModelThunks {
-  signUp: Thunk<this>;
-  signIn: Thunk<this>;
-  signOut: Thunk<this>;
-  purchasePremium: Thunk<this>;
-  createTodo: Thunk<this>;
-  deleteTodo: Thunk<this, Todo>;
-  toggleTodoDone: Thunk<this, Todo>;
-  updateTodoText: Thunk<this, { todo: Todo; text: string }>;
-  clearAllTodos: Thunk<this>;
-  clearDoneTodos: Thunk<this>;
+  signUp:             Thunk<this>;
+  signIn:             Thunk<this>;
+  signOut:            Thunk<this>;
+  purchasePremium:    Thunk<this>;
+  createTodo:         Thunk<this>;
+  deleteTodo:         Thunk<this, Todo>;
+  toggleTodoDone:     Thunk<this, Todo>;
+  updateTodoText:     Thunk<this, { todo: Todo; text: string }>;
+  clearAllTodos:      Thunk<this>;
+  clearDoneTodos:     Thunk<this>;
 }
 
 export interface Model extends ModelState, ModelAction, ModelThunks {}
 
 export const model: Model = {
   // STATE
-  user: undefined,
-  alert: undefined,
-  email: "",
+  user:     null,
+  alert:    null,
+  email:    "",
   password: "",
-  hasPremium: false,
-  todos: [],
-  search: "",
+  premium:  false,
+  todos:    [],
+  search:   "",
   todosSearchResults: computed((state) =>
     state.todos.filter((todo) => todo.text.includes(state.search))
   ),
@@ -87,7 +62,7 @@ export const model: Model = {
   setPassword:   action((state, payload) => { state.password   = payload }),
   setTodos:      action((state, payload) => { state.todos      = payload }),
   setSearch:     action((state, payload) => { state.search     = payload }),
-  setHasPremium: action((state, payload) => { state.hasPremium = payload }),
+  setHasPremium: action((state, payload) => { state.premium    = payload }),
 
   // THUNKS
   signUp: thunk(async (actions, _, helpers) => {
@@ -127,8 +102,8 @@ export const model: Model = {
   }),
   signOut: thunk(async (actions) => {
     getAuth(app).signOut();
-    actions.setUser(undefined);
-    actions.setAlert(undefined);
+    actions.setUser(null);
+    actions.setAlert(null);
     actions.setEmail("");
     actions.setPassword("");
   }),
