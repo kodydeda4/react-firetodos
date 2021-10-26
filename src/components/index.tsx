@@ -14,7 +14,7 @@ import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import Profile from "./pages/Profile";
 import Signup from "./pages/Signup";
-import Homepage from "./pages/Todos";
+import Todos from "./pages/Todos";
 import PrivateRoute from "./_helpers/PrivateRoute";
 
 export default function App() {
@@ -61,7 +61,7 @@ const Routez = () => {
         <Route exact path={ROUTES.forgotPassword} component={ForgotPassword} />
 
         {/* Private */}
-        <PrivateRoute exact path={ROUTES.home} component={Homepage} />
+        <PrivateRoute exact path={ROUTES.home} component={Todos} />
         <PrivateRoute exact path={ROUTES.profile} component={Profile} />
 
         {/* Default */}

@@ -8,7 +8,7 @@ import { getAuth } from "firebase/auth";
 import * as React from "react";
 import { storeHooks } from "../../../store";
 
-export default function ProfileView() {
+export default function ProfileBody() {
   const viewStore = {
     state: storeHooks.useStoreState((state) => state),
     actions: storeHooks.useStoreActions((action) => action),

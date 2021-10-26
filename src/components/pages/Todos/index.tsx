@@ -1,7 +1,7 @@
-import TodosList from "./TodosList";
 import TodosHeader from "./TodosHeader";
+import TodosList from "./TodosList";
 
-export default function Homepage() {
+export default function TodosPage() {
   return (
     <>
       <TodosHeader />

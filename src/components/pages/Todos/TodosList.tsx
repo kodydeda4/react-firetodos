@@ -1,17 +1,9 @@
 import AddIcon from "@mui/icons-material/Add";
-import {
-  Box,
-  Checkbox,
-  Container,
-  CssBaseline,
-  List,
-  ListItem,
-  TextField,
-  Typography
-} from "@mui/material";
+import { Checkbox, List, ListItem, TextField } from "@mui/material";
 import Button from "@mui/material/Button";
 import { storeHooks } from "../../../store";
 import Todo from "../../../types/Todo";
+import { Box, Container, CssBaseline, Typography } from "@mui/material";
 
 export default function TodosList() {
   const viewStore = {
@@ -19,8 +11,8 @@ export default function TodosList() {
     actions: storeHooks.useStoreActions((action) => action),
   };
 
-  if (viewStore.state.todosSearchResults.length === 0) {
-    return <PlaceholderView/>
+  if (viewStore.state.todosSearchResults.length > 0) {
+    return <Placeholder />;
   }
 
   return (
@@ -64,7 +56,7 @@ export default function TodosList() {
   );
 }
 
-function PlaceholderView () {
+const Placeholder = () => {
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />

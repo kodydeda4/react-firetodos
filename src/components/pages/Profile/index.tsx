@@ -1,11 +1,11 @@
-import ProfileAppHeader from "./ProfileAppHeader";
-import ProfileView from "./ProfileView";
+import ProfileBody from "./ProfileBody";
+import ProfileHeader from "./ProfileHeader";
 
 export default function Profile() {
   return (
     <>
-      <ProfileAppHeader />
-      <ProfileView />
+      <ProfileHeader />
+      <ProfileBody />
     </>
   );
 }

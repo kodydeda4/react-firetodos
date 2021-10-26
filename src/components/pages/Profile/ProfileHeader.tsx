@@ -12,7 +12,7 @@ import ROUTES from "../../../routes";
 import { storeHooks } from "../../../store";
 import { ModalView } from "../../_helpers/ModalView";
 
-export default function ProfileAppHeader() {
+export default function ProfileHeader() {
   const viewStore = {
     state: storeHooks.useStoreState((state) => state),
     actions: storeHooks.useStoreActions((action) => action),
