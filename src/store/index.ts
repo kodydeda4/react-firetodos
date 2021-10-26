@@ -1,8 +1,18 @@
 import {
   createUserWithEmailAndPassword,
-  signInWithEmailAndPassword
+  signInWithEmailAndPassword,
 } from "@firebase/auth";
-import { action, Action, computed, Computed, createStore, createTypedHooks, persist, Thunk, thunk } from "easy-peasy";
+import {
+  action,
+  Action,
+  computed,
+  Computed,
+  createStore,
+  createTypedHooks,
+  persist,
+  Thunk,
+  thunk,
+} from "easy-peasy";
 import { getAuth, User } from "firebase/auth";
 import {
   addDoc,
@@ -15,7 +25,7 @@ import {
   query,
   serverTimestamp,
   updateDoc,
-  where
+  where,
 } from "firebase/firestore";
 import { auth, firestore } from "../config/firebase";
 import { AlertState, Severity } from "../types/AlertState";
@@ -63,7 +73,6 @@ export const rootModel: RootModel = {
   alert: undefined,
   email: "",
   password: "",
-
   hasPremium: false,
   todos: [],
   search: "",
@@ -84,7 +93,6 @@ export const rootModel: RootModel = {
   setPassword: action((state, payload) => {
     state.password = payload;
   }),
-
   setTodos: action((state, payload) => {
     state.todos = payload;
   }),
@@ -217,7 +225,6 @@ export const rootModel: RootModel = {
   }),
 };
 
-
-export const store = createStore(persist(rootModel));
 // export const store = createStore(model);
+export const store = createStore(persist(rootModel));
 export const storeHooks = createTypedHooks<RootModel>();
