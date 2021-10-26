@@ -81,27 +81,13 @@ export const model: Model = {
   ),
 
   // ACTION
-  setUser: action((state, payload) => {
-    state.user = payload;
-  }),
-  setAlert: action((state, payload) => {
-    state.alert = payload;
-  }),
-  setEmail: action((state, payload) => {
-    state.email = payload;
-  }),
-  setPassword: action((state, payload) => {
-    state.password = payload;
-  }),
-  setTodos: action((state, payload) => {
-    state.todos = payload;
-  }),
-  setSearch: action((state, payload) => {
-    state.search = payload;
-  }),
-  setHasPremium: action((state, payload) => {
-    state.hasPremium = payload;
-  }),
+  setUser:       action((state, payload) => { state.user       = payload }),
+  setAlert:      action((state, payload) => { state.alert      = payload }),
+  setEmail:      action((state, payload) => { state.email      = payload }),
+  setPassword:   action((state, payload) => { state.password   = payload }),
+  setTodos:      action((state, payload) => { state.todos      = payload }),
+  setSearch:     action((state, payload) => { state.search     = payload }),
+  setHasPremium: action((state, payload) => { state.hasPremium = payload }),
 
   // THUNKS
   signUp: thunk(async (actions, _, helpers) => {
