@@ -11,6 +11,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { alpha, styled } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
+import { getAuth } from "firebase/auth";
 import * as React from "react";
 import { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
@@ -23,8 +24,6 @@ export default function TodosHeader() {
     state: storeHooks.useStoreState((state) => state.userModel),
     actions: storeHooks.useStoreActions((action) => action.userModel),
   };
-
-  const signOutAction = storeHooks.useStoreActions((action) => action.authModel.signOut);
   
   // @State
   const [logoutModal, setLogoutModal] = useState(false);
@@ -102,7 +101,7 @@ export default function TodosHeader() {
           },
           confirm: {
             text: "Logout",
-            action: () => signOutAction(),
+            action: () => getAuth().signOut(),
           },
         }}
       />
