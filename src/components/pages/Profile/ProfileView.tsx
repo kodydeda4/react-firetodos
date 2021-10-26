@@ -6,7 +6,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Typography from "@mui/material/Typography";
 import { getAuth } from "firebase/auth";
 import * as React from "react";
-import { storeHooks } from "../../store";
+import { storeHooks } from "../../../store";
 
 export default function ProfileView() {
   const viewStore = {

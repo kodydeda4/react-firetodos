@@ -11,9 +11,9 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { Link as RouterLink, Redirect } from "react-router-dom";
-import ROUTES from "../../routes";
-import { storeHooks } from "../../store";
-import AuthHeader from "./AuthHeader";
+import ROUTES from "../../../routes";
+import { storeHooks } from "../../../store";
+import AuthHeader from "../../AuthHeader";
 
 export default function Login() {
   const viewStore = {

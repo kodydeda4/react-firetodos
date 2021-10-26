@@ -10,8 +10,8 @@ import {
   Typography
 } from "@mui/material";
 import Button from "@mui/material/Button";
-import { storeHooks } from "../../store";
-import Todo from "../../types/Todo";
+import { storeHooks } from "../../../store";
+import Todo from "../../../types/Todo";
 
 export default function TodosList() {
   const viewStore = {

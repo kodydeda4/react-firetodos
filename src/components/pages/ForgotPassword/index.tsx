@@ -1,5 +1,5 @@
 import { Container } from "@mui/material";
-import AuthHeader from "./AuthHeader";
+import AuthHeader from "../../AuthHeader";
 
 export default function ForgotPassword() {
   return (

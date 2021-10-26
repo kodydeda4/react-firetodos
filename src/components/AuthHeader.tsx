@@ -4,7 +4,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import React from "react";
 import { Link as RouterLink } from "react-router-dom";
-import ROUTES from "../../routes";
+import ROUTES from "../routes";
 
 export default function AuthHeader() {
   return (

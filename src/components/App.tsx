@@ -4,18 +4,17 @@ import { StoreProvider } from "easy-peasy";
 import { getAuth } from "firebase/auth";
 import React from "react";
 import { HashRouter, Route, Switch } from "react-router-dom";
-
 import useAppTheme from "../hooks/useAppTheme";
 import { useUpdatePremium } from "../hooks/useUpdatePremium";
 import { useUpdateTodos } from "../hooks/useUpdateTodos";
 import ROUTES from "../routes";
 import { store, storeHooks } from "../store";
-import ForgotPassword from "./Authpage/ForgotPassword";
-import Login from "./Authpage/Login";
-import Signup from "./Authpage/Signup";
-import NotFound from "./NotFound";
-import Profile from "./Profile";
-import Homepage from "./Todos";
+import ForgotPassword from "./pages/ForgotPassword";
+import Login from "./pages/Login";
+import NotFound from "./pages/NotFound";
+import Profile from "./pages/Profile";
+import Signup from "./pages/Signup";
+import Homepage from "./pages/Todos";
 import PrivateRoute from "./_helpers/PrivateRoute";
 
 export default function App() {
@@ -28,6 +27,13 @@ export default function App() {
     </ThemeProvider>
   );
 }
+
+// TODO:
+// Maybe the way to do it is...
+//  Create a provider,
+//    containing `onSnapshot` listeners,
+//    which will update the store.
+// :/
 
 
 const Routez = () => {
@@ -65,11 +71,3 @@ const Routez = () => {
   );
 };
 
-
-
-// TODO:
-// Maybe the way to do it is...
-//  Create a provider,
-//    containing `onSnapshot` listeners,
-//    which will update the store.
-// :/

@@ -1,29 +1,33 @@
 import AccountCircle from "@mui/icons-material/AccountCircle";
+import AddIcon from "@mui/icons-material/Add";
+import DeleteIcon from "@mui/icons-material/Delete";
 import MenuIcon from "@mui/icons-material/Menu";
-import { Box, Toolbar } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
+import { Toolbar } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import IconButton from "@mui/material/IconButton";
+import InputBase from "@mui/material/InputBase";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import { alpha, styled } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
+import { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
-import ROUTES from "../../routes";
-import { storeHooks } from "../../store";
-import { ModalView } from "../_helpers/ModalView";
+import ROUTES from "../../../routes";
+import { storeHooks } from "../../../store";
+import { ModalView } from "../../_helpers/ModalView";
 
-export default function ProfileAppHeader() {
+export default function TodosHeader() {
   const viewStore = {
     state: storeHooks.useStoreState((state) => state),
     actions: storeHooks.useStoreActions((action) => action),
   };
-
+  
   // @State
-  const [logoutModal, setLogoutModal] = React.useState(false);
-  const [clearAllModal, setClearAllModal] = React.useState(false);
-  const [profileMenu, setProfileMenu] = React.useState<null | HTMLElement>(
-    null
-  );
+  const [logoutModal, setLogoutModal] = useState(false);
+  const [clearAllModal, setClearAllModal] = useState(false);
+  const [profileMenu, setProfileMenu] = useState<null | HTMLElement>(null);
 
   return (
     <>
@@ -47,8 +51,29 @@ export default function ProfileAppHeader() {
           >
             FireTodos
           </Typography>
-          <Box sx={{ flexGrow: 1 }} />
-
+          <Search sx={{ flexGrow: 1 }}>
+            <SearchIconWrapper>
+              <SearchIcon />
+            </SearchIconWrapper>
+            <StyledInputBase
+              onChange={(event) => viewStore.actions.setSearch(event.target.value)}
+              placeholder="Search…"
+            />
+          </Search>
+          <IconButton
+            onClick={() => viewStore.actions.createTodo()}
+            size="large"
+            color="inherit"
+          >
+            <AddIcon />
+          </IconButton>
+          <IconButton
+            onClick={() => setClearAllModal(true)}
+            size="large"
+            color="inherit"
+          >
+            <DeleteIcon />
+          </IconButton>
           <IconButton
             size="large"
             edge="end"
@@ -141,3 +166,44 @@ function MenuView(props: {
     </Menu>
   );
 }
+
+// Search ____________________________________________________________________________________________
+
+const Search = styled("div")(({ theme }) => ({
+  position: "relative",
+  borderRadius: theme.shape.borderRadius,
+  backgroundColor: alpha(theme.palette.common.white, 0.15),
+  "&:hover": {
+    backgroundColor: alpha(theme.palette.common.white, 0.25),
+  },
+  marginRight: theme.spacing(2),
+  marginLeft: 0,
+  width: "100%",
+  [theme.breakpoints.up("sm")]: {
+    marginLeft: theme.spacing(3),
+    width: "auto",
+  },
+}));
+
+const SearchIconWrapper = styled("div")(({ theme }) => ({
+  padding: theme.spacing(0, 2),
+  height: "100%",
+  position: "absolute",
+  pointerEvents: "none",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+}));
+
+const StyledInputBase = styled(InputBase)(({ theme }) => ({
+  color: "inherit",
+  "& .MuiInputBase-input": {
+    padding: theme.spacing(1, 1, 1, 0),
+    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+    transition: theme.transitions.create("width"),
+    width: "100%",
+    [theme.breakpoints.up("md")]: {
+      width: "20ch",
+    },
+  },
+}));
