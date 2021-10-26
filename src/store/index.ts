@@ -44,25 +44,41 @@ export interface Model extends ModelState, ModelAction, ModelThunks {}
 
 export const model: Model = {
   // STATE
-  user:     null,
-  alert:    null,
-  email:    "",
+  user: null,
+  alert: null,
+  email: "",
   password: "",
-  premium:  false,
-  todos:    [],
-  search:   "",
+  premium: false,
+  todos: [],
+  search: "",
   todosSearchResults: computed((state) =>
-    state.todos.filter((todo) => todo.text.includes(state.search))
+    state.search.length > 0
+      ? state.todos.filter((todo) => todo.text.includes(state.search))
+      : state.todos
   ),
 
   // ACTION
-  setUser:       action((state, payload) => { state.user       = payload }),
-  setAlert:      action((state, payload) => { state.alert      = payload }),
-  setEmail:      action((state, payload) => { state.email      = payload }),
-  setPassword:   action((state, payload) => { state.password   = payload }),
-  setTodos:      action((state, payload) => { state.todos      = payload }),
-  setSearch:     action((state, payload) => { state.search     = payload }),
-  setHasPremium: action((state, payload) => { state.premium    = payload }),
+  setUser: action((state, payload) => {
+    state.user = payload;
+  }),
+  setAlert: action((state, payload) => {
+    state.alert = payload;
+  }),
+  setEmail: action((state, payload) => {
+    state.email = payload;
+  }),
+  setPassword: action((state, payload) => {
+    state.password = payload;
+  }),
+  setTodos: action((state, payload) => {
+    state.todos = payload;
+  }),
+  setSearch: action((state, payload) => {
+    state.search = payload;
+  }),
+  setHasPremium: action((state, payload) => {
+    state.premium = payload;
+  }),
 
   // THUNKS
   signUp: thunk(async (actions, _, helpers) => {
