@@ -7,13 +7,12 @@ import {
   getFirestore,
   onSnapshot,
   query,
-  where,
+  where
 } from "firebase/firestore";
 import React, { useEffect } from "react";
 import { HashRouter, Route, Switch } from "react-router-dom";
-import { auth, firestore } from "../config/firebase";
+import { firestore } from "../config/firebase";
 import { stripeConfig } from "../config/stripe";
-
 import useAppTheme from "../hooks/useAppTheme";
 import ROUTES from "../routes";
 import { store, storeHooks } from "../store";
@@ -43,46 +42,48 @@ const Routez = () => {
   };
   const user = storeHooks.useStoreState((state) => state.authModel.user);
 
-  // update todoslist
-  useEffect(() => {
-    onSnapshot(
-      query(firestore.todos2, where("userID", "==", user?.uid ?? "")),
-      (snapshot) => {
-        viewStore.actions.setTodos(
-          snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() }))
-        );
-        console.log(snapshot);
-      }
-    );
-  }, [user?.uid, viewStore.actions]);
-
-  // set has premium
-  useEffect(() => {
-    onSnapshot(
-      query(
-        collection(
-          getFirestore(),
-          "users",
-          getAuth().currentUser?.uid ?? ">>>",
-          "payments"
-        )
+  const updateTodolist = useEffect(
+    () =>
+      onSnapshot(
+        query(firestore.todos2, where("userID", "==", user?.uid ?? "")),
+        (snapshot) => {
+          viewStore.actions.setTodos(
+            snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() }))
+          );
+          console.log(snapshot);
+        }
       ),
-      (snapshot) =>
-        viewStore.actions.setHasPremium(
-          snapshot.docs
-            .flatMap((doc) => {
-              if (doc.data().items) {
-                return doc
-                  .data()
-                  .items.map((item: any) => item.price)
-                  .map((price: any) => price.id);
-              }
-              return [];
-            })
-            .includes(stripeConfig.prices.premium)
-        )
-    );
-  }, [getAuth().currentUser]);
+    [user?.uid, viewStore.actions]
+  );
+
+  const updatePremium = useEffect(
+    () =>
+      onSnapshot(
+        query(
+          collection(
+            getFirestore(),
+            "users",
+            getAuth().currentUser?.uid ?? ">>>",
+            "payments"
+          )
+        ),
+        (snapshot) =>
+          viewStore.actions.setHasPremium(
+            snapshot.docs
+              .flatMap((doc) => {
+                if (doc.data().items) {
+                  return doc
+                    .data()
+                    .items.map((item: any) => item.price)
+                    .map((price: any) => price.id);
+                }
+                return [];
+              })
+              .includes(stripeConfig.prices.premium)
+          )
+      ),
+    [getAuth().currentUser]
+  );
 
   return (
     <HashRouter>
