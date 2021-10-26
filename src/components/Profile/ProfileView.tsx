@@ -14,14 +14,6 @@ export default function ProfileView() {
     actions: storeHooks.useStoreActions((action) => action),
   };
 
-  async function getCustomClaimRole() {
-    await getAuth().currentUser!.getIdToken(true);
-    const decodedToken = await getAuth().currentUser!.getIdTokenResult();
-    const stripeRoleR = decodedToken.claims.stripeRole;
-    console.log(`${decodedToken}`);
-    console.log(`${stripeRoleR}`);
-  }
-
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -49,15 +41,6 @@ export default function ProfileView() {
           sx={{ mt: 3 }}
         >
           Buy premium
-        </Button>
-        <Button
-          onClick={getCustomClaimRole}
-          type="submit"
-          fullWidth
-          variant="contained"
-          sx={{ mt: 3 }}
-        >
-          Custom Claim Role
         </Button>
       </Box>
     </Container>
