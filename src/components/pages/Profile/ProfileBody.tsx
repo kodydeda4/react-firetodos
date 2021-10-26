@@ -33,11 +33,11 @@ export default function ProfileBody() {
           {getAuth().currentUser?.email}
         </Typography>
         <Button
-          disabled={viewStore.state.hasPremium}
+          disabled={viewStore.state.premium}
           onClick={() => viewStore.actions.purchasePremium()}
           type="submit"
           fullWidth
-          variant={viewStore.state.hasPremium ? "outlined" : "contained"}
+          variant={viewStore.state.premium ? "outlined" : "contained"}
           sx={{ mt: 3 }}
         >
           Buy premium
