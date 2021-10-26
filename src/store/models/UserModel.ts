@@ -1,5 +1,5 @@
 import { action, Action, computed, Computed, Thunk, thunk } from "easy-peasy";
-import { User } from "firebase/auth";
+import { getAuth, User } from "firebase/auth";
 import {
   addDoc,
   collection,
@@ -11,7 +11,7 @@ import {
   query,
   serverTimestamp,
   updateDoc,
-  where
+  where,
 } from "firebase/firestore";
 import { auth, firestore } from "../../config/firebase";
 import Todo from "../../types/Todo";
@@ -25,7 +25,7 @@ interface TodoState {
 }
 
 interface TodoAction {
-  setTodos: Action<this, Todo[]>; 
+  setTodos: Action<this, Todo[]>;
   setSearch: Action<this, string>;
   setHasPremium: Action<this, boolean>;
 }
@@ -48,7 +48,9 @@ export const todoModel: TodoModel = {
   hasPremium: false,
   todos: [],
   search: "",
-  todosSearchResults: computed((state) => state.todos.filter((todo) => todo.text.includes(state.search))),
+  todosSearchResults: computed((state) =>
+    state.todos.filter((todo) => todo.text.includes(state.search))
+  ),
 
   // ACTION
   setTodos: action((state, payload) => {
@@ -61,15 +63,13 @@ export const todoModel: TodoModel = {
     state.hasPremium = payload;
   }),
 
-
   // THUNKS
   purchasePremium: thunk(async (actions, payload, helpers) => {
     await addDoc(
       collection(
         getFirestore(),
         "users",
-        
-        helpers.getState().user!.uid,
+        getAuth().currentUser!.uid,
         "checkout_sessions"
       ),
       {
