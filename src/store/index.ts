@@ -102,7 +102,7 @@ export const model: Model = {
       .then((userCredential) => {
         actions.setAlert({
           severity: Severity.success,
-          message: `Successfully created user with email: ${userCredential.user.email}`,
+          message: `Success`,
         });
       })
       .catch((error) => {
