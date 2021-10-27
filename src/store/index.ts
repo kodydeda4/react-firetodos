@@ -1,6 +1,6 @@
 import {
   createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
+  signInWithEmailAndPassword
 } from "@firebase/auth";
 import {
   action,
@@ -8,10 +8,8 @@ import {
   computed,
   Computed,
   createStore,
-  createTypedHooks,
-  persist,
-  Thunk,
-  thunk,
+  createTypedHooks, Thunk,
+  thunk
 } from "easy-peasy";
 import { getAuth, User } from "firebase/auth";
 import {
@@ -25,7 +23,7 @@ import {
   query,
   serverTimestamp,
   updateDoc,
-  where,
+  where
 } from "firebase/firestore";
 import { app } from "../config/firebase";
 import { stripeConfig } from "../config/stripe";
@@ -137,8 +135,7 @@ export const model: Model = {
     actions.setEmail("");
     actions.setPassword("");
   }),
-
-  purchasePremium: thunk(async (actions, payload, helpers) => {
+  purchasePremium: thunk(async () => {
     await addDoc(
       collection(
         getFirestore(),
@@ -213,7 +210,7 @@ export const model: Model = {
       });
     });
   }),
-  updateTodos: thunk(async (actions, payload, helpers) => {
+  updateTodos: thunk(async (actions) => {
     onSnapshot(
       query(
         collection(getFirestore(), "todos"),
@@ -227,7 +224,7 @@ export const model: Model = {
       }
     );
   }),
-  updatePremium: thunk(async (actions, payload, helpers) => {
+  updatePremium: thunk(async (actions) => {
     onSnapshot(
       query(
         collection(

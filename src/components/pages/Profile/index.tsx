@@ -1,4 +1,3 @@
-import { ViewStreamOutlined } from "@mui/icons-material";
 import { useEffect } from "react";
 import { storeHooks } from "../../../store";
 import ProfileBody from "./ProfileBody";
