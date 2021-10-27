@@ -15,17 +15,30 @@ import { storeHooks } from "../../../store";
 import Todo from "../../../types/Todo";
 
 export default function TodosList() {
+  useEffect(() => viewStore.actions.updateTodos(), []);
   const viewStore = {
     state: storeHooks.useStoreState((state) => state),
     actions: storeHooks.useStoreActions((action) => action),
   };
 
-  useEffect(() => {
-    viewStore.actions.updateTodos()
-  }, []);
-  //viewStore.actions.updateTodos()
   if (viewStore.state.todosSearchResults.length === 0) {
-    return <Placeholder />;
+    return (
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <Box
+          sx={{
+            marginTop: 8,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <Typography color={"gray"} variant="h6">
+            No Results...
+          </Typography>
+        </Box>
+      </Container>
+    );
   }
 
   return (
@@ -68,23 +81,3 @@ export default function TodosList() {
     </List>
   );
 }
-
-const Placeholder = () => {
-  return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
-      <Box
-        sx={{
-          marginTop: 8,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        <Typography color={"gray"} variant="h6">
-          No Results...
-        </Typography>
-      </Box>
-    </Container>
-  );
-};
