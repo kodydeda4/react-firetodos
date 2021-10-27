@@ -1,44 +1,71 @@
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "@firebase/auth";
-import { action, Action, computed, Computed, createStore, createTypedHooks, persist, Thunk, thunk } from "easy-peasy";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "@firebase/auth";
+import {
+  action,
+  Action,
+  computed,
+  Computed,
+  createStore,
+  createTypedHooks,
+  persist,
+  Thunk,
+  thunk,
+} from "easy-peasy";
 import { getAuth, User } from "firebase/auth";
-import { addDoc, collection, deleteDoc, doc, getDocs, getFirestore, onSnapshot, query, serverTimestamp, updateDoc, where } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  getFirestore,
+  onSnapshot,
+  query,
+  serverTimestamp,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 import { app } from "../config/firebase";
+import { stripeConfig } from "../config/stripe";
 import { AlertState, Severity } from "../types/AlertState";
 import Todo from "../types/Todo";
 
 interface ModelState {
-  user:               User       | null;
-  email:              string;
-  password:           string;
-  alert:              AlertState | null;
-  premium:            boolean;
-  todos:              Todo[];
-  search:             string;
-  todosSearchResults: Computed<this, Todo[]>;  
+  user: User | null;
+  email: string;
+  password: string;
+  alert: AlertState | null;
+  premium: boolean;
+  todos: Todo[];
+  search: string;
+  todosSearchResults: Computed<this, Todo[]>;
 }
 
 interface ModelAction {
-  setUser:            Action<this, User       | null>;
-  setAlert:           Action<this, AlertState | null>;
-  setEmail:           Action<this, string>;
-  setPassword:        Action<this, string>;
-  setTodos:           Action<this, Todo[]>;
-  setSearch:          Action<this, string>;
-  setHasPremium:      Action<this, boolean>;
+  setUser: Action<this, User | null>;
+  setAlert: Action<this, AlertState | null>;
+  setEmail: Action<this, string>;
+  setPassword: Action<this, string>;
+  setTodos: Action<this, Todo[]>;
+  setSearch: Action<this, string>;
+  setHasPremium: Action<this, boolean>;
 }
 
 interface ModelThunks {
-  signUp:             Thunk<this>;
-  signIn:             Thunk<this>;
-  signOut:            Thunk<this>;
-  purchasePremium:    Thunk<this>;
-  createTodo:         Thunk<this>;
-  deleteTodo:         Thunk<this, Todo>;
-  toggleTodoDone:     Thunk<this, Todo>;
-  updateTodoText:     Thunk<this, { todo: Todo; text: string }>;
-  clearAllTodos:      Thunk<this>;
-  clearDoneTodos:     Thunk<this>;
-  updateTodos:        Thunk<this>;      
+  signUp: Thunk<this>;
+  signIn: Thunk<this>;
+  signOut: Thunk<this>;
+  purchasePremium: Thunk<this>;
+  createTodo: Thunk<this>;
+  deleteTodo: Thunk<this, Todo>;
+  toggleTodoDone: Thunk<this, Todo>;
+  updateTodoText: Thunk<this, { todo: Todo; text: string }>;
+  clearAllTodos: Thunk<this>;
+  clearDoneTodos: Thunk<this>;
+  updateTodos: Thunk<this>;
+  updatePremium: Thunk<this>;
 }
 
 export interface Model extends ModelState, ModelAction, ModelThunks {}
@@ -59,27 +86,13 @@ export const model: Model = {
   ),
 
   // ACTION
-  setUser: action((state, payload) => {
-    state.user = payload;
-  }),
-  setAlert: action((state, payload) => {
-    state.alert = payload;
-  }),
-  setEmail: action((state, payload) => {
-    state.email = payload;
-  }),
-  setPassword: action((state, payload) => {
-    state.password = payload;
-  }),
-  setTodos: action((state, payload) => {
-    state.todos = payload;
-  }),
-  setSearch: action((state, payload) => {
-    state.search = payload;
-  }),
-  setHasPremium: action((state, payload) => {
-    state.premium = payload;
-  }),
+  setUser: action((state, payload) => { state.user = payload }),
+  setAlert: action((state, payload) => { state.alert = payload }),
+  setEmail: action((state, payload) => { state.email = payload }),
+  setPassword: action((state, payload) => { state.password = payload }),
+  setTodos: action((state, payload) => { state.todos = payload }),
+  setSearch: action((state, payload) => { state.search = payload }),
+  setHasPremium: action((state, payload) => { state.premium = payload }),
 
   // THUNKS
   signUp: thunk(async (actions, _, helpers) => {
@@ -212,8 +225,34 @@ export const model: Model = {
         );
         console.log(snapshot);
       }
-    )
-  })
+    );
+  }),
+  updatePremium: thunk(async (actions, payload, helpers) => {
+    onSnapshot(
+      query(
+        collection(
+          getFirestore(),
+          "users",
+          getAuth().currentUser?.uid ?? "...",
+          "payments"
+        )
+      ),
+      (snapshot) =>
+        actions.setHasPremium(
+          snapshot.docs
+            .flatMap((doc) => {
+              if (doc.data().items) {
+                return doc
+                  .data()
+                  .items.map((item: any) => item.price)
+                  .map((price: any) => price.id);
+              }
+              return [];
+            })
+            .includes(stripeConfig.prices.premium)
+        )
+    );
+  }),
 };
 
 // export const store = createStore(persist(model));

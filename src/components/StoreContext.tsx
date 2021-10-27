@@ -1,7 +1,6 @@
 import { getAuth } from "firebase/auth";
 import React from "react";
 import { HashRouter, Route, Switch } from "react-router-dom";
-import { useUpdatePremium } from "../hooks/useUpdatePremium";
 import ROUTES from "../routes";
 import { storeHooks } from "../store";
 import ForgotPassword from "./pages/ForgotPassword";
@@ -17,12 +16,6 @@ export default function StoreContext() {
     state: storeHooks.useStoreState((state) => state),
     actions: storeHooks.useStoreActions((action) => action),
   };
-
-
-  useUpdatePremium({
-    user: getAuth().currentUser,
-    setter: viewStore.actions.setHasPremium,
-  });
 
   return (
     <HashRouter>
