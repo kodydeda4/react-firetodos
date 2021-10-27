@@ -2,7 +2,6 @@ import { getAuth } from "firebase/auth";
 import React from "react";
 import { HashRouter, Route, Switch } from "react-router-dom";
 import { useUpdatePremium } from "../hooks/useUpdatePremium";
-import { useUpdateTodos } from "../hooks/useUpdateTodos";
 import ROUTES from "../routes";
 import { storeHooks } from "../store";
 import ForgotPassword from "./pages/ForgotPassword";
@@ -19,10 +18,6 @@ export default function StoreContext() {
     actions: storeHooks.useStoreActions((action) => action),
   };
 
-  useUpdateTodos({
-    user: getAuth().currentUser,
-    setter: viewStore.actions.setTodos,
-  });
 
   useUpdatePremium({
     user: getAuth().currentUser,

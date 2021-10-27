@@ -10,6 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import Button from "@mui/material/Button";
+import { useEffect } from "react";
 import { storeHooks } from "../../../store";
 import Todo from "../../../types/Todo";
 
@@ -19,6 +20,10 @@ export default function TodosList() {
     actions: storeHooks.useStoreActions((action) => action),
   };
 
+  useEffect(() => {
+    viewStore.actions.updateTodos()
+  }, []);
+  //viewStore.actions.updateTodos()
   if (viewStore.state.todosSearchResults.length === 0) {
     return <Placeholder />;
   }

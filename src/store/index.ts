@@ -38,6 +38,7 @@ interface ModelThunks {
   updateTodoText:     Thunk<this, { todo: Todo; text: string }>;
   clearAllTodos:      Thunk<this>;
   clearDoneTodos:     Thunk<this>;
+  updateTodos:        Thunk<this>;      
 }
 
 export interface Model extends ModelState, ModelAction, ModelThunks {}
@@ -199,8 +200,22 @@ export const model: Model = {
       });
     });
   }),
+  updateTodos: thunk(async (actions, payload, helpers) => {
+    onSnapshot(
+      query(
+        collection(getFirestore(), "todos"),
+        where("userID", "==", getAuth().currentUser?.uid ?? "...")
+      ),
+      (snapshot) => {
+        actions.setTodos(
+          snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() }))
+        );
+        console.log(snapshot);
+      }
+    )
+  })
 };
 
-// export const store = createStore(model);
-export const store = createStore(persist(model));
+// export const store = createStore(persist(model));
+export const store = createStore(model);
 export const storeHooks = createTypedHooks<Model>();
