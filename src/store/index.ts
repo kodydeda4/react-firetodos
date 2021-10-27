@@ -108,7 +108,7 @@ export const model: Model = {
       .catch((error) => {
         actions.setAlert({
           severity: Severity.error,
-          message: "A user with that email already exists.",
+          message: "The email or password you provided cannot be used.",
         });
       });
   }),
