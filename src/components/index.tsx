@@ -20,15 +20,10 @@ export default function App() {
       <StoreProvider store={store}>
         <HashRouter>
           <Switch>
-            
             {/* Standard */}
             <Route exact path={ROUTES.login} component={Login} />
             <Route exact path={ROUTES.signup} component={Signup} />
-            <Route
-              exact
-              path={ROUTES.forgotPassword}
-              component={ForgotPassword}
-            />
+            <Route exact path={ROUTES.forgotPW} component={ForgotPassword} />
 
             {/* Private */}
             <PrivateRoute exact path={ROUTES.home} component={Todos} />

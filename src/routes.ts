@@ -3,7 +3,7 @@ const ROUTES = {
   login: "/login",
   signup: "/signup",
   profile: "/profile",
-  forgotPassword: "/forgotPassword"
+  forgotPW: "/forgotPassword"
 };
 
 export default ROUTES;

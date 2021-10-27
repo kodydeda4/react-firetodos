@@ -92,7 +92,7 @@ export default function Login() {
               <Grid item xs>
                 <Link
                   component={RouterLink}
-                  to={ROUTES.forgotPassword}
+                  to={ROUTES.forgotPW}
                   variant="body2"
                 >
                   {"Forgot Password?"}
