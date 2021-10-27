@@ -91,12 +91,10 @@ export default function Signup() {
           align="center"
           sx={{ mt: 8, mb: 4 }}
         >
-          {"Copyright © "}
-          <Link color="inherit" href="https://material-ui.com/">
-            Your Website
-          </Link>{" "}
-          {new Date().getFullYear()}
-          {"."}
+          {"Created by "}
+          <Link color="inherit" href="https://kodydeda.netlify.app">
+            Kody Deda
+          </Link>
         </Typography>
       </Container>
     </>
