@@ -1,5 +1,8 @@
 # React-Firetodos
 
+**Note:** There's a SwiftUI counterpart to this app that fetches & updates the same db 😉     
+Check it out here 👉 https://github.com/kodydeda4/SwiftUI-Firetodos
+
 ## Features
 
 ### 🔥 Firebase Authentication
