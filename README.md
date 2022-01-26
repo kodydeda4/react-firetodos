@@ -2,25 +2,25 @@
 
 ## Features
 
-Firebase Authentication
+🔥 Firebase Authentication
 * Login
 * Sign Up
 * Forgot Password
 
-Cloud Firestore
+☁️ Cloud Firestore
 * Remote database
 * User-specific data
 
-Stripe
+💰 Stripe
 * Payment integration
 * Firestore Cloud-Functions
 
-MIU
+🧰 MIU
 * System light/dark mode
 * Custom theme
 * Forms, Buttons, Alerts
 
-React-EasyPeasy
+🛠 React-EasyPeasy
 * State management
 * Combine Reducers
 
